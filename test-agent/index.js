@@ -12,7 +12,7 @@
 
   worker.use(TestAgent.BrowserWorker.MochaDriver, {
     /* path to mocha */
-    mochaUrl: './vendor/mocha/mocha.js',
+    mochaUrl: '../vendor/mocha.js',
     /* path to your test helper this is required, but it can be a blank file if you like */
     testHelperUrl: '../test/helper.js'
   });
