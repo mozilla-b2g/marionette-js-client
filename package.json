@@ -1,0 +1,21 @@
+{
+  "name": "marrionete_js_client",
+  "version": "0.0.1",
+  "description": "Marionette Javascript Client",
+  "author": "James Lal",
+
+  "dependencies" : {
+    "superagent": "~0.4"
+  },
+
+  "devDependencies": {
+    "mocha": "~1.0",
+    "test-agent": "0.0.4",
+    "expect.js": "0.1.2"
+  },
+
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.4"
+  }
+}
