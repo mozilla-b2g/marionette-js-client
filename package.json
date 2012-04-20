@@ -5,12 +5,11 @@
   "author": "James Lal",
 
   "dependencies" : {
-    "superagent": "~0.4"
+    "test-agent": "0.0.7"
   },
 
   "devDependencies": {
     "mocha": "~1.0",
-    "test-agent": "0.0.5",
     "expect.js": "0.1.2"
   },
 
