@@ -58,9 +58,9 @@ describe("websocket-server", function(){
     describe("without a port", function(){
 
       beforeEach(function(){
-        device = lastDevice();
         socket = emitSocket();
         send('create device', {});
+        device = lastDevice();
       });
 
       it("should have a device in the manager", function(){
@@ -73,6 +73,17 @@ describe("websocket-server", function(){
           'device ready',
           { id: 0 }
         ));
+      });
+    });
+
+    describe("when websocket closes", function(){
+      beforeEach(function(){
+        socket.emit('close');
+      });
+
+      it("should close device connection", function(){
+        console.log(device);
+        expect(device.socket.destroyed).to.be(true);
       });
 
     });
@@ -120,7 +131,7 @@ describe("websocket-server", function(){
 
   });
 
-  describe("outgoing response", function(){
+  describe("event: device response", function(){
 
     var data = {'fooz': true}, deviceResponse, device;
 
