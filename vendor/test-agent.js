@@ -4680,7 +4680,6 @@ window.mocha = require('mocha');
    * @param {String} data
    */
   Client.prototype.send = function(event, data){
-    console.log(this.socket, data);
     this.socket.send(this.stringify(event, data));
   };
 
