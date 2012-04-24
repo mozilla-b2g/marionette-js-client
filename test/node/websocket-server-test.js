@@ -59,7 +59,7 @@ describe("websocket-server", function(){
 
       beforeEach(function(){
         socket = emitSocket();
-        send('create device', {});
+        send('device create', {});
         device = lastDevice();
       });
 
@@ -114,7 +114,7 @@ describe("websocket-server", function(){
       beforeEach(function(){
         sendCommandCall = null;
         socket = emitSocket();
-        send('create device', {});
+        send('device create', {});
         device = lastDevice();
 
         device.send = function(){
@@ -137,7 +137,7 @@ describe("websocket-server", function(){
 
     beforeEach(function(){
       socket = emitSocket();
-      send('create device', {});
+      send('device create', {});
 
       device = lastDevice();
       device.emit('command', data);
