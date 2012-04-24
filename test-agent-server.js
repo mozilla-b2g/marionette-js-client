@@ -4,8 +4,8 @@ var Agent = require('test-agent'),
     Suite = Agent.Suite,
     suite = new Suite({
       path: __dirname,
-      testDir: 'test/',
-      libDir: 'lib/'
+      testDir: 'test/marionette/',
+      libDir: 'lib/marionette/'
     });
 
 server.use(Apps.Suite, suite);
