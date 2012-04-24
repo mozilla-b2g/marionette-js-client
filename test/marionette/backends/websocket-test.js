@@ -101,6 +101,7 @@ describe("marionette/backends/websocket", function(){
       };
 
       subject.send(cmds.newSession(), callback);
+      expect(subject._waiting).to.be(true);
     });
 
     describe("when response is for different device", function(){
@@ -119,11 +120,11 @@ describe("marionette/backends/websocket", function(){
 
       beforeEach(function(){
         calledNext = false;
-        subject.client.emit('device response', response);
         subject._nextCommand = function(){
           calledNext = true;
           Backend.prototype._nextCommand.apply(this, arguments);
         };
+        subject.client.emit('device response', response);
       });
 
       it("should trigger response callbacks", function(){
@@ -183,10 +184,26 @@ describe("marionette/backends/websocket", function(){
         subject._nextCommand();
       });
 
+      it("should be waiting", function(){
+        expect(subject._waiting).to.be(true);
+      });
+
       it("should send command to server", function(){
         expect(sent[0][0]).to.eql(cmd1);
       });
 
+    });
+
+    describe("when there are no comamnds and we are not waiting", function(){
+      beforeEach(function(){
+        subject._responseQueue = [];
+        subject._sendQueue = [];
+        subject._nextCommand();
+      });
+
+      it("should not be waiting", function(){
+        expect(subject._waiting).to.be(false);
+      });
     });
 
   });
@@ -204,6 +221,22 @@ describe("marionette/backends/websocket", function(){
         expect(function(){
           subject.send({ type: 'newSession' });
         }).to.throwError(/not ready/);
+      });
+    });
+
+    describe("when not waiting for a response", function(){
+      beforeEach(function(){
+        subject.ready = true;
+        subject.send(cmd, cb);
+      });
+
+      it("should send command", function(){
+        expect(sent.length).to.be(1);
+      });
+
+      it("should be waiting", function(){
+        //console.log(subject._nextCommand.toString());
+        expect(subject._waiting).to.be(true);
       });
     });
 
@@ -253,10 +286,13 @@ describe("marionette/backends/websocket", function(){
         wsStart = true;
       };
 
+
       subject.connect(function(){
         openArgs = arguments;
         done();
       });
+
+      subject.client.emit('open');
 
       subject.client.emit('device ready', { id: 1 });
       subject.client.emit('device response', {
