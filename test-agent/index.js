@@ -14,7 +14,7 @@
     /* path to mocha */
     mochaUrl: '../vendor/mocha.js',
     /* path to your test helper this is required, but it can be a blank file if you like */
-    testHelperUrl: '../test/helper.js'
+    testHelperUrl: '../test/helper.js',
   });
 
   worker.use(TestAgent.BrowserWorker.TestUi);
@@ -22,10 +22,6 @@
   worker.on({
 
     'sandbox': function() {
-      /* Load your fav assertion engine */
-      /* expect.js
-      worker.loader.require('https://raw.github.com/LearnBoost/expect.js/master/expect.js');      
-      */
     },
 
     'open': function(){
