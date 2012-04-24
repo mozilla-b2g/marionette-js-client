@@ -241,21 +241,32 @@ describe("marionette/backends/websocket", function(){
   describe(".connect", function(){
 
     var openArgs,
+        wsStart,
         serverSent;
 
     beforeEach(function(done){
       openArgs = null;
+      wsStart = false;
       serverSent = cmds.connect();
+
+      subject.client.start = function(){
+        wsStart = true;
+      };
+
       subject.connect(function(){
         openArgs = arguments;
         done();
       });
 
-      subject.client.emit('device ready', { id: 1 })
+      subject.client.emit('device ready', { id: 1 });
       subject.client.emit('device response', {
         id: 1,
         response: serverSent
       });
+    });
+
+    it("should start websocket client", function(){
+      expect(wsStart).to.be(true);
     });
 
     it("should pass initial response to callback", function(){
