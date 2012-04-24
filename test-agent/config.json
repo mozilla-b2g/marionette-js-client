@@ -1,5 +1,5 @@
 {
   "tests": [
-    "/test/marionette-test.js"
+    "/test/marionette/backends/websocket-test.js"
   ]
 }
