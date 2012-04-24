@@ -5,7 +5,7 @@
   "author": "James Lal",
 
   "dependencies" : {
-    "test-agent": "0.0.7",
+    "test-agent": "0.0.9",
     "debug": "~0.6"
   },
 
