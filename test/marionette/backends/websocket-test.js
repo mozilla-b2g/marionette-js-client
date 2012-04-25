@@ -1,4 +1,4 @@
-var WSClient, Backend, cmds;
+var WSClient, Abstract, Backend, cmds;
 
 cross.require(
   'test-agent/websocket-client',
@@ -6,6 +6,14 @@ cross.require(
     WSClient = obj;
   }
 );
+
+cross.require(
+  'marionette/backends/abstract',
+  'Marionette.Backends.Abstract', function(obj){
+    Abstract = obj;
+  }
+);
+
 
 cross.require(
   'marionette/backends/websocket',
@@ -56,25 +64,10 @@ describe("marionette/backends/websocket", function(){
       expect(subject.client.url).to.be(url);
     });
 
-    it("should setup ._sendQueue", function(){
-      expect(subject._sendQueue).to.eql([]);
+    it("should be an instance of Abstract", function(){
+      expect(subject).to.be.a(Abstract);
     });
 
-    it("should not be ready", function(){
-      expect(subject.ready).to.be(false);
-    });
-
-    it("should setup ._responseQueue", function(){
-      expect(subject._responseQueue).to.be.a(Array);
-    });
-
-    it("should have timeout set to 10000", function(){
-      expect(subject.timeout).to.be(10000);
-    });
-
-    it("should not be _waiting", function(){
-      expect(subject._waiting).to.be(false);
-    });
   });
 
   describe("event: device response", function(){
@@ -102,17 +95,6 @@ describe("marionette/backends/websocket", function(){
 
       subject.send(cmds.newSession(), callback);
       expect(subject._waiting).to.be(true);
-    });
-
-    describe("when response is for different device", function(){
-      beforeEach(function(){
-        subject.connectionId = 101;
-        subject.client.emit('device response', response);
-      });
-
-      it("should trigger response callbacks", function(){
-        expect(callbackResponse).to.be(null);
-      });
     });
 
     describe("when response is for device id", function(){
@@ -155,123 +137,9 @@ describe("marionette/backends/websocket", function(){
         command: cmds.newSession()
       }]);
     });
-  });
+ });
 
-  describe("._nextCommand", function(){
-    var cmd1, cmd2;
-
-    beforeEach(function(){
-      cmd1 = cmds.newSession();
-      cmd2 = cmds.newSession({isOther: true});
-      subject._sendQueue[0] = cmd1;
-      subject._sendQueue[1] = cmd2;
-    });
-
-    describe("when waiting", function(){
-      beforeEach(function(){
-        subject._waiting = true;
-        subject._nextCommand();
-      });
-
-      it("should not send command to server", function(){
-        expect(sent.length).to.be(0);
-      });
-    });
-
-    describe("when not waiting", function(){
-      beforeEach(function(){
-        subject._waiting = false;
-        subject._nextCommand();
-      });
-
-      it("should be waiting", function(){
-        expect(subject._waiting).to.be(true);
-      });
-
-      it("should send command to server", function(){
-        expect(sent[0][0]).to.eql(cmd1);
-      });
-
-    });
-
-    describe("when there are no comamnds and we are not waiting", function(){
-      beforeEach(function(){
-        subject._responseQueue = [];
-        subject._sendQueue = [];
-        subject._nextCommand();
-      });
-
-      it("should not be waiting", function(){
-        expect(subject._waiting).to.be(false);
-      });
-    });
-
-  });
-
-  describe(".send", function(){
-    var cmd, cb = function(){};
-
-    beforeEach(function(){
-      cmd = cmds.newSession();
-    });
-
-    describe("when device is not ready", function(){
-
-      it("should throw an error", function(){
-        expect(function(){
-          subject.send({ type: 'newSession' });
-        }).to.throwError(/not ready/);
-      });
-    });
-
-    describe("when not waiting for a response", function(){
-      beforeEach(function(){
-        subject.ready = true;
-        subject.send(cmd, cb);
-      });
-
-      it("should send command", function(){
-        expect(sent.length).to.be(1);
-      });
-
-      it("should be waiting", function(){
-        //console.log(subject._nextCommand.toString());
-        expect(subject._waiting).to.be(true);
-      });
-    });
-
-    describe("when waiting for a response", function(){
-
-      var nextCalled;
-
-      beforeEach(function(){
-        subject.ready = true;
-        subject._waiting = true;
-
-        nextCalled = false;
-        subject._nextCommand = function(){
-          nextCalled = true;
-        };
-
-        subject.send(cmd, cb);
-      });
-
-      it("should call next", function(){
-        expect(nextCalled).to.be(true);
-      });
-
-      it("should add send command to queue", function(){
-        expect(subject._sendQueue[0]).to.be(cmd);
-      });
-
-      it("should add calback to response queue", function(){
-        expect(subject._responseQueue[0]).to.be(cb);
-      });
-    });
-
-  });
-
-  describe(".connect", function(){
+ describe(".connect", function(){
 
     var openArgs,
         wsStart,
