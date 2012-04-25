@@ -1,4 +1,4 @@
-var Xhr;
+var Xhr, FakeXhr;
 
 cross.require(
   'marionette/xhr',
@@ -8,33 +8,16 @@ cross.require(
   }
 );
 
+cross.require(
+  '../test/support/fake-xhr',
+  'FakeXhr',
+  function(obj){
+    FakeXhr = obj;
+  }
+);
+
 describe("marionette/xhr", function(){
-  var subject, FakeXHR;
-
-  FakeXHR = function(){
-    this.openArgs = null;
-    this.sendArgs = null;
-    this.headers = {};
-    this.responseHeaders = {};
-  };
-
-  FakeXHR.prototype = {
-    open: function(){
-      this.openArgs = arguments;
-    },
-
-    getResponseHeader: function(key){
-      return this.responseHeaders[key];
-    },
-
-    setRequestHeader: function(key, value){
-      this.headers[key] = value;
-    },
-
-    send: function(){
-      this.sendArgs = arguments;
-    }
-  };
+  var subject;
 
   describe("initialization", function(){
     beforeEach(function(){
@@ -62,13 +45,13 @@ describe("marionette/xhr", function(){
       }
 
       function request(options){
-        options.xhrClass = FakeXHR;
+        options.xhrClass = FakeXhr;
         subject = new Xhr(options);
       }
 
       function opensXHR(){
         it("should create xhr", function(){
-          expect(subject.xhr).to.be.a(FakeXHR);
+          expect(subject.xhr).to.be.a(FakeXhr);
         });
 
         it("should set headers", function(){
