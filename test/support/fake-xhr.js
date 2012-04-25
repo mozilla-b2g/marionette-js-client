@@ -22,6 +22,14 @@
 
     send: function(){
       this.sendArgs = arguments;
+    },
+
+    respond: function(data, code){
+      this.readyState = 4;
+      this.responseHeaders['content-type'] = 'application/json';
+      this.responseText = JSON.stringify(data);
+      this.status = code || 200;
+      this.onreadystatechange();
     }
   };
 

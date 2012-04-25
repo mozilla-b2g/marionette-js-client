@@ -112,6 +112,7 @@ describe("marionette/xhr", function(){
         expect(responseData).to.eql(response);
       });
 
+
       opensXHR();
     });
 

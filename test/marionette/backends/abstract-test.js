@@ -118,6 +118,46 @@ describe("marionette/backends/abstract", function(){
     });
   });
 
+  describe(".connect", function(){
+    var cmd, calledChild;
+
+    beforeEach(function(done){
+      cmd = cmds.connect();
+      calledChild = false;
+
+      subject._connect = function(){
+        subject.connectionId = 10;
+        calledChild = true;
+        //this will cause connect to callback to fire
+        subject._onDeviceResponse({
+          id: 10,
+          response: cmd
+        });
+      };
+
+      subject.connect(function(){
+        done();
+      });
+    });
+
+    it("should set .traits", function(){
+      expect(subject.traits).to.eql([]);
+    });
+
+    it("should set .applicationType", function(){
+      expect(subject.applicationType).to.be(cmd.applicationType);
+    });
+
+    it("should call _connect", function(){
+      expect(calledChild).to.be(true);
+    });
+
+    it("should be ready", function(){
+      expect(subject.ready).to.be(true);
+    });
+
+  });
+
   describe("._nextCommand", function(){
     var cmd1, cmd2;
 
