@@ -1,7 +1,7 @@
 (function(window){
 
-  var backend = new Marionette.Backends.Websocket({
-    url: 'ws://localhost:8777'
+  var backend = new Marionette.Backends.HttpdPolling({
+    proxyUrl: '/marionette'
   });
 
   function log(){

@@ -1,6 +1,7 @@
 {
   "tests": [
     "/test/marionette/backends/websocket-test.js",
-    "/test/marionette/client-test.js"
+    "/test/marionette/client-test.js",
+    "/test/marionette/xhr-test.js"
   ]
 }
