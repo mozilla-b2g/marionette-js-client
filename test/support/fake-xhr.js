@@ -1,6 +1,6 @@
-(function(window){
+(function(window) {
 
-  function FakeXhr(){
+  function FakeXhr() {
     this.openArgs = null;
     this.sendArgs = null;
     this.headers = {};
@@ -8,23 +8,23 @@
   }
 
   FakeXhr.prototype = {
-    open: function(){
+    open: function() {
       this.openArgs = arguments;
     },
 
-    getResponseHeader: function(key){
+    getResponseHeader: function(key) {
       return this.responseHeaders[key];
     },
 
-    setRequestHeader: function(key, value){
+    setRequestHeader: function(key, value) {
       this.headers[key] = value;
     },
 
-    send: function(){
+    send: function() {
       this.sendArgs = arguments;
     },
 
-    respond: function(data, code){
+    respond: function(data, code) {
       this.readyState = 4;
       this.responseHeaders['content-type'] = 'application/json';
       this.responseText = JSON.stringify(data);

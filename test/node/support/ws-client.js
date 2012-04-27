@@ -1,13 +1,13 @@
 var EventEmitter = require('events').EventEmitter;
 
-var WSClient = function(){
+var WSClient = function() {
   this.sendCalls = [];
   EventEmitter.call(this);
 };
 
 WSClient.prototype = Object.create(EventEmitter.prototype);
-WSClient.prototype.onsend = function(){};
-WSClient.prototype.send = function(){
+WSClient.prototype.onsend = function() {};
+WSClient.prototype.send = function() {
   this.onsend.apply(this, arguments);
   this.sendCalls.push(Array.prototype.slice.call(arguments));
 };

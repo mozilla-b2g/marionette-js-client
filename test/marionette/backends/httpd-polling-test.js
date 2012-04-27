@@ -2,7 +2,7 @@ var Abstract, Httpd, Xhr, FakeXhr, cmds;
 
 cross.require(
   'marionette/backends/abstract',
-  'Marionette.Backends.Abstract', function(obj){
+  'Marionette.Backends.Abstract', function(obj) {
     Abstract = obj;
   }
 );
@@ -10,21 +10,21 @@ cross.require(
 cross.require(
   '../test/support/fake-xhr',
   'FakeXhr',
-  function(obj){
+  function(obj) {
     FakeXhr = obj;
   }
 );
 
 cross.require(
   'marionette/xhr',
-  'Marionette.Xhr', function(obj){
+  'Marionette.Xhr', function(obj) {
     Xhr = obj;
   }
 );
 
 cross.require(
   'marionette/backends/httpd-polling',
-  'Marionette.Backends.HttpdPolling', function(obj){
+  'Marionette.Backends.HttpdPolling', function(obj) {
     Httpd = obj;
   }
 );
@@ -32,12 +32,12 @@ cross.require(
 cross.require(
   'marionette/example-commands',
   'Marionette.ExampleCommands',
-  function(obj){
+  function(obj) {
     cmds = obj;
   }
 );
 
-describe("marionette/backends/httpd-polling", function(){
+describe('marionette/backends/httpd-polling', function() {
 
   var subject,
       requests,
@@ -46,9 +46,9 @@ describe("marionette/backends/httpd-polling", function(){
       url = 'http://fake/marionette';
 
 
-  function connect(){
-    beforeEach(function(done){
-      subject.connect(function(){
+  function connect() {
+    beforeEach(function(done) {
+      subject.connect(function() {
         done();
       });
       requests[0].xhr.respond({ id: connectionId });
@@ -61,18 +61,18 @@ describe("marionette/backends/httpd-polling", function(){
     });
   }
 
-  before(function(){
+  before(function() {
     var xhrClass = Xhr.prototype.xhrClass;
     Xhr.prototype._xhrClass = xhrClass;
     Xhr.prototype.xhrClass = FakeXhr;
   });
 
-  after(function(){
+  after(function() {
     Xhr.prototype.xhrClass = Xhr.prototype._xhrClass;
     delete Xhr.prototype._xhrClass;
   });
 
-  beforeEach(function(){
+  beforeEach(function() {
     requests = [];
     subject = new Httpd({
       proxyUrl: url,
@@ -80,42 +80,42 @@ describe("marionette/backends/httpd-polling", function(){
       port: 2828
     });
 
-    subject._request = function(){
+    subject._request = function() {
       lastRequest = Httpd.prototype._request.apply(this, arguments);
       requests.push(lastRequest);
       return lastRequest;
     };
   });
 
-  describe("initialization", function(){
-    it("should set url", function(){
+  describe('initialization', function() {
+    it('should set url', function() {
       expect(subject.proxyUrl).to.be(url);
     });
 
-    it("should set port", function(){
+    it('should set port', function() {
       expect(subject.port).to.be(2828);
     });
 
-    it("should set server", function(){
+    it('should set server', function() {
       expect(subject.server).to.be('localhost');
     });
 
-    it("should be an instance of the abstract", function(){
+    it('should be an instance of the abstract', function() {
       expect(subject).to.be.a(Abstract);
     });
   });
 
-  describe("._connect", function(){
+  describe('._connect', function() {
 
-    describe("when successful", function(){
+    describe('when successful', function() {
       var connectRequest;
       connect();
 
-      beforeEach(function(){
+      beforeEach(function() {
         connectRequest = requests[0];
       });
 
-      it("should make request for connection", function(){
+      it('should make request for connection', function() {
         expect(connectRequest.method).to.be('POST');
         expect(connectRequest.data).to.eql({
           server: subject.server,
@@ -123,21 +123,21 @@ describe("marionette/backends/httpd-polling", function(){
         });
       });
 
-      it("should be ready", function(){
+      it('should be ready', function() {
         expect(subject.ready).to.be(true);
       });
 
-      xit("should be waiting for a response", function(){
+      xit('should be waiting for a response', function() {
         expect(requests[1].waiting).to.be(true);
       });
 
-      describe("._pollingRequest", function(){
+      describe('._pollingRequest', function() {
 
-        it("should be created", function(){
+        it('should be created', function() {
           expect(subject._pollingRequest).to.be.a(Xhr);
         });
 
-        it("should poll with get to proxy", function(){
+        it('should poll with get to proxy', function() {
           expect(subject._pollingRequest.url).to.contain(
             subject.proxyUrl + '?' + subject.connectionId
           );
@@ -151,19 +151,19 @@ describe("marionette/backends/httpd-polling", function(){
 
   });
 
-  describe("._onQueueResponse", function(){
+  describe('._onQueueResponse', function() {
     var response, queue, pollingRequest;
 
     connect();
 
-    beforeEach(function(){
+    beforeEach(function() {
       pollingRequest = requests[1];
     });
 
-    beforeEach(function(){
+    beforeEach(function() {
 
       response = [];
-      subject._onDeviceResponse = function(data){
+      subject._onDeviceResponse = function(data) {
         response.push(data);
         Httpd.prototype._onDeviceResponse.apply(this, arguments);
       };
@@ -178,28 +178,28 @@ describe("marionette/backends/httpd-polling", function(){
       pollingRequest.xhr.respond(queue);
     });
 
-    it("should requeue", function(){
+    it('should requeue', function() {
       expect(pollingRequest.waiting).to.be(true);
     });
 
-    it("should send each message to _onDeviceResponse", function(){
+    it('should send each message to _onDeviceResponse', function() {
       expect(response).to.eql(queue.messages);
     });
 
   });
 
-  describe("._sendCommand", function(){
+  describe('._sendCommand', function() {
     var cmd, cmdResponse,
         put, get;
 
     connect();
 
-    beforeEach(function(done){
+    beforeEach(function(done) {
       cmd = cmds.newSession();
 
       subject.connectionId = 10;
       //this will in then call _sendCommand
-      subject.send(cmd, function(data){
+      subject.send(cmd, function(data) {
         cmdResponse = data;
         done();
       });
@@ -219,81 +219,81 @@ describe("marionette/backends/httpd-polling", function(){
       });
     });
 
-    it("should send command in put", function(){
+    it('should send command in put', function() {
       expect(put.data).to.eql(cmd);
     });
 
-    it("should recieve response to command", function(){
+    it('should recieve response to command', function() {
       expect(cmdResponse).to.eql(cmds.newSessionResponse());
     });
 
   });
 
-  describe("._request", function(){
+  describe('._request', function() {
 
     var responseData,
         response = { id: 1 };
 
-    describe("without a connectionId", function(){
+    describe('without a connectionId', function() {
       var data = {
           server: 'localhost',
           port: 2828
         };
 
-      beforeEach(function(done){
-        subject._request('POST', data, function(data, xhr){
+      beforeEach(function(done) {
+        subject._request('POST', data, function(data, xhr) {
           responseData = data;
           done();
         });
         lastRequest.xhr.respond(response);
       });
 
-      it("should be a post", function(){
+      it('should be a post', function() {
         expect(lastRequest.method).to.be('POST');
         expect(lastRequest.data).to.eql(data);
         expect(lastRequest.url).to.be(subject.proxyUrl);
       });
 
-      it("should recieve parsed response", function(){
+      it('should recieve parsed response', function() {
         expect(responseData).to.eql(response);
       });
 
     });
 
-    describe("with a connectionId", function(){
+    describe('with a connectionId', function() {
 
       var now = Date.now,
           time = now();
 
-      afterEach(function(){
+      afterEach(function() {
         Date.now = now;
       });
 
-      beforeEach(function(done){
-        Date.now = function(){
+      beforeEach(function(done) {
+        Date.now = function() {
           return time;
         };
 
         subject.connectionId = 10;
-        subject._request('GET', function(data){
+        subject._request('GET', function(data) {
           responseData = data;
           done();
         });
         lastRequest.xhr.respond(response);
       });
 
-      it("should be a get", function(){
+      it('should be a get', function() {
         expect(lastRequest.method).to.be('GET');
         expect(lastRequest.data).to.be(null);
       });
 
-      it("should append connectionId to url", function(){
+      it('should append connectionId to url', function() {
         expect(lastRequest.url).to.eql(
           subject.proxyUrl + '?' + subject.connectionId + '=' + time
         );
       });
 
-      it("should recieve parsed response", function(){
+      it('should recieve parsed response', function() {
         expect(responseData).to.eql(response);
       });
 

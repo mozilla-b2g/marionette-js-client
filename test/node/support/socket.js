@@ -1,6 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 
-FakeSocket = function(){
+FakeSocket = function() {
   EventEmitter.call(this);
   FakeSocket.sockets.push(this);
 
@@ -10,12 +10,12 @@ FakeSocket = function(){
 FakeSocket.sockets = [];
 
 FakeSocket.prototype = Object.create(EventEmitter.prototype);
-FakeSocket.prototype.connect = function(port){
+FakeSocket.prototype.connect = function(port) {
   this.port = port;
 };
 
-FakeSocket.prototype.destroy = function(){
+FakeSocket.prototype.destroy = function() {
   this.destroyed = true;
-}
+};
 
 module.exports = exports = FakeSocket;

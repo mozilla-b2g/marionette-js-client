@@ -1,7 +1,7 @@
-describe("marionette", function(){
-  
-  it("should work", function(){
-    
+describe('marionette', function() {
+
+  it('should work', function() {
+
   });
 
 });

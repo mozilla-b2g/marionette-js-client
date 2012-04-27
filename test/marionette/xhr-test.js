@@ -3,7 +3,7 @@ var Xhr, FakeXhr;
 cross.require(
   'marionette/xhr',
   'Marionette.Xhr',
-  function(obj){
+  function(obj) {
     Xhr = obj;
   }
 );
@@ -11,29 +11,29 @@ cross.require(
 cross.require(
   '../test/support/fake-xhr',
   'FakeXhr',
-  function(obj){
+  function(obj) {
     FakeXhr = obj;
   }
 );
 
-describe("marionette/xhr", function(){
+describe('marionette/xhr', function() {
   var subject;
 
-   beforeEach(function(){
+   beforeEach(function() {
     subject = new Xhr({
       method: 'POST'
     });
   });
 
-  describe("initialization", function(){
+  describe('initialization', function() {
 
-    it("should set options on instance", function(){
+    it('should set options on instance', function() {
       expect(subject.method).to.be('POST');
     });
 
   });
 
-  describe(".send", function(){
+  describe('.send', function() {
 
     var data = { a: true, b: false },
         url = 'http://foo',
@@ -41,31 +41,31 @@ describe("marionette/xhr", function(){
         responseData,
         responseXhr;
 
-    function callback(done, data, xhr){
+    function callback(done, data, xhr) {
       responseXhr = xhr;
       responseData = data;
       done();
     }
 
-    function request(options){
+    function request(options) {
       options.xhrClass = FakeXhr;
       subject = new Xhr(options);
     }
 
-    function opensXHR(){
-      it("should create xhr", function(){
+    function opensXHR() {
+      it('should create xhr', function() {
         expect(subject.xhr).to.be.a(FakeXhr);
       });
 
-      it("should set headers", function(){
+      it('should set headers', function() {
         expect(subject.xhr.headers).to.eql(subject.headers);
       });
 
-      it("should parse and send data", function(){
+      it('should parse and send data', function() {
         expect(subject.xhr.sendArgs[0]).to.eql(JSON.stringify(subject.data));
       });
 
-      it("should open xhr", function(){
+      it('should open xhr', function() {
         expect(subject.xhr.openArgs).to.eql([
           subject.method,
           subject.url,
@@ -74,15 +74,15 @@ describe("marionette/xhr", function(){
       });
     }
 
-    beforeEach(function(){
+    beforeEach(function() {
       responseXhr = null;
       responseData = null;
     });
 
-    describe("when xhr is a success and responds /w json", function(){
+    describe('when xhr is a success and responds /w json', function() {
       var response = { works: true}, cb;
 
-      beforeEach(function(done){
+      beforeEach(function(done) {
         var xhr;
         request({
           data: data,
@@ -103,11 +103,11 @@ describe("marionette/xhr", function(){
         xhr.onreadystatechange();
       });
 
-      it("should not be waiting after response", function(){
+      it('should not be waiting after response', function() {
         expect(subject.waiting).to.be(false);
       });
 
-      it("should send callback parsed data and xhr", function(){
+      it('should send callback parsed data and xhr', function() {
         expect(responseXhr).to.be(subject.xhr);
         expect(responseData).to.eql(response);
       });

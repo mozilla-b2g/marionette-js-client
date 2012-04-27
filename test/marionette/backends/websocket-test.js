@@ -2,14 +2,14 @@ var WSClient, Abstract, Backend, cmds;
 
 cross.require(
   'test-agent/websocket-client',
-  'TestAgent.WebsocketClient', function(obj){
+  'TestAgent.WebsocketClient', function(obj) {
     WSClient = obj;
   }
 );
 
 cross.require(
   'marionette/backends/abstract',
-  'Marionette.Backends.Abstract', function(obj){
+  'Marionette.Backends.Abstract', function(obj) {
     Abstract = obj;
   }
 );
@@ -17,7 +17,7 @@ cross.require(
 
 cross.require(
   'marionette/backends/websocket',
-  'Marionette.Backends.Websocket', function(obj){
+  'Marionette.Backends.Websocket', function(obj) {
     Backend = obj;
   }
 );
@@ -25,19 +25,19 @@ cross.require(
 cross.require(
   'marionette/example-commands',
   'Marionette.ExampleCommands',
-  function(obj){
+  function(obj) {
     cmds = obj;
   }
 );
 
-describe("marionette/backends/websocket", function(){
+describe('marionette/backends/websocket', function() {
 
   var subject,
       sent = [],
       clientSent = [],
       url = 'ws://foo';
 
-  beforeEach(function(){
+  beforeEach(function() {
     subject = new Backend({
       url: url
     });
@@ -45,38 +45,38 @@ describe("marionette/backends/websocket", function(){
     sent = [];
     clientSent = [];
 
-    subject.client.send = function(){
+    subject.client.send = function() {
       clientSent.push(arguments);
     };
 
-    subject._sendCommand = function(){
+    subject._sendCommand = function() {
       sent.push(arguments);
       Backend.prototype._sendCommand.apply(this, arguments);
     };
   });
 
-  describe('initialization', function(){
-    it("should initialize .client with a websocket", function(){
+  describe('initialization', function() {
+    it('should initialize .client with a websocket', function() {
       expect(subject.client).to.be.a(WSClient);
     });
 
-    it("should pass client params along", function(){
+    it('should pass client params along', function() {
       expect(subject.client.url).to.be(url);
     });
 
-    it("should be an instance of Abstract", function(){
+    it('should be an instance of Abstract', function() {
       expect(subject).to.be.a(Abstract);
     });
 
   });
 
-  describe("event: device response", function(){
+  describe('event: device response', function() {
 
     var callback,
         callbackResponse,
         response;
 
-    beforeEach(function(){
+    beforeEach(function() {
       callbackResponse = null;
       response = {
         id: 10,
@@ -89,7 +89,7 @@ describe("marionette/backends/websocket", function(){
       subject.connectionId = 10;
       subject.ready = true;
 
-      callback = function(){
+      callback = function() {
         callbackResponse = arguments;
       };
 
@@ -97,41 +97,41 @@ describe("marionette/backends/websocket", function(){
       expect(subject._waiting).to.be(true);
     });
 
-    describe("when response is for device id", function(){
+    describe('when response is for device id', function() {
       var calledNext;
 
-      beforeEach(function(){
+      beforeEach(function() {
         calledNext = false;
-        subject._nextCommand = function(){
+        subject._nextCommand = function() {
           calledNext = true;
           Backend.prototype._nextCommand.apply(this, arguments);
         };
         subject.client.emit('device response', response);
       });
 
-      it("should trigger response callbacks", function(){
+      it('should trigger response callbacks', function() {
         expect(callbackResponse[0]).to.eql(response.response);
       });
 
-      it("should clear response queue", function(){
+      it('should clear response queue', function() {
         expect(subject._responseQueue.length).to.be(0);
       });
 
-      it("should not be waiting", function(){
+      it('should not be waiting', function() {
         expect(subject._waiting).to.be(false);
       });
 
     });
   });
 
-  describe("._sendCommand", function(){
-    beforeEach(function(){
+  describe('._sendCommand', function() {
+    beforeEach(function() {
       subject.connectionId = 10;
       subject.ready = true;
       subject._sendCommand(cmds.newSession());
     });
 
-    it("should send command to server", function(){
+    it('should send command to server', function() {
       expect(clientSent[0]).to.eql(['device command', {
         id: 10,
         command: cmds.newSession()
@@ -139,23 +139,23 @@ describe("marionette/backends/websocket", function(){
     });
  });
 
- describe(".connect", function(){
+ describe('.connect', function() {
 
     var openArgs,
         wsStart,
         serverSent;
 
-    beforeEach(function(done){
+    beforeEach(function(done) {
       openArgs = null;
       wsStart = false;
       serverSent = cmds.connect();
 
-      subject.client.start = function(){
+      subject.client.start = function() {
         wsStart = true;
       };
 
 
-      subject.connect(function(){
+      subject.connect(function() {
         openArgs = arguments;
         done();
       });
@@ -169,23 +169,23 @@ describe("marionette/backends/websocket", function(){
       });
     });
 
-    it("should start websocket client", function(){
+    it('should start websocket client', function() {
       expect(wsStart).to.be(true);
     });
 
-    it("should pass initial response to callback", function(){
+    it('should pass initial response to callback', function() {
       expect(openArgs[0]).to.eql(serverSent);
     });
 
-    it("should set connectionId to 1", function(){
+    it('should set connectionId to 1', function() {
       expect(subject.connectionId).to.be(1);
     });
 
-    it("should send device create", function(){
+    it('should send device create', function() {
       expect(clientSent[0][0]).to.eql('device create');
     });
 
-    it("should be open", function(){
+    it('should be open', function() {
       expect(subject.ready).to.be(true);
     });
 
