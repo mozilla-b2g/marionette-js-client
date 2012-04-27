@@ -1,4 +1,4 @@
-var Client, cmds;
+var Client, cmds, MockBackend, DeviceInteraction;
 
 cross.require(
   'marionette/client',
@@ -15,94 +15,40 @@ cross.require(
   }
 );
 
-function MockBackend() {
-  this.sent = [];
-  this.queue = [];
-}
 
-MockBackend.prototype = {
-
-  connectionId: 0,
-
-  reset: function() {
-    this.sent.length = 0;
-    this.queue.length = 0;
-  },
-
-  send: function(cmd, cb) {
-    this.sent.push(cmd);
-    this.queue.push(cb);
-  },
-
-  respond: function(cmd) {
-    if (this.queue.length) {
-      (this.queue.shift())(cmd);
-    }
+cross.require(
+  '../test/support/mock-backend',
+  'MockBackend',
+  function(obj) {
+    MockBackend = obj;
   }
+);
 
-};
+cross.require(
+  '../test/support/device-interaction',
+  'DeviceInteraction',
+  function(obj) {
+    DeviceInteraction = obj;
+    test();
+  }
+);
+
+//this is hack to ensure device interactions are
+//loaded
+function test() {
 
 describe('marionette/client', function() {
 
   var subject, backend, cb, cbResponse,
-      cmd, result, cmdResult;
+      cmd, result, device;
+
+  device = new DeviceInteraction(cmds, function() {
+    return subject;
+  });
 
   function commandCallback(data) {
     commandCallback.value = data;
   }
-
-  function issues() {
-    var args = Array.prototype.slice.call(arguments),
-        cmd = args.shift();
-
-    beforeEach(function() {
-      args.push(commandCallback);
-      result = subject[cmd].apply(subject, args);
-    });
-
-    it('should be chainable', function() {
-      expect(result).to.be(subject);
-    });
-  }
-
-  function serverResponds(type, options) {
-    beforeEach(function() {
-      if (!(type in cmds)) {
-        throw new Error('there is no \'' + type + '\' example command');
-      }
-      cmdResult = cmds[type](options);
-      backend.respond(cmdResult);
-    });
-  }
-
-
-  function receivesValue() {
-    it('should recevie value', function() {
-      expect(commandCallback.value).to.be(cmdResult.value);
-    });
-  }
-
-  function receivesOk() {
-    it('should recevie ok', function() {
-      expect(commandCallback.ok).to.be(cmdResult.ok);
-    });
-  }
-
-  function sends(options) {
-    var key;
-    for (key in options) {
-      if (options.hasOwnProperty(key)) {
-        (function(option, value) {
-
-          it('should send ' + option, function() {
-            var sent = backend.sent[0];
-            expect(sent[option]).to.eql(value);
-          });
-        }(key, options[key]));
-      }
-    }
-  }
-
 
   beforeEach(function() {
     commandCallback.value = null;
@@ -184,88 +130,97 @@ describe('marionette/client', function() {
   });
 
   describe('.setSearchTimeout', function() {
-    issues('setSearchTimeout', 50);
-    serverResponds('ok');
-    sends({
-      type: 'setSearchTimeout',
-      value: 50
-    });
-    receivesOk();
+    device.
+      issues('setSearchTimeout', 50).
+      shouldSend({
+        type: 'setSearchTimeout',
+        value: 50
+      }).
+      serverResponds('ok').
+      callbackReceives('ok');
   });
 
   describe('.getWindow', function() {
-    issues('getWindow');
-    serverResponds('getWindowResponse');
-    sends({
-      type: 'getWindow'
-    });
-    receivesValue();
+    device.
+      issues('getWindow').
+      shouldSend({
+        type: 'getWindow'
+      }).
+      serverResponds('getWindowResponse').
+      callbackReceives('value');
   });
 
   describe('.setContext', function() {
-    issues('setContext', 'chrome');
-    serverResponds('ok');
-    sends({
-      type: 'setContext',
-      value: 'chrome'
-    });
-    receivesValue();
+    device.
+      issues('setContext', 'chrome').
+      shouldSend({
+        type: 'setContext',
+        value: 'chrome'
+      }).
+      serverResponds('ok').
+      callbackReceives('value');
   });
 
   describe('.getWindows', function() {
-    issues('getWindows');
-    serverResponds('getWindowsResponse');
-    sends({
-      type: 'getWindows'
-    });
-    receivesValue();
+    device.
+      issues('getWindows').
+      shouldSend({
+        type: 'getWindows'
+      }).
+      serverResponds('getWindowsResponse').
+      callbackReceives('value');
   });
 
   describe('.switchToWindow', function() {
-    issues('switchToWindow', '1-b2g');
-    serverResponds('ok');
-    sends({
-      type: 'switchToWindow',
-      value: '1-b2g'
-    });
-    receivesOk();
+    device.
+      issues('switchToWindow', '1-b2g').
+      shouldSend({
+        type: 'switchToWindow',
+        value: '1-b2g'
+      }).
+      serverResponds('ok').
+      callbackReceives('ok');
   });
 
   describe('.setScriptTimeout', function() {
-    issues('setScriptTimeout', 100);
-    serverResponds('ok');
-    sends({
-      type: 'setScriptTimeout',
-      value: 100
-    });
-    receivesOk();
+    device.
+      issues('setScriptTimeout', 100).
+      shouldSend({
+        type: 'setScriptTimeout',
+        value: 100
+      }).
+      serverResponds('ok').
+      callbackReceives('ok');
   });
 
   describe('.getUrl', function() {
-    issues('getUrl');
-    serverResponds('getUrlResponse');
-    receivesValue();
-    sends({
-      type: 'getUrl'
-    });
+    device.
+      issues('getUrl').
+      shouldSend({
+        type: 'getUrl'
+      }).
+      serverResponds('getUrlResponse').
+      callbackReceives('value');
   });
 
   describe('.goForward', function() {
-    issues('goForward');
-    serverResponds('ok');
-    receivesOk();
-    sends({
-      type: 'goForward'
-    });
+    device.
+      issues('goForward').
+      shouldSend({
+        type: 'goForward'
+      }).
+      serverResponds('ok').
+      callbackReceives('ok');
   });
 
   describe('.goBack', function() {
-    issues('goBack');
-    serverResponds('ok');
-    receivesOk();
-    sends({
-      type: 'goBack'
-    });
+    device.
+      issues('goBack').
+      shouldSend({
+        type: 'goBack'
+      }).
+      serverResponds('ok').
+      callbackReceives('ok');
   });
 
   describe('script executing commands', function() {
@@ -321,6 +276,30 @@ describe('marionette/client', function() {
 
   });
 
+  describe('.refresh', function() {
+    device.
+      issues('refresh').
+      serverResponds('ok').
+      shouldSend({ type: 'refresh' }).
+      callbackReceives('ok');
+  });
+
+  describe('.log', function() {
+    device.
+      issues('log', 'wow', 'info').
+      shouldSend({ type: 'log', value: 'wow', level: 'info' }).
+      serverResponds('ok').
+      callbackReceives('ok');
+  });
+
+  describe('.getLogs', function() {
+    device.
+      issues('getLogs').
+      shouldSend({ type: 'getLogs' }).
+      serverResponds('getLogsResponse').
+      callbackReceives('value');
+  });
+
   describe('._executeScript', function() {
       var cmd = 'return window.location',
           args = [{1: true}],
@@ -333,11 +312,11 @@ describe('marionette/client', function() {
         args: args
       };
 
-      issues('_executeScript', request);
-
-      serverResponds('getUrlResponse');
-      receivesValue();
-      sends(request);
+      device.
+        issues('_executeScript', request).
+        shouldSend(request).
+        serverResponds('getUrlResponse').
+        callbackReceives('value');
     });
 
     describe('without args', function() {
@@ -346,14 +325,15 @@ describe('marionette/client', function() {
         value: cmd
       };
 
-      issues('_executeScript', request);
-      serverResponds('getUrlResponse');
-      receivesValue();
-      sends({
-        type: type,
-        value: cmd,
-        args: []
-      });
+      device.
+        issues('_executeScript', request).
+        shouldSend({
+          type: type,
+          value: cmd,
+          args: []
+        }).
+        serverResponds('getUrlResponse').
+        callbackReceives('value');
     });
 
     describe('with timeout', function() {
@@ -364,34 +344,14 @@ describe('marionette/client', function() {
         timeout: false
       };
 
-      issues('_executeScript', request);
+      device.
+        issues('_executeScript', request).
+        shouldSend(request).
+        serverResponds('getUrlResponse').
+        callbackReceives('value');
 
-      serverResponds('getUrlResponse');
-      receivesValue();
-      sends(request);
     });
 
-  });
-
-  describe('.refresh', function() {
-    issues('refresh');
-    serverResponds('ok');
-    receivesOk();
-    sends({ type: 'refresh' });
-  });
-
-  describe('.log', function() {
-    issues('log', 'wow', 'info');
-    serverResponds('ok');
-    receivesOk();
-    sends({ type: 'log', value: 'wow', level: 'info' });
-  });
-
-  describe('.getLogs', function() {
-    issues('getLogs');
-    serverResponds('getLogsResponse');
-    receivesValue();
-    sends({ type: 'getLogs' });
   });
 
   describe('._newSession', function() {
@@ -479,3 +439,5 @@ describe('marionette/client', function() {
   });
 
 });
+
+}
