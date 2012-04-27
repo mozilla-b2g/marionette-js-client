@@ -265,6 +265,13 @@ describe('marionette/client', function() {
     });
   });
 
+  describe('.refresh', function() {
+    issues('refresh');
+    serverResponds('ok');
+    receivesOk();
+    sends({ type: 'refresh' });
+  });
+
 
   describe('._newSession', function() {
     var response;
