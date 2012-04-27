@@ -65,6 +65,63 @@ describe('marionette/client', function() {
     });
   });
 
+  describe('.send', function() {
+
+    describe('when session: is present', function() {
+      var result;
+      beforeEach(function() {
+        subject.session = 'session';
+        subject.actor = 'actor';
+        result = subject.send({ type: 'newSession' });
+      });
+
+      it('should be chainable', function() {
+        expect(result).to.be(subject);
+      });
+
+      it('should add session to cmd', function() {
+        expect(backend.sent[0]).to.eql({
+          to: subject.actor,
+          session: subject.session,
+          type: 'newSession'
+        });
+      });
+    });
+
+    describe('when to: is not given', function() {
+
+      describe('with an actor', function() {
+        beforeEach(function() {
+          subject.actor = 'foo';
+          subject.send({ type: '_getActorId' }, cb);
+        });
+
+        it('should add to:', function() {
+          expect(backend.sent[0]).to.eql({
+            to: 'foo',
+            type: '_getActorId'
+          });
+        });
+
+      });
+
+      describe('without an actor', function() {
+        beforeEach(function() {
+          subject.send({ type: '_getActorId' }, cb);
+        });
+
+        it('should add to:', function() {
+          expect(backend.sent[0]).to.eql({
+            to: 'root',
+            type: '_getActorId'
+          });
+        });
+
+      });
+
+    });
+  });
+
   describe('.startSession', function() {
     beforeEach(function(done) {
 
@@ -88,26 +145,16 @@ describe('marionette/client', function() {
   describe('._getActorId', function() {
     var response;
 
-    beforeEach(function(done) {
-      response = cmds.getMarionetteIDResponse();
-      subject._getActorId(function() {
-        cbResponse = arguments;
-        done();
-      });
-
-      backend.respond(response);
-    });
-
-    it('should send getMarionetteID', function() {
-      expect(backend.sent[0].type).to.be('getMarionetteID');
-    });
+    device.
+      issues('_getActorId').
+      shouldSend({ type: 'getMarionetteID' }).
+      serverResponds('getMarionetteIDResponse').
+      callbackReceives('id');
 
     it('should save actor id', function() {
-      expect(subject.actor).to.be(response.id);
-    });
-
-    it('should send callback response', function() {
-      expect(cbResponse[0]).to.eql(response);
+      expect(subject.actor).to.be(
+        cmds.getMarionetteIDResponse().id
+      );
     });
 
   });
@@ -379,63 +426,6 @@ describe('marionette/client', function() {
       expect(cbResponse[0]).to.eql(response);
     });
 
-  });
-
-  describe('.send', function() {
-
-    describe('when session: is present', function() {
-      var result;
-      beforeEach(function() {
-        subject.session = 'session';
-        subject.actor = 'actor';
-        result = subject.send({ type: 'newSession' });
-      });
-
-      it('should be chainable', function() {
-        expect(result).to.be(subject);
-      });
-
-      it('should add session to cmd', function() {
-        expect(backend.sent[0]).to.eql({
-          to: subject.actor,
-          session: subject.session,
-          type: 'newSession'
-        });
-      });
-    });
-
-    describe('when to: is not given', function() {
-
-      describe('with an actor', function() {
-        beforeEach(function() {
-          subject.actor = 'foo';
-          subject.send({ type: '_getActorId' }, cb);
-        });
-
-        it('should add to:', function() {
-          expect(backend.sent[0]).to.eql({
-            to: 'foo',
-            type: '_getActorId'
-          });
-        });
-
-      });
-
-      describe('without an actor', function() {
-        beforeEach(function() {
-          subject.send({ type: '_getActorId' }, cb);
-        });
-
-        it('should add to:', function() {
-          expect(backend.sent[0]).to.eql({
-            to: 'root',
-            type: '_getActorId'
-          });
-        });
-
-      });
-
-    });
   });
 
 });
