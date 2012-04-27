@@ -67,6 +67,9 @@ describe('marionette/client', function() {
 
   function serverResponds(type, options) {
     beforeEach(function() {
+      if (!(type in cmds)) {
+        throw new Error('there is no "' + type + '" example command');
+      }
       cmdResult = cmds[type](options);
       backend.respond(cmdResult);
     });
@@ -265,6 +268,34 @@ describe('marionette/client', function() {
     });
   });
 
+  describe('.executeScript', function() {
+    var cmd = 'return window.location',
+        args = [{1: true}];
+
+    describe('with args', function() {
+      issues('executeScript', cmd, args);
+      serverResponds('getUrlResponse');
+      receivesValue();
+      sends({
+        type: 'executeScript',
+        value: cmd,
+        args: args
+      });
+    });
+
+    describe('without args', function() {
+      issues('executeScript', cmd);
+      serverResponds('getUrlResponse');
+      receivesValue();
+      sends({
+        type: 'executeScript',
+        value: cmd,
+        args: []
+      });
+
+    });
+  });
+
   describe('.refresh', function() {
     issues('refresh');
     serverResponds('ok');
@@ -279,7 +310,7 @@ describe('marionette/client', function() {
     sends({ type: 'log', value: 'wow', level: 'info' });
   });
 
-  describe(".getLogs", function(){
+  describe('.getLogs', function(){
     issues('getLogs');
     serverResponds('getLogsResponse');
     receivesValue();

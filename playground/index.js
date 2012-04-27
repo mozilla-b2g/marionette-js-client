@@ -18,7 +18,7 @@
         getUrl(log('get url')).
         getWindow(log('get window')).
         getWindows(log('get windows')).
-        send({ type: 'executeScript', value: 'window.location = "http://google.com/"', args: [] }, log('goUrl')).
+        executeScript('window.location="http://google.com/"', log('executeScript')).
         goBack(log('back')).
         getUrl(log('get url')).
         goForward(log('go forward')).
