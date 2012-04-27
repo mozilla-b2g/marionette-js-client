@@ -15,4 +15,8 @@ package :
 	cp ./node_modules/test-agent/test-agent.js $(VENDOR)
 
 test :
-	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js ./test/node/*-test.js
+	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
+	  ./test/node/*-test.js \
+	  ./test/marionette/client-test.js \
+	  ./test/marionette/drivers/abstract-test.js \
+	  ./test/marionette/drivers/websocket-test.js
