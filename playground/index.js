@@ -15,14 +15,10 @@
     var device = window.device = new Marionette.Client(backend);
     window.device.startSession(function() {
       device.
-        getUrl(log('get url')).
-        getWindow(log('get window')).
-        getWindows(log('get windows')).
-        executeScript('window.location="http://google.com/"', log('executeScript')).
-        goBack(log('back')).
-        getUrl(log('get url')).
-        goForward(log('go forward')).
-        getUrl(log('get url 2'));
+        setScriptTimeout(5000, log('setTimeout')).
+        executeScript('return window.location;', log('executeScript')).
+        executeJsScript('function magicFunc(){ return \'foo\'; } magicFunc();', log('executeJsScript')).
+        executeAsyncScript('return window.location;', log('executeAsyncScript'));
     });
   });
 

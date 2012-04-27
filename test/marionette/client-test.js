@@ -280,7 +280,7 @@ describe('marionette/client', function() {
       };
     });
 
-    describe('executeScript', function() {
+    describe('.executeScript', function() {
       beforeEach(function() {
         subject.executeScript(script, commandCallback);
       });
@@ -293,20 +293,20 @@ describe('marionette/client', function() {
       });
     });
 
-    describe('executeJsScript', function() {
+    describe('.executeJsScript', function() {
       beforeEach(function() {
         subject.executeJsScript(script, commandCallback);
       });
 
       it('should call _executeScript', function() {
         expect(calledWith).to.eql([
-          { type: 'executeJsScript', value: script, timeout: true, args: null },
+          { type: 'executeJSScript', value: script, timeout: true, args: null },
           commandCallback
         ]);
       });
     });
 
-    describe('executeAsyncScript', function() {
+    describe('.executeAsyncScript', function() {
       beforeEach(function() {
         subject.executeAsyncScript(script, commandCallback);
       });
@@ -358,7 +358,7 @@ describe('marionette/client', function() {
 
     describe('with timeout', function() {
       var request = {
-        type: 'executeJsScript',
+        type: 'executeJSScript',
         value: cmd,
         args: args,
         timeout: false
