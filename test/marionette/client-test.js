@@ -44,11 +44,62 @@ MockBackend.prototype = {
 
 describe('marionette/client', function() {
 
-  var subject, backend, cb, cbResponse;
+  var subject, backend, cb, cbResponse,
+      cmd, result, cmdResult;
 
   function commandCallback(data) {
     commandCallback.value = data;
   }
+
+  function issues() {
+    var args = Array.prototype.slice.call(arguments),
+        cmd = args.shift();
+
+    beforeEach(function() {
+      args.push(commandCallback);
+      result = subject[cmd].apply(subject, args);
+    });
+
+    it('should be chainable', function() {
+      expect(result).to.be(subject);
+    });
+  }
+
+  function serverResponds(type, options) {
+    beforeEach(function() {
+      cmdResult = cmds[type](options);
+      backend.respond(cmdResult);
+    });
+  }
+
+
+  function receivesValue() {
+    it('should recevie value', function() {
+      expect(commandCallback.value).to.be(cmdResult.value);
+    });
+  }
+
+  function receivesOk() {
+    it('should recevie ok', function() {
+      expect(commandCallback.ok).to.be(cmdResult.ok);
+    });
+  }
+
+  function sends(options) {
+    var key;
+    for (key in options) {
+      if (options.hasOwnProperty(key)) {
+        (function(option, value) {
+
+          it('should send ' + option, function() {
+            var sent = backend.sent[0];
+            expect(sent[option]).to.eql(value);
+          });
+        }(key, options[key]));
+      }
+    }
+  }
+
 
   beforeEach(function() {
     commandCallback.value = null;
@@ -112,89 +163,108 @@ describe('marionette/client', function() {
 
   });
 
-  describe('_processResponse', function() {
-    var cbResponse, response;
-
-    beforeEach(function() {
+  describe('._sendCommand', function() {
+    var cmd, response;
+    it('should send given command and format the result', function(done) {
+      var result;
+      cmd = cmds.getUrl();
       response = cmds.getUrlResponse();
-      subject._processResponse(function(data) {
-        cbResponse = data;
-      }, 'value', response);
-    });
 
-    it('should pass callback only the result of value', function() {
-      expect(cbResponse).to.eql(response.value);
+      result = subject._sendCommand(cmd, 'value', function(data) {
+        expect(data).to.be(response.value);
+        done();
+      });
+
+      backend.respond(response);
+      expect(result).to.be(subject);
     });
   });
 
-  describe('interaction commands', function() {
-
-    var cmd, result, cmdResult;
-
-    function issues(cmd, response, options) {
-      beforeEach(function() {
-        cmdResult = cmds[response](options);
-        result = subject[cmd](commandCallback);
-        backend.respond(cmdResult);
-      });
-
-      it('should be chainable', function() {
-        expect(result).to.be(subject);
-      });
-    }
-
-    function receivesValue() {
-      it('should recevie value', function() {
-        expect(commandCallback.value).to.be(cmdResult.value);
-      });
-    }
-
-    function receivesOk() {
-      it('should recevie ok', function() {
-        expect(commandCallback.ok).to.be(cmdResult.ok);
-      });
-    }
-
-    function sends(options) {
-      var key;
-      for (key in options) {
-        if (options.hasOwnProperty(key)) {
-          (function(option, value) {
-
-            it('should send ' + option, function() {
-              var sent = backend.sent[0];
-              expect(sent[option]).to.eql(value);
-            });
-          }(key, options[key]));
-        }
-      }
-    }
-
-    describe('.getUrl', function() {
-      issues('getUrl', 'getUrlResponse');
-      receivesValue();
-      sends({
-        type: 'getUrl'
-      });
+  describe('.setSearchTimeout', function() {
+    issues('setSearchTimeout', 50);
+    serverResponds('ok');
+    sends({
+      type: 'setSearchTimeout',
+      value: 50
     });
-
-    describe('.goForward', function() {
-      issues('goForward', 'ok');
-      receivesOk();
-      sends({
-        type: 'goForward'
-      });
-    });
-
-    describe('.goBack', function() {
-      issues('goBack', 'ok');
-      receivesOk();
-      sends({
-        type: 'goBack'
-      });
-    });
-
+    receivesOk();
   });
+
+  describe('.getWindow', function() {
+    issues('getWindow');
+    serverResponds('getWindowResponse');
+    sends({
+      type: 'getWindow'
+    });
+    receivesValue();
+  });
+
+  describe('.setContext', function() {
+    issues('setContext', 'chrome');
+    serverResponds('ok');
+    sends({
+      type: 'setContext',
+      value: 'chrome'
+    });
+    receivesValue();
+  });
+
+  describe('.getWindows', function() {
+    issues('getWindows');
+    serverResponds('getWindowsResponse');
+    sends({
+      type: 'getWindows'
+    });
+    receivesValue();
+  });
+
+  describe('.switchToWindow', function() {
+    issues('switchToWindow', '1-b2g');
+    serverResponds('ok');
+    sends({
+      type: 'switchToWindow',
+      value: '1-b2g'
+    });
+    receivesOk();
+  });
+
+  describe('.setScriptTimeout', function() {
+    issues('setScriptTimeout', 100);
+    serverResponds('ok');
+    sends({
+      type: 'setScriptTimeout',
+      value: 100
+    });
+    receivesOk();
+  });
+
+  describe('.getUrl', function() {
+    issues('getUrl');
+    serverResponds('getUrlResponse');
+    receivesValue();
+    sends({
+      type: 'getUrl'
+    });
+  });
+
+  describe('.goForward', function() {
+    issues('goForward');
+    serverResponds('ok');
+    receivesOk();
+    sends({
+      type: 'goForward'
+    });
+  });
+
+  describe('.goBack', function() {
+    issues('goBack');
+    serverResponds('ok');
+    receivesOk();
+    sends({
+      type: 'goBack'
+    });
+  });
+
 
   describe('._newSession', function() {
     var response;
