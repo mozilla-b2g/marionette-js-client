@@ -10,9 +10,7 @@
 
   backend.connect(function(){
     var device = window.device = new Marionette.Client(backend);
-    console.log(device);
     window.device.startSession(function(){
-      console.log('starting session');
       device.send({
         type: 'executeScript',
         value: 'return window.location',
@@ -22,6 +20,5 @@
       });
     });
   });
-
 
 }(this));
