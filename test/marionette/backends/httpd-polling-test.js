@@ -51,6 +51,7 @@ describe("marionette/backends/httpd-polling", function(){
       subject.connect(function(){
         done();
       });
+      console.log(subject._onQueueResponse.toString());
       requests[0].xhr.respond({ id: connectionId });
       requests[1].xhr.respond({
         messages: [
@@ -109,7 +110,6 @@ describe("marionette/backends/httpd-polling", function(){
 
     describe("when successful", function(){
       var connectRequest;
-
       connect();
 
       beforeEach(function(){
