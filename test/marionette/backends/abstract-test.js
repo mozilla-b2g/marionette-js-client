@@ -236,7 +236,6 @@ describe("marionette/backends/abstract", function(){
       });
 
       it("should be waiting", function(){
-        //console.log(subject._nextCommand.toString());
         expect(subject._waiting).to.be(true);
       });
     });

@@ -82,7 +82,6 @@ describe("websocket-server", function(){
       });
 
       it("should close device connection", function(){
-        console.log(device);
         expect(device.socket.destroyed).to.be(true);
       });
 
