@@ -46,7 +46,12 @@ describe('marionette/client', function() {
 
   var subject, backend, cb, cbResponse;
 
+  function commandCallback(data) {
+    commandCallback.value = data;
+  }
+
   beforeEach(function() {
+    commandCallback.value = null;
     backend = new MockBackend();
     subject = new Client(backend);
     cb = function() {
@@ -107,6 +112,89 @@ describe('marionette/client', function() {
 
   });
 
+  describe('_processResponse', function() {
+    var cbResponse, response;
+
+    beforeEach(function() {
+      response = cmds.getUrlResponse();
+      subject._processResponse(function(data) {
+        cbResponse = data;
+      }, 'value', response);
+    });
+
+    it('should pass callback only the result of value', function() {
+      expect(cbResponse).to.eql(response.value);
+    });
+  });
+
+  describe('interaction commands', function() {
+
+    var cmd, result, cmdResult;
+
+    function issues(cmd, response, options) {
+      beforeEach(function() {
+        cmdResult = cmds[response](options);
+        result = subject[cmd](commandCallback);
+        backend.respond(cmdResult);
+      });
+
+      it('should be chainable', function() {
+        expect(result).to.be(subject);
+      });
+    }
+
+    function receivesValue() {
+      it('should recevie value', function() {
+        expect(commandCallback.value).to.be(cmdResult.value);
+      });
+    }
+
+    function receivesOk() {
+      it('should recevie ok', function() {
+        expect(commandCallback.ok).to.be(cmdResult.ok);
+      });
+    }
+
+    function sends(options) {
+      var key;
+      for (key in options) {
+        if (options.hasOwnProperty(key)) {
+          (function(option, value) {
+
+            it('should send ' + option, function() {
+              var sent = backend.sent[0];
+              expect(sent[option]).to.eql(value);
+            });
+          }(key, options[key]));
+        }
+      }
+    }
+
+    describe('.getUrl', function() {
+      issues('getUrl', 'getUrlResponse');
+      receivesValue();
+      sends({
+        type: 'getUrl'
+      });
+    });
+
+    describe('.goForward', function() {
+      issues('goForward', 'ok');
+      receivesOk();
+      sends({
+        type: 'goForward'
+      });
+    });
+
+    describe('.goBack', function() {
+      issues('goBack', 'ok');
+      receivesOk();
+      sends({
+        type: 'goBack'
+      });
+    });
+
+  });
 
   describe('._newSession', function() {
     var response;

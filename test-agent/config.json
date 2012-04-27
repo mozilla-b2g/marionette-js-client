@@ -1,8 +1,8 @@
 {
   "tests": [
-    "/test/marionette/backends/websocket-test.js",
-    "/test/marionette/backends/abstract-test.js",
-    "/test/marionette/backends/httpd-polling-test.js",
+    "/test/marionette/drivers/websocket-test.js",
+    "/test/marionette/drivers/abstract-test.js",
+    "/test/marionette/drivers/httpd-polling-test.js",
     "/test/marionette/client-test.js",
     "/test/marionette/xhr-test.js"
   ]

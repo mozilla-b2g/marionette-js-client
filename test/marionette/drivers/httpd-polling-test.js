@@ -1,8 +1,8 @@
 var Abstract, Httpd, Xhr, FakeXhr, cmds;
 
 cross.require(
-  'marionette/backends/abstract',
-  'Marionette.Backends.Abstract', function(obj) {
+  'marionette/drivers/abstract',
+  'Marionette.Drivers.Abstract', function(obj) {
     Abstract = obj;
   }
 );
@@ -23,8 +23,8 @@ cross.require(
 );
 
 cross.require(
-  'marionette/backends/httpd-polling',
-  'Marionette.Backends.HttpdPolling', function(obj) {
+  'marionette/drivers/httpd-polling',
+  'Marionette.Drivers.HttpdPolling', function(obj) {
     Httpd = obj;
   }
 );
@@ -37,7 +37,7 @@ cross.require(
   }
 );
 
-describe('marionette/backends/httpd-polling', function() {
+describe('marionette/drivers/httpd-polling', function() {
 
   var subject,
       requests,

@@ -1,8 +1,6 @@
 (function(window){
 
-  var backend = new Marionette.Backends.HttpdPolling({
-    proxyUrl: '/marionette'
-  });
+  var backend = new Marionette.Drivers.HttpdPolling();
 
   function log(){
     console.log(arguments);

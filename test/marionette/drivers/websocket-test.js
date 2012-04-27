@@ -8,16 +8,16 @@ cross.require(
 );
 
 cross.require(
-  'marionette/backends/abstract',
-  'Marionette.Backends.Abstract', function(obj) {
+  'marionette/drivers/abstract',
+  'Marionette.Drivers.Abstract', function(obj) {
     Abstract = obj;
   }
 );
 
 
 cross.require(
-  'marionette/backends/websocket',
-  'Marionette.Backends.Websocket', function(obj) {
+  'marionette/drivers/websocket',
+  'Marionette.Drivers.Websocket', function(obj) {
     Backend = obj;
   }
 );
@@ -30,7 +30,7 @@ cross.require(
   }
 );
 
-describe('marionette/backends/websocket', function() {
+describe('marionette/drivers/websocket', function() {
 
   var subject,
       sent = [],

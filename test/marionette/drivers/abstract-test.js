@@ -1,8 +1,8 @@
 var Backend, cmds;
 
 cross.require(
-  'marionette/backends/abstract',
-  'Marionette.Backends.Abstract', function(obj) {
+  'marionette/drivers/abstract',
+  'Marionette.Drivers.Abstract', function(obj) {
     Backend = obj;
   }
 );
@@ -15,7 +15,7 @@ cross.require(
   }
 );
 
-describe('marionette/backends/abstract', function() {
+describe('marionette/drivers/abstract', function() {
 
   var subject,
       sent = [];
