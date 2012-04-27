@@ -223,7 +223,7 @@ describe('marionette/drivers/httpd-polling', function() {
       expect(put.data).to.eql(cmd);
     });
 
-    it('should recieve response to command', function() {
+    it('should receive response to command', function() {
       expect(cmdResponse).to.eql(cmds.newSessionResponse());
     });
 
@@ -254,7 +254,7 @@ describe('marionette/drivers/httpd-polling', function() {
         expect(lastRequest.url).to.be(subject.proxyUrl);
       });
 
-      it('should recieve parsed response', function() {
+      it('should receive parsed response', function() {
         expect(responseData).to.eql(response);
       });
 
@@ -293,7 +293,7 @@ describe('marionette/drivers/httpd-polling', function() {
         );
       });
 
-      it('should recieve parsed response', function() {
+      it('should receive parsed response', function() {
         expect(responseData).to.eql(response);
       });
 
