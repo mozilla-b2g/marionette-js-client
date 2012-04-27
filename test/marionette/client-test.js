@@ -272,6 +272,19 @@ describe('marionette/client', function() {
     sends({ type: 'refresh' });
   });
 
+  describe('.log', function() {
+    issues('log', 'wow', 'info');
+    serverResponds('ok');
+    receivesOk();
+    sends({ type: 'log', value: 'wow', level: 'info' });
+  });
+
+  describe(".getLogs", function(){
+    issues('getLogs');
+    serverResponds('getLogsResponse');
+    receivesValue();
+    sends({ type: 'getLogs' });
+  });
 
   describe('._newSession', function() {
     var response;
