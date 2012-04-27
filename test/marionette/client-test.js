@@ -296,10 +296,15 @@ describe('marionette/client', function() {
   describe('.send', function() {
 
     describe('when session: is present', function() {
+      var result;
       beforeEach(function() {
         subject.session = 'session';
         subject.actor = 'actor';
-        subject.send({ type: 'newSession' });
+        result = subject.send({ type: 'newSession' });
+      });
+
+      it('should be chainable', function() {
+        expect(result).to.be(subject);
       });
 
       it('should add session to cmd', function() {
