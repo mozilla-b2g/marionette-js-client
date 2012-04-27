@@ -68,7 +68,7 @@ describe('marionette/client', function() {
   function serverResponds(type, options) {
     beforeEach(function() {
       if (!(type in cmds)) {
-        throw new Error('there is no "' + type + '" example command');
+        throw new Error('there is no \'' + type + '\' example command');
       }
       cmdResult = cmds[type](options);
       backend.respond(cmdResult);
@@ -268,32 +268,109 @@ describe('marionette/client', function() {
     });
   });
 
-  describe('.executeScript', function() {
-    var cmd = 'return window.location',
-        args = [{1: true}];
+  describe('script executing commands', function() {
+    var calledWith,
+        args = [],
+        script = 'return null;';
+
+    beforeEach(function() {
+      calledWith = null;
+      subject._executeScript = function() {
+        calledWith = arguments;
+      };
+    });
+
+    describe('executeScript', function() {
+      beforeEach(function() {
+        subject.executeScript(script, commandCallback);
+      });
+
+      it('should call _executeScript', function() {
+        expect(calledWith).to.eql([
+          { type: 'executeScript', value: script, args: null },
+          commandCallback
+        ]);
+      });
+    });
+
+    describe('executeJsScript', function() {
+      beforeEach(function() {
+        subject.executeJsScript(script, commandCallback);
+      });
+
+      it('should call _executeScript', function() {
+        expect(calledWith).to.eql([
+          { type: 'executeJsScript', value: script, timeout: true, args: null },
+          commandCallback
+        ]);
+      });
+    });
+
+    describe('executeAsyncScript', function() {
+      beforeEach(function() {
+        subject.executeAsyncScript(script, commandCallback);
+      });
+
+      it('should call _executeScript', function() {
+        expect(calledWith).to.eql([
+          { type: 'executeAsyncScript', value: script, args: null },
+          commandCallback
+        ]);
+      });
+    });
+
+  });
+
+  describe('._executeScript', function() {
+      var cmd = 'return window.location',
+          args = [{1: true}],
+          type = 'executeScript';
 
     describe('with args', function() {
-      issues('executeScript', cmd, args);
-      serverResponds('getUrlResponse');
-      receivesValue();
-      sends({
-        type: 'executeScript',
+      var request = {
+        type: type,
         value: cmd,
         args: args
-      });
+      };
+
+      issues('_executeScript', request);
+
+      serverResponds('getUrlResponse');
+      receivesValue();
+      sends(request);
     });
 
     describe('without args', function() {
-      issues('executeScript', cmd);
+      var request = {
+        type: type,
+        value: cmd
+      };
+
+      issues('_executeScript', request);
       serverResponds('getUrlResponse');
       receivesValue();
       sends({
-        type: 'executeScript',
+        type: type,
         value: cmd,
         args: []
       });
-
     });
+
+    describe('with timeout', function() {
+      var request = {
+        type: 'executeJsScript',
+        value: cmd,
+        args: args,
+        timeout: false
+      };
+
+      issues('_executeScript', request);
+
+      serverResponds('getUrlResponse');
+      receivesValue();
+      sends(request);
+    });
+
   });
 
   describe('.refresh', function() {
@@ -310,7 +387,7 @@ describe('marionette/client', function() {
     sends({ type: 'log', value: 'wow', level: 'info' });
   });
 
-  describe('.getLogs', function(){
+  describe('.getLogs', function() {
     issues('getLogs');
     serverResponds('getLogsResponse');
     receivesValue();
