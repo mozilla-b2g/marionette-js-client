@@ -1,4 +1,12 @@
-var Client, cmds, MockDriver, DeviceInteraction;
+var Client, cmds, MockDriver,
+    DeviceInteraction, Element;
+
+cross.require(
+  'marionette/element',
+  'Marionette.Element', function(obj) {
+    Element = obj;
+  }
+);
 
 cross.require(
   'marionette/client',
@@ -357,6 +365,31 @@ describe('marionette/client', function() {
 
   describe('._findElement', function() {
 
+    function receivesElement() {
+      var value;
+
+      describe('callback argument', function() {
+        beforeEach(function() {
+          value = device.commandCallback.value;
+          if (!(value instanceof Element) && !(value instanceof Array)) {
+            throw new Error('result is not an array or an Element instance');
+          }
+
+          if (!(value instanceof Array)) {
+            value = [value];
+          }
+        });
+
+        it('should be an instance of Marionette.Element', function() {
+          value.forEach(function(el) {
+            expect(el).to.be.a(Element);
+            expect(el.client).to.be(subject);
+            expect(el.id).to.contain('{');
+          });
+        });
+      });
+    }
+
     describe('simple find with defaults', function() {
       device.
         issues('_findElement', 'findElement', '#wow').
@@ -365,9 +398,9 @@ describe('marionette/client', function() {
           value: '#wow',
           using: 'css selector'
         }).
+        serverResponds('findElementResponse');
 
-        serverResponds('findElementResponse').
-        callbackReceives('value');
+      receivesElement();
     });
 
     describe('find with all options', function() {
@@ -379,8 +412,9 @@ describe('marionette/client', function() {
           using: 'class name',
           element: 1
         }).
-        serverResponds('findElementResponse').
-        callbackReceives('value');
+        serverResponds('findElementResponse');
+
+      receivesElement();
     });
 
     describe('trying to find with invalid \'using\'', function() {

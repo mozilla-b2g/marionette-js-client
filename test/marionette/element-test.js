@@ -2,16 +2,16 @@ var Client, cmds, MockDriver,
     DeviceInteraction, Element;
 
 cross.require(
-  'marionette/client',
-  'Marionette.Client', function(obj) {
-    Client = obj;
+  'marionette/element',
+  'Marionette.Element', function(obj) {
+    Element = obj;
   }
 );
 
 cross.require(
-  'marionette/element',
-  'Marionette.Element', function(obj) {
-    Element = obj;
+  'marionette/client',
+  'Marionette.Client', function(obj) {
+    Client = obj;
   }
 );
 
@@ -99,8 +99,14 @@ describe('marionette/element', function() {
         type: 'findElement',
         element: id
       }).
-      serverResponds('findElementResponse').
-      callbackReceives('value');
+      serverResponds('findElementResponse');
+
+    it('should send callback a single element', function() {
+      var value = device.commandCallback.value,
+          resultId = cmds.findElementResponse().value;
+      expect(value).to.be.a(Element);
+      expect(value.id).to.be(resultId);
+    });
   });
 
   describe('.findElements', function() {
@@ -111,8 +117,14 @@ describe('marionette/element', function() {
         type: 'findElements',
         element: id
       }).
-      serverResponds('findElementsResponse').
-      callbackReceives('value');
+      serverResponds('findElementsResponse');
+
+    it('should send callback an element instance', function() {
+      var map = device.commandCallback.value.map(function(el) {
+        return el.id;
+      });
+      expect(map).to.eql(cmds.findElementsResponse().value);
+    });
   });
 
   describe('.equals', function() {
