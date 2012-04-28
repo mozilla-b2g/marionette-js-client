@@ -1,4 +1,4 @@
-var Client, cmds, MockBackend, DeviceInteraction;
+var Client, cmds, MockDriver, DeviceInteraction;
 
 cross.require(
   'marionette/client',
@@ -17,10 +17,10 @@ cross.require(
 
 
 cross.require(
-  '../test/support/mock-backend',
-  'MockBackend',
+  '../test/support/mock-driver',
+  'MockDriver',
   function(obj) {
-    MockBackend = obj;
+    MockDriver = obj;
   }
 );
 
@@ -39,7 +39,7 @@ function test() {
 
 describe('marionette/client', function() {
 
-  var subject, backend, cb, cbResponse,
+  var subject, driver, cb, cbResponse,
       cmd, result, device;
 
   device = new DeviceInteraction(cmds, function() {
@@ -52,16 +52,16 @@ describe('marionette/client', function() {
 
   beforeEach(function() {
     commandCallback.value = null;
-    backend = new MockBackend();
-    subject = new Client(backend);
+    driver = new MockDriver();
+    subject = new Client(driver);
     cb = function() {
       cbResponse = arguments;
     };
   });
 
   describe('initialization', function() {
-    it('should save .backend', function() {
-      expect(subject.backend).to.be(backend);
+    it('should save .driver', function() {
+      expect(subject.driver).to.be(driver);
     });
   });
 
@@ -87,7 +87,7 @@ describe('marionette/client', function() {
       });
 
       it('should add session to cmd', function() {
-        expect(backend.sent[0]).to.eql({
+        expect(driver.sent[0]).to.eql({
           to: subject.actor,
           session: subject.session,
           type: 'newSession'
@@ -104,7 +104,7 @@ describe('marionette/client', function() {
         });
 
         it('should add to:', function() {
-          expect(backend.sent[0]).to.eql({
+          expect(driver.sent[0]).to.eql({
             to: 'foo',
             type: '_getActorId'
           });
@@ -118,7 +118,7 @@ describe('marionette/client', function() {
         });
 
         it('should add to:', function() {
-          expect(backend.sent[0]).to.eql({
+          expect(driver.sent[0]).to.eql({
             to: 'root',
             type: '_getActorId'
           });
@@ -136,8 +136,8 @@ describe('marionette/client', function() {
         done();
       });
 
-      backend.respond(cmds.getMarionetteIDResponse());
-      backend.respond(cmds.newSessionResponse());
+      driver.respond(cmds.getMarionetteIDResponse());
+      driver.respond(cmds.newSessionResponse());
     });
 
     it('should have actor', function() {
@@ -178,7 +178,7 @@ describe('marionette/client', function() {
         done();
       });
 
-      backend.respond(response);
+      driver.respond(response);
       expect(result).to.be(subject);
     });
   });
@@ -487,11 +487,11 @@ describe('marionette/client', function() {
         done();
       });
 
-      backend.respond(response);
+      driver.respond(response);
     });
 
     it('should send newSession', function() {
-      expect(backend.sent[0].type).to.eql('newSession');
+      expect(driver.sent[0].type).to.eql('newSession');
     });
 
     it('should save session id', function() {

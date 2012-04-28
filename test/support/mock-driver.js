@@ -1,11 +1,11 @@
 (function(exports) {
 
-  function MockBackend() {
+  function MockDriver() {
     this.sent = [];
     this.queue = [];
   }
 
-  MockBackend.prototype = {
+  MockDriver.prototype = {
 
     connectionId: 0,
 
@@ -26,7 +26,7 @@
     }
   };
 
-  exports.MockBackend = MockBackend;
+  exports.MockDriver = MockDriver;
 
 }(
   (typeof(window) === 'undefined') ? module.exports : window

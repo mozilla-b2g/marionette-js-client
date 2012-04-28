@@ -10,6 +10,13 @@
       cmdResult = null;
     });
 
+    function driver() {
+      if (subject().client) {
+        return subject().client.driver;
+      }
+      return subject().driver;
+    }
+
     return {
 
       commandCallback: function commandCallback(data) {
@@ -44,7 +51,7 @@
             (function(option, value) {
 
               it('should send ' + option, function() {
-                var sent = subject().backend.sent[0];
+                var sent = driver().sent[0];
                 expect(sent[option]).to.eql(value);
               });
             }(key, options[key]));
@@ -59,7 +66,7 @@
             throw new Error('there is no \'' + type + '\' example command');
           }
           cmdResult = commands[type](options);
-          subject().backend.respond(cmdResult);
+          driver().respond(cmdResult);
         });
         return this;
       },
