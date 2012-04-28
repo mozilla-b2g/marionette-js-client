@@ -24,6 +24,9 @@
 
         beforeEach(function() {
           args.push(commandCallback);
+          if (!(cmd in subject())) {
+            throw new Error('client does not have method ' + cmd);
+          }
           result = subject()[cmd].apply(subject(), args);
         });
 

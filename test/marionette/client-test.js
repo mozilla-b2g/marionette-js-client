@@ -65,6 +65,13 @@ describe('marionette/client', function() {
     });
   });
 
+  describe('.searchMethods', function() {
+    it('should have a list of methods', function() {
+      expect(subject.searchMethods).to.be.a(Array);
+      expect(subject.searchMethods.length).to.be.greaterThan(3);
+    });
+  });
+
   describe('.send', function() {
 
     describe('when session: is present', function() {
@@ -308,7 +315,8 @@ describe('marionette/client', function() {
       });
     });
 
-    describe('.executeAsyncScript', function() {
+    //currently unsupported by the send/response mechanism
+    xdescribe('.executeAsyncScript', function() {
       beforeEach(function() {
         subject.executeAsyncScript(script, commandCallback);
       });
@@ -345,6 +353,74 @@ describe('marionette/client', function() {
       shouldSend({ type: 'getLogs' }).
       serverResponds('getLogsResponse').
       callbackReceives('value');
+  });
+
+  describe('._findElement', function() {
+
+    describe('simple find with defaults', function() {
+      device.
+        issues('_findElement', 'findElement', '#wow').
+        shouldSend({
+          type: 'findElement',
+          value: '#wow',
+          using: 'css selector'
+        }).
+
+        serverResponds('findElementResponse').
+        callbackReceives('value');
+    });
+
+    describe('find with all options', function() {
+      device.
+        issues('_findElement', 'findElements', 'wow', 'class name', 1).
+        shouldSend({
+          type: 'findElements',
+          value: 'wow',
+          using: 'class name',
+          id: 1
+        }).
+        serverResponds('findElementResponse').
+        callbackReceives('value');
+    });
+
+    describe('trying to find with invalid \'using\'', function() {
+
+      it('should fail', function() {
+        expect(function() {
+          subject._findElement(
+            'findElement', 'wow', 'fake', function() {}
+          );
+        }).to.throwError(/invalid option for using/);
+      });
+    });
+
+  });
+
+  describe('element finders', function() {
+    var calledWith;
+
+    function delegatesToFind(type) {
+      describe('.' + type, function() {
+        beforeEach(function() {
+          subject[type]('#query', commandCallback);
+        });
+
+        it('should call _findElement', function() {
+          expect(calledWith).to.eql([
+            type, '#query', commandCallback
+          ]);
+        });
+      });
+    }
+
+    beforeEach(function() {
+      subject._findElement = function() {
+        calledWith = arguments;
+      };
+    });
+
+    delegatesToFind('findElement');
+    delegatesToFind('findElements');
   });
 
   describe('._executeScript', function() {

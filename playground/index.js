@@ -4,8 +4,8 @@
 
   function log(logName) {
     if (logName) {
-      return function() {
-        console.log(logName, ':', arguments);
+      return function(data) {
+        console.log(logName, ':', data);
       }
     }
     console.log(arguments);
@@ -15,10 +15,7 @@
     var device = window.device = new Marionette.Client(backend);
     window.device.startSession(function() {
       device.
-        setScriptTimeout(5000, log('setTimeout')).
-        executeScript('return window.location;', log('executeScript')).
-        executeJsScript('function magicFunc(){ return \'foo\'; } magicFunc();', log('executeJsScript')).
-        executeAsyncScript('return window.location;', log('executeAsyncScript'));
+        findElements('div', log('findElement'));
     });
   });
 
