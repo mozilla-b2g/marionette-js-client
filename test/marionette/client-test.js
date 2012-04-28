@@ -212,7 +212,7 @@ describe('marionette/client', function() {
         value: 'chrome'
       }).
       serverResponds('ok').
-      callbackReceives('value');
+      callbackReceives('ok');
   });
 
   describe('.getWindows', function() {
@@ -377,7 +377,7 @@ describe('marionette/client', function() {
           type: 'findElements',
           value: 'wow',
           using: 'class name',
-          id: 1
+          element: 1
         }).
         serverResponds('findElementResponse').
         callbackReceives('value');

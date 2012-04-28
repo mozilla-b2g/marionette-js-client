@@ -30,6 +30,10 @@
             commandCallback = this.commandCallback;
 
         beforeEach(function() {
+          if (!subject()) {
+            throw new Error('DeviceInteraction must be provided a subject');
+          }
+
           args.push(commandCallback);
           if (!(cmd in subject())) {
             throw new Error('client does not have method ' + cmd);
@@ -49,9 +53,13 @@
         for (key in options) {
           if (options.hasOwnProperty(key)) {
             (function(option, value) {
-
               it('should send ' + option, function() {
                 var sent = driver().sent[0];
+                if (!(option in sent)) {
+                  throw new Error(
+                    option + ' was never sent as part of command to server'
+                  );
+                }
                 expect(sent[option]).to.eql(value);
               });
             }(key, options[key]));
@@ -74,6 +82,11 @@
       callbackReceives: function callbackReceives(key) {
         var commandCallback = this.commandCallback;
         it('should receive the ' + key + ' from response', function() {
+          if (cmdResult[key] === undefined) {
+            throw new Error(
+              key + ' should not be undefined for test mocks use a real value'
+            );
+          }
           expect(commandCallback.value).to.be(cmdResult[key]);
         });
         return this;
