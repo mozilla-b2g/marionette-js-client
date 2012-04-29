@@ -1,7 +1,7 @@
 VENDOR=./vendor/
 REPORTER=spec
 
-.PHONY: .vendor test
+.PHONY: .vendor test test-node test-browser
 
 test_server:
 	./node_modules/test-agent/bin/js-test-agent server --growl
@@ -13,8 +13,15 @@ package :
 	cp ./node_modules/mocha/mocha.css $(VENDOR)
 	cp ./node_modules/expect.js/expect.js $(VENDOR)
 	cp ./node_modules/test-agent/test-agent.js $(VENDOR)
+	cp ./node_modules/test-agent/test-agent.css $(VENDOR)
 
-test :
+test : test-node test-browser
+
+test-browser:
+	@echo "NOTICE: You must have a client connected to test agent."
+	./node_modules/test-agent/bin/js-test-agent test
+
+test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
 	  ./test/node/*-test.js \
 	  ./test/marionette/client-test.js \

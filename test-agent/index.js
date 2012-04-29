@@ -1,4 +1,4 @@
-(function(window){
+(function(window) {
 
   var worker = new TestAgent.BrowserWorker({
         /* this is where your tests will be loaded into */
@@ -13,22 +13,22 @@
   worker.use(TestAgent.BrowserWorker.MochaDriver, {
     /* path to mocha */
     mochaUrl: '../vendor/mocha.js',
-    /* path to your test helper this is required, but it can be a blank file if you like */
-    testHelperUrl: '../test/helper.js',
+    testHelperUrl: '../test/helper.js'
   });
 
   worker.use(TestAgent.BrowserWorker.TestUi);
+  worker.use(TestAgent.BrowserWorker.ErrorReporting);
 
   worker.on({
 
     'sandbox': function() {
     },
 
-    'open': function(){
+    'open': function() {
       console.log('socket open');
     },
 
-    'close': function(){
+    'close': function() {
       console.log('lost client trying to reconnect');
     }
 

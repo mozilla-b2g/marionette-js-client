@@ -1,23 +1,14 @@
-var Xhr, FakeXhr;
-
-cross.require(
-  'marionette/xhr',
-  'Marionette.Xhr',
-  function(obj) {
-    Xhr = obj;
-  }
-);
-
-cross.require(
-  '../test/support/fake-xhr',
-  'FakeXhr',
-  function(obj) {
-    FakeXhr = obj;
-  }
-);
-
 describe('marionette/xhr', function() {
-  var subject;
+  var subject,
+      Xhr;
+
+  cross.require(
+    'marionette/xhr',
+    'Marionette.Xhr',
+    function(obj) {
+      Xhr = obj;
+    }
+  );
 
    beforeEach(function() {
     subject = new Xhr({

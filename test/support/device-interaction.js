@@ -1,10 +1,10 @@
 (function(exports) {
 
-  function DeviceInteraction(cmds, subject) {
+  function DeviceInteraction(exampleCmds, subject) {
     var cmdResult, type;
 
     subject = subject;
-    commands = cmds;
+    commands = exampleCmds;
 
     beforeEach(function() {
       cmdResult = null;
@@ -70,7 +70,7 @@
 
       serverResponds: function serverResponds(type, options) {
         beforeEach(function() {
-          if (!(type in cmds)) {
+          if (!(type in exampleCmds)) {
             throw new Error('there is no \'' + type + '\' example command');
           }
           cmdResult = commands[type](options);

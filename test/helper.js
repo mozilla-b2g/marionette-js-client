@@ -1,8 +1,10 @@
-(function(context) {
+(function() {
 
   if (typeof(window) === 'undefined') {
     expect = require('expect.js');
+    context = global;
   } else {
+    context = window;
     context.require('../vendor/expect.js');
   }
 
@@ -62,4 +64,39 @@
     }
   };
 
-}.call(this, this));
+  //Universal utils for tests.
+  //will be loaded for all tests and available
+  //in static scope inside and outside of tests.
+  cross.require(
+    'marionette/example-commands',
+    'Marionette.ExampleCommands',
+    function(obj) {
+      context.exampleCmds = obj;
+    }
+  );
+
+  cross.require(
+    '../test/support/device-interaction',
+    'DeviceInteraction',
+    function(obj) {
+      context.DeviceInteraction = obj;
+    }
+  );
+
+  cross.require(
+    '../test/support/fake-xhr',
+    'FakeXhr',
+    function(obj) {
+      context.FakeXhr = obj;
+    }
+  );
+
+  cross.require(
+    '../test/support/mock-driver',
+    'MockDriver',
+    function(obj) {
+      context.MockDriver = obj;
+    }
+  );
+
+}.call(this));

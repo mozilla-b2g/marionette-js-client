@@ -1,56 +1,23 @@
-var Client, cmds, MockDriver,
-    DeviceInteraction, Element;
-
-cross.require(
-  'marionette/element',
-  'Marionette.Element', function(obj) {
-    Element = obj;
-  }
-);
-
-cross.require(
-  'marionette/client',
-  'Marionette.Client', function(obj) {
-    Client = obj;
-  }
-);
-
-cross.require(
-  'marionette/example-commands',
-  'Marionette.ExampleCommands',
-  function(obj) {
-    cmds = obj;
-  }
-);
-
-
-cross.require(
-  '../test/support/mock-driver',
-  'MockDriver',
-  function(obj) {
-    MockDriver = obj;
-  }
-);
-
-cross.require(
-  '../test/support/device-interaction',
-  'DeviceInteraction',
-  function(obj) {
-    DeviceInteraction = obj;
-    test();
-  }
-);
-
-//this is hack to ensure device interactions are
-//loaded
-function test() {
-
 describe('marionette/client', function() {
 
   var subject, driver, cb, cbResponse,
-      cmd, result, device;
+      result, device, Element, Client;
 
-  device = new DeviceInteraction(cmds, function() {
+  cross.require(
+    'marionette/element',
+    'Marionette.Element', function(obj) {
+      Element = obj;
+    }
+  );
+
+  cross.require(
+    'marionette/client',
+    'Marionette.Client', function(obj) {
+      Client = obj;
+    }
+  );
+
+  device = new DeviceInteraction(exampleCmds, function() {
     return subject;
   });
 
@@ -144,8 +111,8 @@ describe('marionette/client', function() {
         done();
       });
 
-      driver.respond(cmds.getMarionetteIDResponse());
-      driver.respond(cmds.newSessionResponse());
+      driver.respond(exampleCmds.getMarionetteIDResponse());
+      driver.respond(exampleCmds.newSessionResponse());
     });
 
     it('should have actor', function() {
@@ -168,7 +135,7 @@ describe('marionette/client', function() {
 
     it('should save actor id', function() {
       expect(subject.actor).to.be(
-        cmds.getMarionetteIDResponse().id
+        exampleCmds.getMarionetteIDResponse().id
       );
     });
 
@@ -178,8 +145,8 @@ describe('marionette/client', function() {
     var cmd, response;
     it('should send given command and format the result', function(done) {
       var result;
-      cmd = cmds.getUrl();
-      response = cmds.getUrlResponse();
+      cmd = exampleCmds.getUrl();
+      response = exampleCmds.getUrlResponse();
 
       result = subject._sendCommand(cmd, 'value', function(data) {
         expect(data).to.be(response.value);
@@ -515,7 +482,7 @@ describe('marionette/client', function() {
     var response;
 
     beforeEach(function(done) {
-      response = cmds.newSessionResponse();
+      response = exampleCmds.newSessionResponse();
       subject._newSession(function() {
         cbResponse = arguments;
         done();
@@ -539,5 +506,3 @@ describe('marionette/client', function() {
   });
 
 });
-
-}

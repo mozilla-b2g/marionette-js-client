@@ -1,41 +1,4 @@
-var Abstract, Httpd, Xhr, FakeXhr, cmds;
-
-cross.require(
-  'marionette/drivers/abstract',
-  'Marionette.Drivers.Abstract', function(obj) {
-    Abstract = obj;
-  }
-);
-
-cross.require(
-  '../test/support/fake-xhr',
-  'FakeXhr',
-  function(obj) {
-    FakeXhr = obj;
-  }
-);
-
-cross.require(
-  'marionette/xhr',
-  'Marionette.Xhr', function(obj) {
-    Xhr = obj;
-  }
-);
-
-cross.require(
-  'marionette/drivers/httpd-polling',
-  'Marionette.Drivers.HttpdPolling', function(obj) {
-    Httpd = obj;
-  }
-);
-
-cross.require(
-  'marionette/example-commands',
-  'Marionette.ExampleCommands',
-  function(obj) {
-    cmds = obj;
-  }
-);
+var Abstract, Httpd, Xhr;
 
 describe('marionette/drivers/httpd-polling', function() {
 
@@ -43,8 +6,32 @@ describe('marionette/drivers/httpd-polling', function() {
       requests,
       lastRequest,
       connectionId = 100,
-      url = 'http://fake/marionette';
+      url = 'http://fake/marionette',
+      Xhr,
+      Abstract,
+      Httpd;
 
+
+  cross.require(
+    'marionette/drivers/abstract',
+    'Marionette.Drivers.Abstract', function(obj) {
+      Abstract = obj;
+    }
+  );
+
+  cross.require(
+    'marionette/xhr',
+    'Marionette.Xhr', function(obj) {
+      Xhr = obj;
+    }
+  );
+
+  cross.require(
+    'marionette/drivers/httpd-polling',
+    'Marionette.Drivers.HttpdPolling', function(obj) {
+      Httpd = obj;
+    }
+  );
 
   function connect() {
     beforeEach(function(done) {
@@ -54,7 +41,7 @@ describe('marionette/drivers/httpd-polling', function() {
       requests[0].xhr.respond({ id: connectionId });
       requests[1].xhr.respond({
         messages: [
-          { id: connectionId, response: cmds.connect() }
+          { id: connectionId, response: exampleCmds.connect() }
         ]
       });
       expect(subject.connectionId).to.be(connectionId);
@@ -170,8 +157,8 @@ describe('marionette/drivers/httpd-polling', function() {
 
       queue = {
         messages: [
-          { id: 1, response: cmds.getMarionetteIDResponse() },
-          { id: 2, response: cmds.newSessionResponse() }
+          { id: 1, response: exampleCmds.getMarionetteIDResponse() },
+          { id: 2, response: exampleCmds.newSessionResponse() }
         ]
       };
 
@@ -195,7 +182,7 @@ describe('marionette/drivers/httpd-polling', function() {
     connect();
 
     beforeEach(function(done) {
-      cmd = cmds.newSession();
+      cmd = exampleCmds.newSession();
 
       subject.connectionId = 10;
       //this will in then call _sendCommand
@@ -214,7 +201,7 @@ describe('marionette/drivers/httpd-polling', function() {
       //get request
       get.xhr.respond({
         messages: [
-          { id: subject.connectionId, response: cmds.newSessionResponse() }
+          { id: subject.connectionId, response: exampleCmds.newSessionResponse() }
         ]
       });
     });
@@ -224,7 +211,7 @@ describe('marionette/drivers/httpd-polling', function() {
     });
 
     it('should receive response to command', function() {
-      expect(cmdResponse).to.eql(cmds.newSessionResponse());
+      expect(cmdResponse).to.eql(exampleCmds.newSessionResponse());
     });
 
   });

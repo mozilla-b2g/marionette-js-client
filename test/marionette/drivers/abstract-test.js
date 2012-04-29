@@ -1,24 +1,14 @@
-var Backend, cmds;
-
-cross.require(
-  'marionette/drivers/abstract',
-  'Marionette.Drivers.Abstract', function(obj) {
-    Backend = obj;
-  }
-);
-
-cross.require(
-  'marionette/example-commands',
-  'Marionette.ExampleCommands',
-  function(obj) {
-    cmds = obj;
-  }
-);
-
 describe('marionette/drivers/abstract', function() {
-
   var subject,
+      Backend,
       sent = [];
+
+  cross.require(
+    'marionette/drivers/abstract',
+    'Marionette.Drivers.Abstract', function(obj) {
+      Backend = obj;
+    }
+  );
 
   beforeEach(function() {
     subject = new Backend();
@@ -76,7 +66,7 @@ describe('marionette/drivers/abstract', function() {
         callbackResponse = arguments;
       };
 
-      subject.send(cmds.newSession(), callback);
+      subject.send(exampleCmds.newSession(), callback);
       expect(subject._waiting).to.be(true);
     });
 
@@ -122,7 +112,7 @@ describe('marionette/drivers/abstract', function() {
     var cmd, calledChild;
 
     beforeEach(function(done) {
-      cmd = cmds.connect();
+      cmd = exampleCmds.connect();
       calledChild = false;
 
       subject._connect = function() {
@@ -162,8 +152,8 @@ describe('marionette/drivers/abstract', function() {
     var cmd1, cmd2;
 
     beforeEach(function() {
-      cmd1 = cmds.newSession();
-      cmd2 = cmds.newSession({isOther: true});
+      cmd1 = exampleCmds.newSession();
+      cmd2 = exampleCmds.newSession({isOther: true});
       subject._sendQueue[0] = cmd1;
       subject._sendQueue[1] = cmd2;
     });
@@ -213,7 +203,7 @@ describe('marionette/drivers/abstract', function() {
     var cmd, cb = function() {};
 
     beforeEach(function() {
-      cmd = cmds.newSession();
+      cmd = exampleCmds.newSession();
     });
 
     describe('when device is not ready', function() {

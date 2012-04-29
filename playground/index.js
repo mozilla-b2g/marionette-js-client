@@ -15,7 +15,7 @@
     var device = window.device = new Marionette.Client(backend);
     window.device.startSession(function() {
       device.
-        findElements('div', log('findElement'));
+        findElement('div', log('findElement'));
     });
   });
 

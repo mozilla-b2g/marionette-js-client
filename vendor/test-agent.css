@@ -19,6 +19,25 @@ body > iframe {
   margin-bottom: 5px;
 }
 
+#test-agent-ui .hidden {
+  display: none;
+}
+
+#test-agent-ui > .error {
+  margin: 15px 40px;
+}
+
+#test-agent-ui > .error h1,
+#test-agent-ui > .error p {
+  padding: 0px;
+  margin: 0px;
+}
+
+#test-agent-ui > .error h1 {
+  
+}
+
+
 #test-agent-ui ul {
   padding: none;
   border: none;

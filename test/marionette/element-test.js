@@ -1,52 +1,23 @@
-var Client, cmds, MockDriver,
-    DeviceInteraction, Element;
-
-cross.require(
-  'marionette/element',
-  'Marionette.Element', function(obj) {
-    Element = obj;
-  }
-);
-
-cross.require(
-  'marionette/client',
-  'Marionette.Client', function(obj) {
-    Client = obj;
-  }
-);
-
-cross.require(
-  'marionette/example-commands',
-  'Marionette.ExampleCommands',
-  function(obj) {
-    cmds = obj;
-  }
-);
-
-
-cross.require(
-  '../test/support/mock-driver',
-  'MockDriver',
-  function(obj) {
-    MockDriver = obj;
-  }
-);
-
-cross.require(
-  '../test/support/device-interaction',
-  'DeviceInteraction',
-  function(obj) {
-    DeviceInteraction = obj;
-    test();
-  }
-);
-
 //this is hack to ensure device interactions are
 //loaded
-function test() {
 
 describe('marionette/element', function() {
-  var driver, subject, client, id, device;
+  var driver, subject, client, id, device,
+       Element, Client;
+
+  cross.require(
+    'marionette/element',
+    'Marionette.Element', function(obj) {
+      Element = obj;
+    }
+  );
+
+  cross.require(
+    'marionette/client',
+    'Marionette.Client', function(obj) {
+      Client = obj;
+    }
+  );
 
   id = '{fake-uuid-root}';
 
@@ -63,7 +34,7 @@ describe('marionette/element', function() {
     });
   }
 
-  device = new DeviceInteraction(cmds, function() {
+  device = new DeviceInteraction(exampleCmds, function() {
     return subject;
   });
 
@@ -103,7 +74,7 @@ describe('marionette/element', function() {
 
     it('should send callback a single element', function() {
       var value = device.commandCallback.value,
-          resultId = cmds.findElementResponse().value;
+          resultId = exampleCmds.findElementResponse().value;
       expect(value).to.be.a(Element);
       expect(value.id).to.be(resultId);
     });
@@ -123,7 +94,7 @@ describe('marionette/element', function() {
       var map = device.commandCallback.value.map(function(el) {
         return el.id;
       });
-      expect(map).to.eql(cmds.findElementsResponse().value);
+      expect(map).to.eql(exampleCmds.findElementsResponse().value);
     });
   });
 
@@ -187,7 +158,7 @@ describe('marionette/element', function() {
       callbackReceives('ok');
   });
 
-  simpleCommand('click', 'clickElement', 'value');
+  simpleCommand('click', 'clickElement', 'ok');
   simpleCommand('text', 'getElementText', 'value');
   simpleCommand('value', 'getElementValue', 'value');
   simpleCommand('clear', 'clearElement', 'ok');
@@ -196,5 +167,3 @@ describe('marionette/element', function() {
   simpleCommand('displayed', 'isElementDisplayed', 'value');
 
 });
-
-}

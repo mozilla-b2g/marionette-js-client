@@ -1,36 +1,29 @@
-var WSClient, Abstract, Backend, cmds;
-
-cross.require(
-  'test-agent/websocket-client',
-  'TestAgent.WebsocketClient', function(obj) {
-    WSClient = obj;
-  }
-);
-
-cross.require(
-  'marionette/drivers/abstract',
-  'Marionette.Drivers.Abstract', function(obj) {
-    Abstract = obj;
-  }
-);
-
-
-cross.require(
-  'marionette/drivers/websocket',
-  'Marionette.Drivers.Websocket', function(obj) {
-    Backend = obj;
-  }
-);
-
-cross.require(
-  'marionette/example-commands',
-  'Marionette.ExampleCommands',
-  function(obj) {
-    cmds = obj;
-  }
-);
-
 describe('marionette/drivers/websocket', function() {
+  var WSClient,
+      Abstract,
+      Backend;
+
+  cross.require(
+    'test-agent/websocket-client',
+    'TestAgent.WebsocketClient', function(obj) {
+      WSClient = obj;
+    }
+  );
+
+  cross.require(
+    'marionette/drivers/abstract',
+    'Marionette.Drivers.Abstract', function(obj) {
+      Abstract = obj;
+    }
+  );
+
+
+  cross.require(
+    'marionette/drivers/websocket',
+    'Marionette.Drivers.Websocket', function(obj) {
+      Backend = obj;
+    }
+  );
 
   var subject,
       sent = [],
@@ -93,7 +86,7 @@ describe('marionette/drivers/websocket', function() {
         callbackResponse = arguments;
       };
 
-      subject.send(cmds.newSession(), callback);
+      subject.send(exampleCmds.newSession(), callback);
       expect(subject._waiting).to.be(true);
     });
 
@@ -128,13 +121,13 @@ describe('marionette/drivers/websocket', function() {
     beforeEach(function() {
       subject.connectionId = 10;
       subject.ready = true;
-      subject._sendCommand(cmds.newSession());
+      subject._sendCommand(exampleCmds.newSession());
     });
 
     it('should send command to server', function() {
       expect(clientSent[0]).to.eql(['device command', {
         id: 10,
-        command: cmds.newSession()
+        command: exampleCmds.newSession()
       }]);
     });
  });
@@ -148,7 +141,7 @@ describe('marionette/drivers/websocket', function() {
     beforeEach(function(done) {
       openArgs = null;
       wsStart = false;
-      serverSent = cmds.connect();
+      serverSent = exampleCmds.connect();
 
       subject.client.start = function() {
         wsStart = true;
