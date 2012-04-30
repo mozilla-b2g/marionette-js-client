@@ -158,6 +158,17 @@ describe('marionette/client', function() {
     });
   });
 
+
+  describe('.deleteSession', function() {
+    device.
+      issues('deleteSession').
+      shouldSend({
+        type: 'deleteSession'
+      }).
+      serverResponds('ok').
+      callbackReceives('ok');
+  });
+
   describe('.setSearchTimeout', function() {
     device.
       issues('setSearchTimeout', 50).
