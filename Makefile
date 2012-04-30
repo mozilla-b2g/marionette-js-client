@@ -1,6 +1,6 @@
 VENDOR=./vendor/
 REPORTER=Spec
-DEV_FILE=./marionete.js
+DEV_FILE=./marionette.js
 
 .PHONY: .vendor test test-node test-browser
 
