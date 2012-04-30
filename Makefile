@@ -1,5 +1,6 @@
 VENDOR=./vendor/
 REPORTER=Spec
+DEV_FILE=./marionete.js
 
 .PHONY: .vendor test test-node test-browser
 
@@ -14,6 +15,16 @@ package :
 	cp ./node_modules/expect.js/expect.js $(VENDOR)
 	cp ./node_modules/test-agent/test-agent.js $(VENDOR)
 	cp ./node_modules/test-agent/test-agent.css $(VENDOR)
+
+	rm -f $(DEV_FILE)
+	touch $(DEV_FILE)
+	
+	cat ./lib/marionette/xhr.js >> $(DEV_FILE)
+	cat ./lib/marionette/drivers/abstract.js >> $(DEV_FILE)
+	cat ./lib/marionette/drivers/websocket.js >> $(DEV_FILE)
+	cat ./lib/marionette/drivers/httpd-polling.js >> $(DEV_FILE)
+	cat ./lib/marionette/element.js >> $(DEV_FILE)
+	cat ./lib/marionette/client.js >> $(DEV_FILE)
 
 test : test-node test-browser
 
