@@ -1,0 +1,6 @@
+./test-agent
+./test
+./vendor
+./server.js
+./supported-commands.md
+./playground
