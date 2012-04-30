@@ -685,6 +685,7 @@
    * @param {Object} command remote marionette command.
    */
   proto._sendCommand = function _sendCommand(command) {
+    console.log(command);
     this._request('PUT', command, function() {
       //error handling?
     });
@@ -872,7 +873,7 @@
      */
     getAttribute: function getAttribute(attr, callback) {
       var cmd = {
-        type: 'getAttribute',
+        type: 'getAttributeValue',
         name: attr
       };
 
@@ -1028,8 +1029,12 @@
     return typeof(value) === 'function';
   }
 
-  function Client(driver) {
+  function Client(driver, options) {
+    if (typeof(options) === 'undefined') {
+      options = {};
+    }
     this.driver = driver;
+    this.defaultCallback = options.defaultCallback || false;
   }
 
   Client.prototype = {
@@ -1069,6 +1074,10 @@
         cmd.session = cmd.session || this.session;
       }
 
+      if (!cb && this.defaultCallback) {
+        cb = this.defaultCallback();
+      }
+
       this.driver.send(cmd, cb);
 
       return this;
@@ -1084,6 +1093,7 @@
      * @param {Object} callback wrapped callback.
      */
     _sendCommand: function(command, responseKey, callback) {
+      callback = (callback || this.defaultCallback);
       this.send(command, function(data) {
         callback(data[responseKey]);
       });
@@ -1119,6 +1129,7 @@
       var self = this;
 
       function newSession(data) {
+        callback = (callback || self.defaultCallback);
         self.session = data.value;
         if (callback) {
           callback(data);
@@ -1239,6 +1250,16 @@
     },
 
     /**
+     * Drives browser to a url.
+     *
+     * @param {String} url location.
+     * @param {Function} callback executes when finished driving browser to url.
+     */
+    goUrl: function goUrl(url, callback) {
+      return this.executeScript('window.location="' + url + '";', callback);
+    },
+
+    /**
      * Drives window forward.
      *
      *
@@ -1324,7 +1345,7 @@
         value: script,
         timeout: timeout,
         args: args
-      }, callback);
+      }, callback || this.defaultCallback);
     },
 
     /**
@@ -1346,7 +1367,7 @@
         type: 'executeScript',
         value: script,
         args: args
-      }, callback);
+      }, callback || this.defaultCallback);
     },
 
     /**
@@ -1369,7 +1390,7 @@
         type: 'executeAsyncScript',
         value: script,
         args: args
-      }, callback);
+      }, callback || this.defaultCallback);
     },
 
     /**
@@ -1393,6 +1414,8 @@
         callback = method;
         method = undefined;
       }
+
+      callback = callback || this.defaultCallback;
 
       cmd = {
         type: type || 'findElement',

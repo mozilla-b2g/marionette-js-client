@@ -222,6 +222,17 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
+  describe('.goUrl', function() {
+    device.
+      issues('goUrl', 'http://wow').
+      shouldSend({
+        type: 'executeScript',
+        value: 'window.location="http://wow";'
+      }).
+      serverResponds('value').
+      callbackReceives('value');
+  });
+
   describe('.getUrl', function() {
     device.
       issues('getUrl').

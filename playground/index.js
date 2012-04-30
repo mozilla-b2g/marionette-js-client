@@ -1,22 +1,65 @@
 (function(window) {
+  'strict mode';
 
-  var backend = new Marionette.Drivers.HttpdPolling();
+  var Task = (function() {
+    var current, done;
 
-  function log(logName) {
-    if (logName) {
-      return function(data) {
-        console.log(logName, ':', data);
+    return {
+      start: function(generator, cb) {
+        current = generator;
+        if (!current.next) {
+          current = generator.call(this);
+        }
+
+        done = cb;
+
+        if (current && current.next) {
+          current.next();
+        }
+
+        return this;
+      },
+
+      next: function(value) {
+        try {
+          current.send(value);
+        } catch (e) {
+          if (e instanceof StopIteration) {
+            if (done)
+              done();
+            current = null;
+            done = null;
+          } else {
+            current = null;
+            done = null;
+            throw e;
+            if (done)
+              done();
+          }
+        }
       }
-    }
-    console.log(arguments);
-  }
+    };
+  }());
 
-  backend.connect(function() {
-    var device = window.device = new Marionette.Client(backend);
-    window.device.startSession(function() {
-      device.
-        findElement('div', log('findElement'));
+
+  Task.start(function() {
+    var driver = new Marionette.Drivers.HttpdPolling(),
+        client;
+
+    yield driver.connect(function() { Task.next() });
+
+    client = new Marionette.Client(driver, {
+      defaultCallback: Task.next
     });
+
+    yield client.startSession();
+    yield client.setSearchTimeout(100000);
+
+    yield client.goUrl('https://gist.github.com/2559125');
+    el = yield client.findElement('div.data.type-javascript');
+    console.log(yield el.text());
+
   });
+
 
 }(this));
