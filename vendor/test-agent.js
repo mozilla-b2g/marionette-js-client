@@ -470,7 +470,7 @@
      *
      *
      * @param {String} type event name.
-     * @param {String} callback event callback.
+     * @param {Function} callback event callback.
      */
     addEventListener: function addEventListener(type, callback) {
       var event;
@@ -490,6 +490,27 @@
       }
 
       this.events[type].push(callback);
+
+      return this;
+    },
+
+    /**
+     * Adds an event listener which will
+     * only fire once and then remove itself.
+     *
+     *
+     * @param {String} type event name.
+     * @param {Function} callback fired when event is emitted.
+     */
+    once: function once(type, callback) {
+      var self = this;
+      //console.log(callback.toString());
+      function onceCb() {
+        callback.apply(this, arguments);
+        self.removeEventListener(type, onceCb);
+      }
+
+      this.addEventListener(type, onceCb);
 
       return this;
     },

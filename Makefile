@@ -1,9 +1,9 @@
 VENDOR=./vendor/
-REPORTER=spec
+REPORTER=Spec
 
 .PHONY: .vendor test test-node test-browser
 
-test_server:
+test-server:
 	./node_modules/test-agent/bin/js-test-agent server --growl
 
 package :
@@ -19,7 +19,7 @@ test : test-node test-browser
 
 test-browser:
 	@echo "NOTICE: You must have a client connected to test agent."
-	./node_modules/test-agent/bin/js-test-agent test
+	./node_modules/test-agent/bin/js-test-agent test --reporter $(REPORTER)
 
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
