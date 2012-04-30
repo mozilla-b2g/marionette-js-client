@@ -19,6 +19,8 @@ package :
 	rm -f $(DEV_FILE)
 	touch $(DEV_FILE)
 	
+	cat ./node_modules/test-agent/lib/test-agent/responder.js >> $(DEV_FILE)
+	cat ./node_modules/test-agent/lib/test-agent/websocket-client.js >> $(DEV_FILE)
 	cat ./lib/marionette/xhr.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/abstract.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/websocket.js >> $(DEV_FILE)

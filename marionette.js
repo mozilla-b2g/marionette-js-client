@@ -1,3 +1,335 @@
+(function(exports) {
+  'use strict';
+
+  if (typeof(exports.TestAgent) === 'undefined') {
+    exports.TestAgent = {};
+  }
+
+  /**
+   * Constructor
+   *
+   * @param {Object} list of events to add onto responder.
+   */
+  var Responder = exports.TestAgent.Responder = function Responder(events) {
+    this.events = {};
+
+    if (typeof(events) !== 'undefined') {
+      this.addEventListener(events);
+    }
+  };
+
+  /**
+   * Stringifies request to websocket
+   *
+   *
+   * @param {String} command command name.
+   * @param {Object} data object to be sent over the wire.
+   * @return {String} json object.
+   */
+  Responder.stringify = function stringify(command, data) {
+    return JSON.stringify([command, data]);
+  };
+
+  /**
+   * Parses request from WebSocket.
+   *
+   * @param {String} json json string to translate.
+   * @return {Object} ex: { event: 'test', data: {} }.
+   */
+  Responder.parse = function parse(json) {
+    var data;
+    try {
+      data = (json.forEach) ? json : JSON.parse(json);
+    } catch (e) {
+      throw new Error("Could not parse json: '" + json + '"');
+    }
+
+    return {event: data[0], data: data[1]};
+  };
+
+  Responder.prototype = {
+    parse: Responder.parse,
+    stringify: Responder.stringify,
+
+    /**
+     * Events on this instance
+     *
+     * @type Object
+     */
+    events: null,
+
+    /**
+     * Recieves json string event and dispatches an event.
+     *
+     * @param {String|Object} json data object to respond to.
+     * @param {String} json.event event to emit.
+     * @param {Object} json.data data to emit with event.
+     * @param {Object} [params] option number of params to pass to emit.
+     * @return {Object} result of WebSocketCommon.parse.
+     */
+    respond: function respond(json) {
+      var event = Responder.parse(json),
+          args = Array.prototype.slice.call(arguments).slice(1);
+
+      args.unshift(event.data);
+      args.unshift(event.event);
+
+      this.emit.apply(this, args);
+
+      return event;
+    },
+
+    //TODO: Extract event emitter logic
+
+    /**
+     * Adds an event listener to this object.
+     *
+     *
+     * @param {String} type event name.
+     * @param {Function} callback event callback.
+     */
+    addEventListener: function addEventListener(type, callback) {
+      var event;
+
+      if (typeof(callback) === 'undefined' && typeof(type) === 'object') {
+        for (event in type) {
+          if (type.hasOwnProperty(event)) {
+            this.addEventListener(event, type[event]);
+          }
+        }
+
+        return this;
+      }
+
+      if (!(type in this.events)) {
+        this.events[type] = [];
+      }
+
+      this.events[type].push(callback);
+
+      return this;
+    },
+
+    /**
+     * Adds an event listener which will
+     * only fire once and then remove itself.
+     *
+     *
+     * @param {String} type event name.
+     * @param {Function} callback fired when event is emitted.
+     */
+    once: function once(type, callback) {
+      var self = this;
+      //console.log(callback.toString());
+      function onceCb() {
+        callback.apply(this, arguments);
+        self.removeEventListener(type, onceCb);
+      }
+
+      this.addEventListener(type, onceCb);
+
+      return this;
+    },
+
+    /**
+     * Emits an event.
+     *
+     * Accepts any number of additional arguments to pass unto
+     * event listener.
+     *
+     * @param {String} eventName name of the event to emit.
+     * @param {Object} [arguments] additional arguments to pass.
+     */
+    emit: function emit() {
+      var args = Array.prototype.slice.call(arguments),
+          event = args.shift(),
+          eventList,
+          self = this;
+
+      if (event in this.events) {
+        eventList = this.events[event];
+
+        eventList.forEach(function(callback) {
+          callback.apply(self, args);
+        });
+      }
+
+      return this;
+    },
+
+    /**
+     * Removes all event listeners for a given event type
+     *
+     *
+     * @param {String} event event type to remove.
+     */
+    removeAllEventListeners: function removeAllEventListeners(name) {
+      if (name in this.events) {
+        //reuse array
+        this.events[name].length = 0;
+      }
+
+      return this;
+    },
+
+    /**
+     * Removes a single event listener from a given event type
+     * and callback function.
+     *
+     *
+     * @param {String} eventName event name.
+     * @param {Function} callback same instance of event handler.
+     */
+    removeEventListener: function removeEventListener(name, callback) {
+      var i, length, events;
+
+      if (!(name in this.events)) {
+        return false;
+      }
+
+      events = this.events[name];
+
+      for (i = 0, length = events.length; i < length; i++) {
+        if (events[i] && events[i] === callback) {
+          events.splice(i, 1);
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+  };
+
+  Responder.prototype.on = Responder.prototype.addEventListener;
+
+}(
+  (typeof(window) === 'undefined') ? module.exports : window
+));
+
+//depends on TestAgent.Responder
+(function(exports) {
+  'use strict';
+
+  if (typeof(exports.TestAgent) === 'undefined') {
+    exports.TestAgent = {};
+  }
+
+  var Native, Responder, TestAgent;
+
+  //Hack Arounds for node
+  if (typeof(window) === 'undefined') {
+    Native = require('ws');
+    Responder = require('./responder').TestAgent.Responder;
+  }
+
+  TestAgent = exports.TestAgent;
+  Responder = Responder || TestAgent.Responder;
+  Native = (Native || WebSocket || MozWebSocket);
+
+  //end
+
+  /**
+   * Creates a websocket client handles custom
+   * events via responders and auto-reconnect.
+   *
+   * Basic Options:
+   *  - url: websocekt endpoint (for example: "ws://localhost:8888")
+   *
+   * Options for retries:
+   *
+   * @param {Object} options retry options.
+   * @param {Boolean} option.retry (false by default).
+   * @param {Numeric} option.retryLimit \
+   *  ( number of retries before error is thrown Infinity by default).
+   * @param {Numeric} option.retryTimeout \
+   * ( Time between retries 3000ms by default).
+   */
+  var Client = TestAgent.WebsocketClient = function WebsocketClient(options) {
+    var key;
+    for (key in options) {
+      if (options.hasOwnProperty(key)) {
+        this[key] = options[key];
+      }
+    }
+    Responder.call(this);
+
+    this.proxyEvents = ['open', 'close', 'message'];
+
+    this.on('close', this._incrementRetry.bind(this));
+    this.on('message', this._processMessage.bind(this));
+    this.on('open', this._clearRetries.bind(this));
+  };
+
+  Client.RetryError = function RetryError() {
+    Error.apply(this, arguments);
+  };
+
+  Client.RetryError.prototype = Object.create(Error.prototype);
+
+  Client.prototype = Object.create(Responder.prototype);
+  Client.prototype.Native = Native;
+
+  //Retry
+  Client.prototype.retry = false;
+  Client.prototype.retries = 0;
+  Client.prototype.retryLimit = Infinity;
+  Client.prototype.retryTimeout = 3000;
+
+  Client.prototype.start = function start() {
+    var i, event;
+
+    if (this.retry && this.retries >= this.retryLimit) {
+      throw new Client.RetryError(
+        'Retry limit has been reach retried ' + String(this.retries) + ' times'
+      );
+    }
+
+    this.socket = new this.Native(this.url);
+
+    for (i = 0; i < this.proxyEvents.length; i++) {
+      event = this.proxyEvents[i];
+      this.socket.addEventListener(event, this._proxyEvent.bind(this, event));
+    }
+
+    this.emit('start', this);
+  };
+
+  /**
+   * Sends Responder encoded event to the server.
+   *
+   * @param {String} event event to send.
+   * @param {String} data object to send to the server.
+   */
+  Client.prototype.send = function send(event, data) {
+    this.socket.send(this.stringify(event, data));
+  };
+
+  Client.prototype._incrementRetry = function _incrementRetry() {
+    if (this.retry) {
+      this.retries++;
+      setTimeout(this.start.bind(this), this.retryTimeout);
+    }
+  };
+
+  Client.prototype._processMessage = function _processMessage(message) {
+    if (message.data) {
+      message = message.data;
+    }
+    this.respond(message, this);
+  };
+
+  Client.prototype._clearRetries = function _clearRetries() {
+    this.retries = 0;
+  };
+
+  Client.prototype._proxyEvent = function _proxyEvent() {
+    this.emit.apply(this, arguments);
+  };
+
+}(
+  (typeof(window) === 'undefined') ? module.exports : window
+));
 (function(window) {
 
 
