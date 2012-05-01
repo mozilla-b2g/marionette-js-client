@@ -685,7 +685,6 @@
    * @param {Object} command remote marionette command.
    */
   proto._sendCommand = function _sendCommand(command) {
-    console.log(command);
     this._request('PUT', command, function() {
       //error handling?
     });
@@ -1156,9 +1155,10 @@
     /**
      * Destroys current session.
      *
+     *
      * @param {Function} callback executed when session is destroyed.
      */
-    deleteSession: function destroySession(callback){
+    deleteSession: function destroySession(callback) {
       var cmd = { type: 'deleteSession' };
       return this._sendCommand(cmd, 'ok', callback);
     },
@@ -1391,7 +1391,7 @@
      * @return {Object} self.
      */
     executeAsyncScript: function executeAsyncScript(script, args, callback) {
-      throw new Error("This command is current unsupported.");
+      throw new Error('This command is current unsupported.');
       if (typeof(args) === 'function') {
         callback = args;
         args = null;
@@ -1518,7 +1518,8 @@
 
 
   //gjslint: ignore
-  Client.prototype.searchMethods = [];
+  var proto = Client.prototype;
+  proto.searchMethods = [];
 
   for (key in searchMethods) {
     if (searchMethods.hasOwnProperty(key)) {
