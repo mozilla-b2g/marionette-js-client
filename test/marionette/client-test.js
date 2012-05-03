@@ -331,8 +331,7 @@ describe('marionette/client', function() {
       });
     });
 
-    //currently unsupported by the send/response mechanism
-    xdescribe('.executeAsyncScript', function() {
+    describe('.executeAsyncScript', function() {
       beforeEach(function() {
         subject.executeAsyncScript(script, commandCallback);
       });

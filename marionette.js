@@ -1472,7 +1472,6 @@
      * @return {Object} self.
      */
     executeAsyncScript: function executeAsyncScript(script, args, callback) {
-      throw new Error('This command is current unsupported.');
       if (typeof(args) === 'function') {
         callback = args;
         args = null;

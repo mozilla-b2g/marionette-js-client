@@ -1,3 +1,6 @@
+# 0.1.1
+  - Reenable executeAsyncScript it will work
+    in b2g with generators.
 # 0.1.0
   - HttpPolling driver now supported in node.
   - goUrl command is now supported.
