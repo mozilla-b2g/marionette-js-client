@@ -37,7 +37,9 @@ test-browser:
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
 	  ./test/node/*-test.js \
+	  ./test/marionette/xhr-test.js \
 	  ./test/marionette/client-test.js \
 	  ./test/marionette/element-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
-	  ./test/marionette/drivers/websocket-test.js
+	  ./test/marionette/drivers/websocket-test.js \
+	  ./test/marionette/drivers/httpd-polling-test.js

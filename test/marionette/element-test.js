@@ -136,7 +136,7 @@ describe('marionette/element', function() {
     device.
       issues('getAttribute', attr).
       shouldSend({
-        type: 'getAttributeValue',
+        type: 'getElementAttribute',
         name: attr,
         element: id
       }).

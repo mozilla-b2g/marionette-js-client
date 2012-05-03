@@ -1,5 +1,3 @@
-var Abstract, Httpd, Xhr;
-
 describe('marionette/drivers/httpd-polling', function() {
 
   var subject,
@@ -67,11 +65,13 @@ describe('marionette/drivers/httpd-polling', function() {
       port: 2828
     });
 
+    lastRequest = null;
     subject._request = function() {
       lastRequest = Httpd.prototype._request.apply(this, arguments);
       requests.push(lastRequest);
       return lastRequest;
     };
+
   });
 
   describe('initialization', function() {
@@ -183,8 +183,6 @@ describe('marionette/drivers/httpd-polling', function() {
 
     beforeEach(function(done) {
       cmd = exampleCmds.newSession();
-
-      subject.connectionId = 10;
       //this will in then call _sendCommand
       subject.send(cmd, function(data) {
         cmdResponse = data;
@@ -200,9 +198,10 @@ describe('marionette/drivers/httpd-polling', function() {
 
       //get request
       get.xhr.respond({
-        messages: [
-          { id: subject.connectionId, response: exampleCmds.newSessionResponse() }
-        ]
+        messages: [{
+          id: subject.connectionId,
+          response: exampleCmds.newSessionResponse()
+        }]
       });
     });
 
@@ -228,10 +227,12 @@ describe('marionette/drivers/httpd-polling', function() {
         };
 
       beforeEach(function(done) {
+
         subject._request('POST', data, function(data, xhr) {
           responseData = data;
           done();
         });
+
         lastRequest.xhr.respond(response);
       });
 

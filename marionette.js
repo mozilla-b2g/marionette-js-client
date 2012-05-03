@@ -120,7 +120,6 @@
      */
     once: function once(type, callback) {
       var self = this;
-      //console.log(callback.toString());
       function onceCb() {
         callback.apply(this, arguments);
         self.removeEventListener(type, onceCb);
@@ -330,11 +329,17 @@
 }(
   (typeof(window) === 'undefined') ? module.exports : window
 ));
-(function(window) {
+(function(exports) {
+  if (typeof(exports.Marionette) === 'undefined') {
+    exports.Marionette = {};
+  }
 
+  var Native;
 
-  if (typeof(window.Marionette) === 'undefined') {
-    window.Marionette = {};
+  if (typeof(window) === 'undefined') {
+    Native = require('xmlhttprequest').XMLHttpRequest;
+  } else {
+    Native = XMLHttpRequest;
   }
 
   function Xhr(options) {
@@ -351,7 +356,7 @@
   }
 
   Xhr.prototype = {
-    xhrClass: XMLHttpRequest,
+    xhrClass: Native,
     method: 'GET',
     async: true,
     waiting: false,
@@ -402,9 +407,11 @@
     }
   };
 
-  window.Marionette.Xhr = Xhr;
+  exports.Marionette.Xhr = Xhr;
 
-}(this));
+}(
+  (typeof(window) === 'undefined') ? module.exports : window
+));
 (function(exports) {
   if (typeof(exports.Marionette) === 'undefined') {
     exports.Marionette = {};
@@ -627,17 +634,27 @@
 }(
   (typeof(window) === 'undefined') ? module.exports : window
 ));
-(function(window) {
+(function(exports) {
 
-  if (typeof(window.Marionette) === 'undefined') {
-    window.Marionette = {};
+  var Abstract, Xhr;
+
+  if (typeof(exports.Marionette) === 'undefined') {
+    exports.Marionette = {};
   }
 
-  if (typeof(window.Marionette.Drivers) === 'undefined') {
-    window.Marionette.Drivers = {};
+  if (typeof(exports.Marionette.Drivers) === 'undefined') {
+    exports.Marionette.Drivers = {};
   }
 
-  var Abstract = Marionette.Drivers.Abstract;
+  if (typeof(window) === 'undefined') {
+    Abstract = require('./abstract').Marionette.Drivers.Abstract;
+    Xhr = require('../xhr').Marionette.Xhr;
+  } else {
+    Abstract = Marionette.Drivers.Abstract;
+    Xhr = Marionette.Xhr;
+  }
+
+  Httpd.Xhr = Xhr;
 
   function Httpd(options) {
     var key;
@@ -736,12 +753,13 @@
       url += '?' + String(this.connectionId) + '=' + String(Date.now());
     }
 
-    request = new Marionette.Xhr({
+    request = new Xhr({
       url: url,
       method: method,
       data: data || null,
       callback: callback
     });
+
 
     request.send();
 
@@ -781,9 +799,11 @@
   };
 
 
-  window.Marionette.Drivers.HttpdPolling = Httpd;
+  exports.Marionette.Drivers.HttpdPolling = Httpd;
 
-}(this));
+}(
+  (typeof(window) === 'undefined') ? module.exports : window
+));
 (function(exports) {
   if (typeof(exports.Marionette) === 'undefined') {
     exports.Marionette = {};
@@ -872,7 +892,7 @@
      */
     getAttribute: function getAttribute(attr, callback) {
       var cmd = {
-        type: 'getAttributeValue',
+        type: 'getElementAttribute',
         name: attr
       };
 
@@ -1266,7 +1286,8 @@
      * @param {Function} callback executes when finished driving browser to url.
      */
     goUrl: function goUrl(url, callback) {
-      return this.executeScript('window.location="' + url + '";', callback);
+      var cmd = { type: 'goUrl', value: url };
+      return this._sendCommand(cmd, 'ok', callback);
     },
 
     /**

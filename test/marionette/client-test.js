@@ -237,11 +237,11 @@ describe('marionette/client', function() {
     device.
       issues('goUrl', 'http://wow').
       shouldSend({
-        type: 'executeScript',
-        value: 'window.location="http://wow";'
+        type: 'goUrl',
+        value: 'http://wow'
       }).
-      serverResponds('value').
-      callbackReceives('value');
+      serverResponds('ok').
+      callbackReceives('ok');
   });
 
   describe('.getUrl', function() {
