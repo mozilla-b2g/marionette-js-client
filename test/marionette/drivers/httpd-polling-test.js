@@ -173,6 +173,13 @@ describe('marionette/drivers/httpd-polling', function() {
       expect(response).to.eql(queue.messages);
     });
 
+    describe('when _pollingRequest if null', function() {
+      it('should not fail', function() {
+        subject._pollingRequest = null;
+        subject._onQueueResponse({}, { status: 200 });
+      });
+    });
+
   });
 
   describe('._sendCommand', function() {
@@ -190,8 +197,8 @@ describe('marionette/drivers/httpd-polling', function() {
       });
 
       //requests
-      put = requests[2];
       get = requests[1];
+      put = requests[2];
 
       //put request
       put.xhr.respond({}, 201);
@@ -213,6 +220,31 @@ describe('marionette/drivers/httpd-polling', function() {
       expect(cmdResponse).to.eql(exampleCmds.newSessionResponse());
     });
 
+  });
+
+
+  describe('._close', function() {
+    var aborted;
+
+    connect();
+
+    beforeEach(function() {
+      subject._pollingRequest.abort = function() {
+        aborted = true;
+      };
+
+      subject.close();
+    });
+
+    it('should abort pending gets and remove _pollingRequest', function() {
+      expect(aborted).to.be(true);
+      expect(subject._pollingRequest).not.to.be.ok();
+    });
+
+    it('should send DELETE request', function() {
+      expect(lastRequest.method).to.be('DELETE');
+      expect(lastRequest.url).to.contain(subject.connectionId);
+    });
   });
 
   describe('._request', function() {

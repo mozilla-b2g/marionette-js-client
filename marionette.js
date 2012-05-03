@@ -304,6 +304,13 @@
     this.socket.send(this.stringify(event, data));
   };
 
+  /**
+   * Closes connection to the server
+   */
+  Client.prototype.close = function close(event, data) {
+    this.socket.close();
+  };
+
   Client.prototype._incrementRetry = function _incrementRetry() {
     if (this.retry) {
       this.retries++;
@@ -337,7 +344,7 @@
   var Native;
 
   if (typeof(window) === 'undefined') {
-    Native = require('xmlhttprequest').XMLHttpRequest;
+    Native = require('../XMLHttpRequest').XMLHttpRequest;
   } else {
     Native = XMLHttpRequest;
   }
@@ -362,17 +369,31 @@
     waiting: false,
 
     headers: {
-      'content-type': 'application/json'
+      'Content-Type': 'application/json'
     },
     data: {},
 
     _seralize: function _seralize() {
-      if (this.headers['content-type'] === 'application/json') {
+      if (this.headers['Content-Type'] === 'application/json') {
         return JSON.stringify(this.data);
       }
       return this.data;
     },
 
+    /**
+     * Aborts request if its in progress.
+     */
+    abort: function abort() {
+      if (this.xhr) {
+        this.xhr.abort();
+      }
+    },
+
+    /**
+     * Sends request to server.
+     *
+     * @param {Function} callback success/failure handler.
+     */
     send: function send(callback) {
       var header, xhr;
 
@@ -394,6 +415,7 @@
         if (xhr.readyState === 4) {
           data = xhr.responseText;
           type = xhr.getResponseHeader('content-type');
+          type = type || xhr.getResponseHeader('Content-Type');
           if (type === 'application/json') {
             data = JSON.parse(data);
           }
@@ -440,7 +462,7 @@
      *
      * @type Boolean
      */
-    _waiting: false,
+    _waiting: true,
 
     /**
      * Is system ready for commands?
@@ -510,15 +532,31 @@
     },
 
     /**
+     * Destroys connection to server
+     *
+     * Will immediately close connection to server
+     * closing any pending responses.
+     */
+    close: function() {
+      this.ready = false;
+      this._responseQueue.length = 0;
+      if (this._close) {
+        this._close();
+      }
+    },
+
+    /**
      * Checks queue if not waiting for a response
      * Sends command to websocket server
      *
      * @private
      */
     _nextCommand: function _nextCommand() {
+      var nextCmd;
       if (!this._waiting && this._sendQueue.length) {
         this._waiting = true;
-        this._sendCommand(this._sendQueue.shift());
+        nextCmd = this._sendQueue.shift();
+        this._sendCommand(nextCmd);
       }
     },
 
@@ -533,10 +571,10 @@
     _onDeviceResponse: function _onDeviceResponse(data) {
       var cb;
       if (this.ready && data.id === this.connectionId) {
+        this._waiting = false;
         cb = this._responseQueue.shift();
         cb(data.response);
 
-        this._waiting = false;
         this._nextCommand();
       }
     }
@@ -597,36 +635,32 @@
    *
    * @param {Function} callback sent when initial response comes back.
    */
-  Websocket.prototype.connect = function connect(callback) {
+  Websocket.prototype._connect = function connect() {
     var self = this;
 
     this.client.start();
 
-    this.client.on('open', function wsOpen() {
+    this.client.once('open', function wsOpen() {
 
       //because I was lazy and did not implement once
       function connected(data) {
-        self.client.removeEventListener('device ready', connected);
         self.connectionId = data.id;
       }
 
-      function open(data) {
-        if (data.id === self.connectionId) {
-          var result = self.client.removeEventListener('device response', open);
-          self.ready = true;
-          callback(data.response);
-        }
-      }
-
-      //order is important
-      self.client.removeEventListener('open', wsOpen);
-      self.client.on('device ready', connected);
-      self.client.on('device response', open);
-
+      self.client.once('device ready', connected);
       self.client.send('device create');
 
     });
 
+  };
+
+  /**
+   * Closes connection to marionette.
+   */
+  Websocket.prototype._close = function close() {
+    if (this.client && this.client.close) {
+      this.client.close();
+    }
   };
 
   exports.Marionette.Drivers.Websocket = Websocket;
@@ -707,6 +741,23 @@
     });
   };
 
+
+  /**
+   * Sends DELETE message to server to close marionette connection.
+   * Aborts all polling operations.
+   */
+  proto._close = function _close() {
+
+    if (this._pollingRequest) {
+      this._pollingRequest.abort();
+      this._pollingRequest = null;
+    }
+
+    this._request('DELETE', null, function() {
+      //handle close errors?
+    });
+  };
+
   /**
    * Opens connection for device.
    * @this
@@ -760,7 +811,6 @@
       callback: callback
     });
 
-
     request.send();
 
     return request;
@@ -795,7 +845,10 @@
       });
     }
 
-    this._pollingRequest.send();
+    //when we close the object _pollingRequest is destroyed.
+    if (this._pollingRequest) {
+      this._pollingRequest.send();
+    }
   };
 
 
@@ -1166,7 +1219,7 @@
      */
     startSession: function startSession(callback) {
       var self = this;
-      this._getActorId(function() {
+      return this._getActorId(function() {
         //actor will not be set if we send the command then
         self._newSession(callback);
       });
@@ -1179,8 +1232,15 @@
      * @param {Function} callback executed when session is destroyed.
      */
     deleteSession: function destroySession(callback) {
-      var cmd = { type: 'deleteSession' };
-      return this._sendCommand(cmd, 'ok', callback);
+      var cmd = { type: 'deleteSession' },
+          self = this;
+
+      this._sendCommand(cmd, 'ok', function(value) {
+        self.driver.close();
+        (callback || self.defaultCallback)(value);
+      });
+
+      return this;
     },
 
     /**

@@ -1,7 +1,7 @@
 describe('marionette/drivers/websocket', function() {
   var WSClient,
       Abstract,
-      Backend;
+      Driver;
 
   cross.require(
     'test-agent/websocket-client',
@@ -21,7 +21,7 @@ describe('marionette/drivers/websocket', function() {
   cross.require(
     'marionette/drivers/websocket',
     'Marionette.Drivers.Websocket', function(obj) {
-      Backend = obj;
+      Driver = obj;
     }
   );
 
@@ -31,7 +31,7 @@ describe('marionette/drivers/websocket', function() {
       url = 'ws://foo';
 
   beforeEach(function() {
-    subject = new Backend({
+    subject = new Driver({
       url: url
     });
 
@@ -44,7 +44,7 @@ describe('marionette/drivers/websocket', function() {
 
     subject._sendCommand = function() {
       sent.push(arguments);
-      Backend.prototype._sendCommand.apply(this, arguments);
+      Driver.prototype._sendCommand.apply(this, arguments);
     };
   });
 
@@ -69,7 +69,7 @@ describe('marionette/drivers/websocket', function() {
         callbackResponse,
         response;
 
-    beforeEach(function() {
+    beforeEach(function(done) {
       callbackResponse = null;
       response = {
         id: 10,
@@ -84,37 +84,27 @@ describe('marionette/drivers/websocket', function() {
 
       callback = function() {
         callbackResponse = arguments;
+        done();
       };
 
       subject.send(exampleCmds.newSession(), callback);
       expect(subject._waiting).to.be(true);
+
+      subject.client.emit('device response', response);
     });
 
-    describe('when response is for device id', function() {
-      var calledNext;
-
-      beforeEach(function() {
-        calledNext = false;
-        subject._nextCommand = function() {
-          calledNext = true;
-          Backend.prototype._nextCommand.apply(this, arguments);
-        };
-        subject.client.emit('device response', response);
-      });
-
-      it('should trigger response callbacks', function() {
-        expect(callbackResponse[0]).to.eql(response.response);
-      });
-
-      it('should clear response queue', function() {
-        expect(subject._responseQueue.length).to.be(0);
-      });
-
-      it('should not be waiting', function() {
-        expect(subject._waiting).to.be(false);
-      });
-
+    it('should trigger response callbacks', function() {
+      expect(callbackResponse[0]).to.eql(response.response);
     });
+
+    it('should clear response queue', function() {
+      expect(subject._responseQueue.length).to.be(0);
+    });
+
+    it('should not be waiting', function() {
+      expect(subject._waiting).to.be(false);
+    });
+
   });
 
   describe('._sendCommand', function() {
@@ -130,9 +120,24 @@ describe('marionette/drivers/websocket', function() {
         command: exampleCmds.newSession()
       }]);
     });
- });
+  });
 
- describe('.connect', function() {
+  describe('._close', function() {
+    var closed;
+    beforeEach(function() {
+      closed = false;
+      subject.client.close = function() {
+        closed = true;
+      };
+      subject.close();
+    });
+
+    it('should close client', function() {
+      expect(closed).to.be(true);
+    });
+  });
+
+  describe('._connect', function() {
 
     var openArgs,
         wsStart,
@@ -146,7 +151,6 @@ describe('marionette/drivers/websocket', function() {
       subject.client.start = function() {
         wsStart = true;
       };
-
 
       subject.connect(function() {
         openArgs = arguments;
@@ -164,10 +168,6 @@ describe('marionette/drivers/websocket', function() {
 
     it('should start websocket client', function() {
       expect(wsStart).to.be(true);
-    });
-
-    it('should pass initial response to callback', function() {
-      expect(openArgs[0]).to.eql(serverSent);
     });
 
     it('should set connectionId to 1', function() {

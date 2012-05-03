@@ -24,6 +24,33 @@ describe('marionette/xhr', function() {
 
   });
 
+  describe('.abort', function() {
+    describe('when there is an xhr object', function() {
+      var aborted;
+
+      beforeEach(function() {
+        aborted = false;
+        subject.xhr = {
+          abort: function() {
+            aborted = true;
+          }
+        };
+        subject.abort();
+      });
+
+      it('should call abort on the xhr object', function() {
+        expect(aborted).to.be(true);
+      });
+    });
+
+    describe('when there is no xhr object', function() {
+      it('should not fail', function() {
+        subject.xhr = null;
+        subject.abort();
+      });
+    });
+  });
+
   describe('.send', function() {
 
     var data = { a: true, b: false },

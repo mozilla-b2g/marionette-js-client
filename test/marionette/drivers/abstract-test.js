@@ -38,8 +38,8 @@ describe('marionette/drivers/abstract', function() {
       expect(subject.timeout).to.be(10000);
     });
 
-    it('should not be _waiting', function() {
-      expect(subject._waiting).to.be(false);
+    it('should be _waiting', function() {
+      expect(subject._waiting).to.be(true);
     });
   });
 
@@ -59,8 +59,10 @@ describe('marionette/drivers/abstract', function() {
         }
       };
 
+      //emulate connect
       subject.connectionId = 10;
       subject.ready = true;
+      subject._waiting = false;
 
       callback = function() {
         callbackResponse = arguments;
@@ -108,6 +110,34 @@ describe('marionette/drivers/abstract', function() {
     });
   });
 
+  describe('.close', function() {
+
+    var calledClose;
+
+    beforeEach(function() {
+      calledClose = false;
+      subject.ready = true;
+      subject._responseQueue = [function() {}];
+      subject._close = function() {
+        calledClose = true;
+      };
+      subject.close();
+    });
+
+    it('should call _close', function() {
+      expect(calledClose).to.be(true);
+    });
+
+    it('should not be ready', function() {
+      expect(subject.ready).to.be(false);
+    });
+
+    it('should clean up _responseQueue', function() {
+      expect(subject._responseQueue.length).to.be(0);
+    });
+
+  });
+
   describe('.connect', function() {
     var cmd, calledChild;
 
@@ -125,6 +155,8 @@ describe('marionette/drivers/abstract', function() {
         });
       };
 
+      expect(subject._waiting).to.be(true);
+
       subject.connect(function() {
         done();
       });
@@ -140,6 +172,10 @@ describe('marionette/drivers/abstract', function() {
 
     it('should call _connect', function() {
       expect(calledChild).to.be(true);
+    });
+
+    it('should not be waiting', function() {
+      expect(subject._waiting).to.be(false);
     });
 
     it('should be ready', function() {
@@ -187,6 +223,9 @@ describe('marionette/drivers/abstract', function() {
 
     describe('when there are no comamnds and we are not waiting', function() {
       beforeEach(function() {
+        //emulate connect
+        subject._waiting = false;
+
         subject._responseQueue = [];
         subject._sendQueue = [];
         subject._nextCommand();
@@ -217,7 +256,10 @@ describe('marionette/drivers/abstract', function() {
 
     describe('when not waiting for a response', function() {
       beforeEach(function() {
+        //emulate connect
         subject.ready = true;
+        subject._waiting = false;
+
         subject.send(cmd, cb);
       });
 

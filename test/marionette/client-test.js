@@ -105,14 +105,20 @@ describe('marionette/client', function() {
   });
 
   describe('.startSession', function() {
+    var result;
+
     beforeEach(function(done) {
 
-      subject.startSession(function() {
+      result = subject.startSession(function() {
         done();
       });
 
       driver.respond(exampleCmds.getMarionetteIDResponse());
       driver.respond(exampleCmds.newSessionResponse());
+    });
+
+    it('should be chainable', function() {
+      expect(result).to.be(subject);
     });
 
     it('should have actor', function() {
@@ -160,6 +166,15 @@ describe('marionette/client', function() {
 
 
   describe('.deleteSession', function() {
+    var callsClose;
+
+    beforeEach(function() {
+      callsClose = false;
+      subject.driver.close = function() {
+        callsClose = true;
+      };
+    });
+
     device.
       issues('deleteSession').
       shouldSend({
@@ -167,6 +182,10 @@ describe('marionette/client', function() {
       }).
       serverResponds('ok').
       callbackReceives('ok');
+
+    it('should close the connection', function() {
+      expect(callsClose).to.be(true);
+    });
   });
 
   describe('.setSearchTimeout', function() {
