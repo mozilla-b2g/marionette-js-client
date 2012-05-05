@@ -98,6 +98,30 @@ describe('marionette/element', function() {
     });
   });
 
+  describe('.scriptWith', function() {
+    var calledWith,
+        fn = function() {},
+        cb = function() {};
+
+    beforeEach(function() {
+      subject.client.executeScript = function() {
+        calledWith = arguments;
+      }
+
+      subject.scriptWith(fn, cb);
+    });
+
+    it('should call client.executeScript with element as argument', function() {
+      expect(calledWith[0]).to.be(fn);
+      expect(calledWith[1]).to.eql([
+        subject
+      ]);
+
+      expect(calledWith[2]).to.be(cb);
+    });
+
+  });
+
   describe('.equals', function() {
     var otherId = 'foo';
 

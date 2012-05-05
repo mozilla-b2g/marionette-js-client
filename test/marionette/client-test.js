@@ -148,20 +148,38 @@ describe('marionette/client', function() {
   });
 
   describe('._sendCommand', function() {
-    var cmd, response;
-    it('should send given command and format the result', function(done) {
-      var result;
+    var cmd, response,
+        calledTransform, result,
+        cbValue;
+
+    beforeEach(function(done) {
       cmd = exampleCmds.getUrl();
       response = exampleCmds.getUrlResponse();
 
+      calledTransform = false;
+      subject._transformResultValue = function(value) {
+        calledTransform = true;
+        expect(value).to.be(response.value);
+        return 'foo';
+      }
+
       result = subject._sendCommand(cmd, 'value', function(data) {
-        expect(data).to.be(response.value);
+        cbValue = data;
         done();
       });
 
       driver.respond(response);
+    });
+
+    it('should send given command and format the result', function() {
       expect(result).to.be(subject);
     });
+
+    it('should send command through _transformResultValue', function() {
+      expect(calledTransform).to.be(true);
+      expect(cbValue).to.be('foo');
+    });
+
   });
 
 
@@ -541,6 +559,81 @@ describe('marionette/client', function() {
 
     it('should send callback response', function() {
       expect(cbResponse[0]).to.eql(response);
+    });
+
+  });
+
+  describe('._convertFunction', function() {
+    var result;
+    var fn = function() { return true; };
+
+    beforeEach(function() {
+      result = subject._convertFunction(fn);
+      result = result.replace(/\n|\s/g, '');
+    });
+
+    it('should format function to call immediately', function() {
+      var expected;
+      expected = 'return (function() { return true;}.apply(this, arguments));';
+      expected = expected.replace(/\n|\s/g, '');
+      expect(result).to.be(expected);
+    });
+
+    it('should not format strings', function() {
+      expect(subject._convertFunction('foo')).to.be('foo');
+    });
+
+  });
+
+  describe('._transformResultValue', function() {
+    var result;
+    describe('when it is an element', function() {
+      beforeEach(function() {
+        result = subject._transformResultValue({
+          'ELEMENT': 'foo'
+        });
+      });
+
+      it('should return an instance of element', function() {
+        expect(result).to.be.a(Element);
+        expect(result.id).to.be('foo');
+      });
+
+    });
+
+    describe('when it is not an element', function() {
+      var obj = {'foo': true};
+
+      beforeEach(function() {
+        result = subject._transformResultValue(obj);
+      });
+
+      it('should return same object', function() {
+        expect(result).to.be(obj);
+      });
+    });
+  });
+
+
+  describe('._prepareArguments', function() {
+    var args, result;
+
+    beforeEach(function() {
+      args = [
+        new Element('{uuid}', subject),
+        'wow',
+        true
+      ];
+
+      result = subject._prepareArguments(args);
+    });
+
+    it('should process Marionette.Element instances into uuids', function() {
+      expect(result).to.eql([
+        {'ELEMENT': '{uuid}'},
+        'wow',
+        true
+      ]);
     });
 
   });

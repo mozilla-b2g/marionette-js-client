@@ -1,6 +1,17 @@
+# 0.2.0
+  - Added support for wrapping/unwrapping elements
+    in script functions.
+
+  - executeScript, executeJsScript, executeAsyncScript now accept
+     either a string or a function as the script argument.
+ 
+  - Added .scriptWith function to Marionette.Element that will
+    automatally pass that element to a remote script.
+
 # 0.1.1
   - Reenable executeAsyncScript it will work
     in b2g with generators.
+
 # 0.1.0
   - HttpPolling driver now supported in node.
   - goUrl command is now supported.
