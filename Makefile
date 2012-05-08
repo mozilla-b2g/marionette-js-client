@@ -41,5 +41,6 @@ test-node:
 	  ./test/marionette/client-test.js \
 	  ./test/marionette/element-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
+	  ./test/marionette/drivers/tcp-test.js \
 	  ./test/marionette/drivers/websocket-test.js \
 	  ./test/marionette/drivers/httpd-polling-test.js
