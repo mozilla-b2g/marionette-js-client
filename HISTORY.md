@@ -1,3 +1,6 @@
+# 0.3.0
+Adding TCP driver for node
+
 # 0.2.0
   - Added support for wrapping/unwrapping elements
     in script functions.
