@@ -10,8 +10,9 @@ FakeSocket = function() {
 FakeSocket.sockets = [];
 
 FakeSocket.prototype = Object.create(EventEmitter.prototype);
-FakeSocket.prototype.connect = function(port) {
+FakeSocket.prototype.connect = function(port, host) {
   this.port = port;
+  this.host = host;
 };
 
 FakeSocket.prototype.destroy = function() {
