@@ -4,4 +4,6 @@
 ./server.js
 ./supported-commands.md
 ./playground
+./build
+./docs
 Makefile

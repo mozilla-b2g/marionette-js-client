@@ -2,10 +2,16 @@ VENDOR=./vendor/
 REPORTER=Spec
 DEV_FILE=./marionette.js
 
-.PHONY: .vendor test test-node test-browser
+.PHONY: docs .vendor test test-node test-browser
 
 test-server:
 	./node_modules/test-agent/bin/js-test-agent server --growl
+
+docs:
+	mkdir -p docs/api
+	rm -Rf ./docs/api/
+	./node_modules/jsdoc-toolkit/app/run.js --recurse=10 -p -a -d=./docs/api/ -t=./build/jsdoc-template/ ./lib/
+
 
 package :
 	rm -Rf $(VENDOR)/
