@@ -336,6 +336,9 @@
 }(
   (typeof(window) === 'undefined') ? module.exports : window
 ));
+/**
+@namespace
+*/
 (function(exports) {
   if (typeof(exports.Marionette) === 'undefined') {
     exports.Marionette = {};
@@ -349,6 +352,23 @@
     Native = XMLHttpRequest;
   }
 
+  /**
+   * Creates a XHR wrapper.
+   * Depending on the platform this is loaded
+   * from the correct wrapper type will be used.
+   *
+   * Options are derived from properties on the prototype.
+   * See each property for its default value.
+   *
+   * @class
+   * @name Marionette.Xhr
+   * @param {Object} options options for xhr.
+   * @param {String} [options.method="GET"] any HTTP verb like 'GET' or 'POST'.
+   * @param {Boolean} [options.async] false will indicate
+   *                   a synchronous request.
+   * @param {Object} [options.headers] full of http headers.
+   * @param {Object} [options.data] post data.
+   */
   function Xhr(options) {
     var key;
     if (typeof(options) === 'undefined') {
@@ -363,6 +383,8 @@
   }
 
   Xhr.prototype = {
+    /** @scope Marionette.Xhr.prototype */
+
     xhrClass: Native,
     method: 'GET',
     async: true,
@@ -434,6 +456,9 @@
 }(
   (typeof(window) === 'undefined') ? module.exports : window
 ));
+/**
+ * @namespace
+ */
 (function(exports) {
   if (typeof(exports.Marionette) === 'undefined') {
     exports.Marionette = {};
@@ -443,12 +468,24 @@
     exports.Marionette.Drivers = {};
   }
 
+  /**
+   * @class
+   *
+   * Abstract driver that will handle
+   * all common tasks between implementations.
+   * Such as error handling, request/response queuing
+   * and timeouts.
+   *
+   * @name Marionette.Drivers.Abstract
+   * @param {Object} options set options on prototype.
+   */
   function Abstract(options) {
     this._sendQueue = [];
     this._responseQueue = [];
   }
 
   Abstract.prototype = {
+    /** @scope Marionette.Drivers.Abstract.prototype */
 
     /**
      * Timeout for commands
@@ -508,17 +545,17 @@
     /**
      * Connects to a remote server.
      * Requires a _connect function to be defined.
-     * Example:
+     * @example
      *
-     *    MyClass.prototype._connect = function _connect(){
-     *      //open a socket to marrionete accept response
-     *      //you *must* call _onDeviceResponse with the first
-     *      //response from marionette it looks like this:
-     *      //{ from: 'root', applicationType: 'gecko', traits: [] }
-     *      this.connectionId = result.id;
-     *    }
+     *  MyClass.prototype._connect = function _connect(){
+     *    //open a socket to marrionete accept response
+     *    //you *must* call _onDeviceResponse with the first
+     *    //response from marionette it looks like this:
+     *    //{ from: 'root', applicationType: 'gecko', traits: [] }
+     *    this.connectionId = result.id;
+     *  }
      *
-     * @param {Function} callback \
+     * @param {Function} callback
      *  executes after successfully connecting to the server.
      */
     connect: function connect(callback) {
@@ -668,6 +705,7 @@
 }(
   (typeof(window) === 'undefined') ? module.exports : window
 ));
+/** @namespace */
 (function(exports) {
 
   var Abstract, Xhr;
@@ -690,6 +728,14 @@
 
   Httpd.Xhr = Xhr;
 
+  /**
+   * Creates instance of http proxy backend.
+   *
+   * @class
+   * @extends Marionette.Drivers.Abstract
+   * @name Marionette.Drivers.Httpd
+   * @param {Object} options key/value pairs to add to prototype.
+   */
   function Httpd(options) {
     var key;
     if (typeof(options) === 'undefined') {
@@ -707,9 +753,12 @@
 
   var proto = Httpd.prototype = Object.create(Abstract.prototype);
 
+  /** @scope Marionette.Drivers.Httpd.prototype */
+
   /**
    * Location of the http server that will proxy to marionette
-   *
+   * @memberOf Marionette.Drivers.Httpd#
+   * @name proxyUrl
    * @type String
    */
   proto.proxyUrl = '/marionette';
@@ -717,6 +766,8 @@
   /**
    * Port that proxy should connect to.
    *
+   * @name port
+   * @memberOf Marionette.Drivers.Httpd#
    * @type Numeric
    */
   proto.port = 2828;
@@ -725,6 +776,8 @@
    * Server proxy should connect to.
    *
    *
+   * @name server
+   * @memberOf Marionette.Drivers.Httpd#
    * @type String
    */
   proto.server = 'localhost';
@@ -732,7 +785,8 @@
   /**
    * Sends command to server for this connection
    *
-   * @this
+   * @name _sendCommand
+   * @memberOf Marionette.Drivers.Httpd#
    * @param {Object} command remote marionette command.
    */
   proto._sendCommand = function _sendCommand(command) {
@@ -745,6 +799,9 @@
   /**
    * Sends DELETE message to server to close marionette connection.
    * Aborts all polling operations.
+   *
+   * @name _close
+   * @memberOf Marionette.Drivers.Httpd#
    */
   proto._close = function _close() {
 
@@ -760,7 +817,9 @@
 
   /**
    * Opens connection for device.
-   * @this
+   *
+   * @name _connect
+   * @memberOf Marionette.Drivers.Httpd#
    */
   proto._connect = function _connect() {
     var auth = {
@@ -782,8 +841,8 @@
   /**
    * Creates xhr request
    *
-   *
-   * @this
+   * @memberOf Marionette.Drivers.Httpd#
+   * @name _request
    * @param {String} method http method like 'POST' or 'GET'.
    * @param {Object} data optional.
    * @param {Object} callback after xhr completes \
@@ -828,6 +887,8 @@
    *    }
    *
    * @this
+   * @name _onQueueResponse
+   * @memberOf Marionette.Drivers.Httpd#
    * @param {Object} queue list of messages.
    * @param {Marionette.Xhr} xhr xhr instance.
    */
@@ -857,17 +918,36 @@
 }(
   (typeof(window) === 'undefined') ? module.exports : window
 ));
+/**
+@namespace
+*/
 (function(exports) {
   if (typeof(exports.Marionette) === 'undefined') {
     exports.Marionette = {};
   }
 
+  /**
+   * Creates an element reference
+   * based on an id and a client instance.
+   * You should never need to manually create
+   * an instance of element.
+   *
+   * Use {@link Marionette.Client#findElement} or
+   * {@link Marionette.Client#findElements} to create
+   * instance(s) of this class.
+   *
+   * @class
+   * @name Marionette.Element
+   * @param {String} id id of element.
+   * @param {Marionette.Client} client client instance.
+   */
   function Element(id, client) {
     this.id = id;
     this.client = client;
   }
 
   Element.prototype = {
+    /** @scope Marionette.Element.prototype */
 
     /**
      * Sends remote command processes the result.
@@ -1084,7 +1164,11 @@
 }(
   (typeof(window) === 'undefined') ? module.exports : window
 ));
+/**
+@namespace
+*/
 (function(exports) {
+
   if (typeof(exports.Marionette) === 'undefined') {
     exports.Marionette = {};
   }
@@ -1113,6 +1197,21 @@
     return typeof(value) === 'function';
   }
 
+
+  /**
+   * @name Marionette.Client
+   * @class
+   * @constructs
+   * @exports Client as Marionette.Client
+   *
+   * Initializes client.
+   * You must create and initialize
+   * a driver and pass it into the client before
+   * using the client itself.
+   *
+   * @param {Marionette.Drivers.Abstract} driver fully initialized client.
+   * @param {Object} options options for driver.
+   */
   function Client(driver, options) {
     if (typeof(options) === 'undefined') {
       options = {};
@@ -1123,7 +1222,7 @@
 
   Client.prototype = {
 
-    CHROME: 'chrome',
+    CHROME: 'chrome',chrome
     CONTENT: 'content',
 
     /**

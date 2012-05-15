@@ -1,4 +1,9 @@
 describe('marionette/drivers/tcp', function() {
+
+  if (typeof(window) !== 'undefined') {
+    return;
+  }
+
   var Abstract,
       Driver = require('../../../lib/marionette/drivers/tcp'),
       FakeSocket = require('../../node/support/socket');
