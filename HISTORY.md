@@ -1,5 +1,10 @@
+# 0.3.1
+  - Major internal rewrite of module definition.
+
+  - Upgraded test-agent deps to 0.5.4 from ~0.3
+
 # 0.3.0
-Adding TCP driver for node
+  - Adding TCP driver for node
 
 # 0.2.0
   - Added support for wrapping/unwrapping elements
