@@ -27,14 +27,17 @@ package :
 	
 	cat ./node_modules/test-agent/lib/test-agent/responder.js >> $(DEV_FILE)
 	cat ./node_modules/test-agent/lib/test-agent/websocket-client.js >> $(DEV_FILE)
+	cat ./lib/marionette/marionette.js >> $(DEV_FILE)
 	cat ./lib/marionette/xhr.js >> $(DEV_FILE)
+	cat ./lib/marionette/element.js >> $(DEV_FILE)
+	cat ./lib/marionette/client.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/abstract.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/websocket.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/httpd-polling.js >> $(DEV_FILE)
-	cat ./lib/marionette/element.js >> $(DEV_FILE)
-	cat ./lib/marionette/client.js >> $(DEV_FILE)
+	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
+	cat ./lib/marionette/index.js >> $(DEV_FILE)
 
-test : test-node test-browser
+test : package test-node test-browser
 
 test-browser:
 	@echo "NOTICE: You must have a client connected to test agent."
@@ -43,6 +46,7 @@ test-browser:
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
 	  ./test/node/*-test.js \
+	  ./test/marionette/index-test.js \
 	  ./test/marionette/xhr-test.js \
 	  ./test/marionette/client-test.js \
 	  ./test/marionette/element-test.js \

@@ -15,6 +15,14 @@
   cross = {
     isNode: isNode,
 
+    requireLib: function(path, cb) {
+      if (this.isNode) {
+        return require('../lib/' + path);
+      } else {
+        return require('/lib/' + path + '.js', cb);
+      }
+    },
+
     nsFind: function(obj, string) {
       var result = obj,
           part,
@@ -92,9 +100,9 @@
   //Universal utils for tests.
   //will be loaded for all tests and available
   //in static scope inside and outside of tests.
-  
-  if (!isNode)
+  if (!isNode) {
     require('/lib/marionette/marionette.js');
+  }
 
   cross.require('example-commands', function(obj) {
     context.exampleCmds = obj;
