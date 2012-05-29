@@ -3,12 +3,9 @@ describe('marionette/drivers/abstract', function() {
       Backend,
       sent = [];
 
-  cross.require(
-    'marionette/drivers/abstract',
-    'Marionette.Drivers.Abstract', function(obj) {
-      Backend = obj;
-    }
-  );
+  cross.require('drivers/abstract', function(obj) {
+    Backend = obj;
+  });
 
   beforeEach(function() {
     subject = new Backend();

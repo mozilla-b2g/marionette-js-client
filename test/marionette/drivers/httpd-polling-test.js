@@ -10,26 +10,17 @@ describe('marionette/drivers/httpd-polling', function() {
       Httpd;
 
 
-  cross.require(
-    'marionette/drivers/abstract',
-    'Marionette.Drivers.Abstract', function(obj) {
-      Abstract = obj;
-    }
-  );
+  cross.require('drivers/abstract', function(obj) {
+    Abstract = obj;
+  });
 
-  cross.require(
-    'marionette/xhr',
-    'Marionette.Xhr', function(obj) {
-      Xhr = obj;
-    }
-  );
+  cross.require('xhr', function(obj) {
+    Xhr = obj;
+  });
 
-  cross.require(
-    'marionette/drivers/httpd-polling',
-    'Marionette.Drivers.HttpdPolling', function(obj) {
-      Httpd = obj;
-    }
-  );
+  cross.require('drivers/httpd-polling', function(obj) {
+    Httpd = obj;
+  });
 
   function connect() {
     beforeEach(function(done) {

@@ -5,25 +5,19 @@ describe('marionette/drivers/websocket', function() {
 
   cross.require(
     'test-agent/websocket-client',
-    'TestAgent.WebsocketClient', function(obj) {
+    'TestAgent.WebsocketClient',
+    function(obj) {
       WSClient = obj;
     }
   );
 
-  cross.require(
-    'marionette/drivers/abstract',
-    'Marionette.Drivers.Abstract', function(obj) {
-      Abstract = obj;
-    }
-  );
+  cross.require('drivers/abstract', function(obj) {
+    Abstract = obj;
+  });
 
-
-  cross.require(
-    'marionette/drivers/websocket',
-    'Marionette.Drivers.Websocket', function(obj) {
-      Driver = obj;
-    }
-  );
+  cross.require('drivers/websocket', function(obj) {
+    Driver = obj;
+  });
 
   var subject,
       sent = [],

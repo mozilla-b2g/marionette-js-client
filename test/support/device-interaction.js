@@ -1,4 +1,4 @@
-(function(exports) {
+(function(module, ns) {
 
   function DeviceInteraction(exampleCmds, subject) {
     var cmdResult, type;
@@ -94,8 +94,11 @@
     };
   }
 
-  exports.DeviceInteraction = DeviceInteraction;
+  module.exports = DeviceInteraction;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('support/device-interaction'), Marionette] :
+    [module, require('../../lib/marionette/marionette')]
 ));

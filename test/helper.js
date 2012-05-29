@@ -49,32 +49,39 @@
       if(/^test-agent/.test(path)) {
         return cross.requireTestAgent.apply(this, arguments);
       }
-
-      if (!path.match(/.js$/)) {
-        path += '.js';
-      }
-
       if (typeof(component) === 'function') {
         //new module pattern
         cb = component;
-        path = '/lib/marionette/' + path;
+        component = path;
+        path += '.js';
+
+        if (/^support/.test(path)) {
+          path = '/test/' + path;
+        } else {
+          path = '/lib/marionette/' + path;
+        }
+
 
         if (isNode) {
           cb(require('..' + path));
         } else {
-          exports.require(path, function() {
-            cb(TestAgent.require(path));
+          context.require(path, function() {
+            cb(Marionette.require(component));
           });
         }
       } else {
+        if (!path.match(/.js$/)) {
+          path += '.js';
+        }
+
         //old system
         path = '/lib/' + path;
 
         if (isNode) {
           cb(require('..' + path));
         } else {
-          exports.require(path, function() {
-            cb(this.nsFind(exports, component));
+          context.require(path, function() {
+            cb(this.nsFind(context, component));
           }.bind(this));
         }
       }
@@ -85,32 +92,24 @@
   //Universal utils for tests.
   //will be loaded for all tests and available
   //in static scope inside and outside of tests.
+  
+  if (!isNode)
+    require('/lib/marionette/marionette.js');
+
   cross.require('example-commands', function(obj) {
     context.exampleCmds = obj;
   });
 
-  cross.require(
-    '../test/support/device-interaction',
-    'DeviceInteraction',
-    function(obj) {
-      context.DeviceInteraction = obj.DeviceInteraction;
-    }
-  );
+  cross.require('support/device-interaction', function(obj) {
+    context.DeviceInteraction = obj;
+  });
 
-  cross.require(
-    '../test/support/fake-xhr',
-    'FakeXhr',
-    function(obj) {
-      context.FakeXhr = obj.FakeXhr;
-    }
-  );
+  cross.require('support/fake-xhr', function(obj) {
+    context.FakeXhr = obj;
+  });
 
-  cross.require(
-    '../test/support/mock-driver',
-    'MockDriver',
-    function(obj) {
-      context.MockDriver = obj.MockDriver;
-    }
-  );
+  cross.require('support/mock-driver', function(obj) {
+    context.MockDriver = obj;
+  });
 
 }.call(this));

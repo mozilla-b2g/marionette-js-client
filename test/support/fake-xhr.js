@@ -1,4 +1,4 @@
-(function(window) {
+(function(module) {
 
   function FakeXhr() {
     this.openArgs = null;
@@ -33,6 +33,11 @@
     }
   };
 
-  window.FakeXhr = FakeXhr;
+  module.exports = FakeXhr;
 
-}(this));
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('support/fake-xhr'), Marionette] :
+    [module, require('../../lib/marionette/marionette')]
+));

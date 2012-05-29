@@ -264,7 +264,7 @@
     if (isNode) {
       this.Native = require('ws');
     } else {
-      this.Native = (Native || WebSocket || MozWebSocket);
+      this.Native = (window.WebSocket || window.MozWebSocket);
     }
 
     this.on('open', this._setConnectionStatus.bind(this, true));
@@ -389,11 +389,7 @@
 /**
 @namespace
 */
-(function(exports) {
-  if (typeof(exports.Marionette) === 'undefined') {
-    exports.Marionette = {};
-  }
-
+(function(module, ns) {
   var Native;
 
   if (typeof(window) === 'undefined') {
@@ -501,22 +497,18 @@
     }
   };
 
-  exports.Marionette.Xhr = Xhr;
+  module.exports = Xhr;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('xhr'), Marionette] :
+    [module, require('./marionette')]
 ));
 /**
  * @namespace
  */
-(function(exports) {
-  if (typeof(exports.Marionette) === 'undefined') {
-    exports.Marionette = {};
-  }
-
-  if (typeof(exports.Marionette.Drivers) === 'undefined') {
-    exports.Marionette.Drivers = {};
-  }
+(function(module, ns) {
 
   /**
    * @class
@@ -668,35 +660,22 @@
 
   };
 
-  exports.Marionette.Drivers.Abstract = Abstract;
+  module.exports = Abstract;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('drivers/abstract'), Marionette] :
+    [module, require('../marionette')]
 ));
-(function(exports) {
-  var isNode = typeof(window) === 'undefined',
-      WebsocketClient;
+(function(module, ns) {
+  var WebsocketClient,
+      Abstract = ns.require('drivers/abstract');
 
-  if (typeof(exports.Marionette) === 'undefined') {
-    exports.Marionette = {};
-  }
-
-  if (typeof(exports.Marionette.Drivers) === 'undefined') {
-    exports.Marionette.Drivers = {};
-  }
-
-  if(isNode) {
+  if(!this.TestAgent) {
     WebsocketClient = require('test-agent/lib/test-agent/websocket-client');
   } else {
     WebsocketClient = TestAgent.WebsocketClient;
-  }
-
-  var Abstract;
-
-  if (typeof(window) === 'undefined') {
-    Abstract = require('./abstract').Marionette.Drivers.Abstract;
-  } else {
-    Abstract = Marionette.Drivers.Abstract;
   }
 
   function Websocket(options) {
@@ -755,31 +734,19 @@
     }
   };
 
-  exports.Marionette.Drivers.Websocket = Websocket;
+  module.exports = Websocket;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('drivers/websocket'), Marionette] :
+    [module, require('../marionette')]
 ));
 /** @namespace */
-(function(exports) {
+(function(module, ns) {
 
-  var Abstract, Xhr;
-
-  if (typeof(exports.Marionette) === 'undefined') {
-    exports.Marionette = {};
-  }
-
-  if (typeof(exports.Marionette.Drivers) === 'undefined') {
-    exports.Marionette.Drivers = {};
-  }
-
-  if (typeof(window) === 'undefined') {
-    Abstract = require('./abstract').Marionette.Drivers.Abstract;
-    Xhr = require('../xhr').Marionette.Xhr;
-  } else {
-    Abstract = Marionette.Drivers.Abstract;
-    Xhr = Marionette.Xhr;
-  }
+  var Abstract = ns.require('drivers/abstract'),
+      Xhr = ns.require('xhr');
 
   Httpd.Xhr = Xhr;
 
@@ -968,18 +935,18 @@
   };
 
 
-  exports.Marionette.Drivers.HttpdPolling = Httpd;
+  module.exports = Httpd;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('drivers/httpd-polling'), Marionette] :
+    [module, require('../marionette')]
 ));
 /**
 @namespace
 */
-(function(exports) {
-  if (typeof(exports.Marionette) === 'undefined') {
-    exports.Marionette = {};
-  }
+(function(module, ns) {
 
   /**
    * Creates an element reference
@@ -1214,27 +1181,20 @@
 
   };
 
-  exports.Marionette.Element = Element;
+  module.exports = Element;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('element'), Marionette] :
+    [module, require('./marionette')]
 ));
 /**
 @namespace
 */
-(function(exports) {
+(function(module, ns) {
 
-  if (typeof(exports.Marionette) === 'undefined') {
-    exports.Marionette = {};
-  }
-
-  var Element;
-
-  if (exports.Marionette.Element) {
-    Element = exports.Marionette.Element;
-  } else if (typeof(window) === 'undefined') {
-    Element = require('./element').Marionette.Element;
-  }
+  var Element = ns.require('element');
 
   var key;
   var searchMethods = {
@@ -1832,8 +1792,11 @@
     }
   }
 
-  exports.Marionette.Client = Client;
+  module.exports = Client;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('client'), Marionette] :
+    [module, require('./marionette')]
 ));

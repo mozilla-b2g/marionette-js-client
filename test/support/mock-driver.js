@@ -1,4 +1,4 @@
-(function(exports) {
+(function(module) {
 
   function MockDriver() {
     this.sent = [];
@@ -26,8 +26,11 @@
     }
   };
 
-  exports.MockDriver = MockDriver;
+  module.exports = MockDriver;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('support/mock-driver'), Marionette] :
+    [module, require('../../lib/marionette/marionette')]
 ));
