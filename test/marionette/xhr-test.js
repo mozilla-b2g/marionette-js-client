@@ -3,8 +3,7 @@ describe('marionette/xhr', function() {
       Xhr;
 
   cross.require(
-    'marionette/xhr',
-    'Marionette.Xhr',
+    'xhr',
     function(obj) {
       Xhr = obj;
     }

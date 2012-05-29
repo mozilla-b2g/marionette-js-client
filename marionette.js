@@ -1,8 +1,12 @@
-(function(exports) {
+(function() {
   'use strict';
 
-  if (typeof(exports.TestAgent) === 'undefined') {
-    exports.TestAgent = {};
+  var isNode = typeof(window) === 'undefined';
+
+  if (!isNode) {
+    if (typeof(window.TestAgent) === 'undefined') {
+      window.TestAgent = {};
+    }
   }
 
   /**
@@ -10,8 +14,8 @@
    *
    * @param {Object} list of events to add onto responder.
    */
-  var Responder = exports.TestAgent.Responder = function Responder(events) {
-    this.events = {};
+  function Responder(events) {
+    this._$events = {};
 
     if (typeof(events) !== 'undefined') {
       this.addEventListener(events);
@@ -56,7 +60,7 @@
      *
      * @type Object
      */
-    events: null,
+    _$events: null,
 
     /**
      * Recieves json string event and dispatches an event.
@@ -101,11 +105,11 @@
         return this;
       }
 
-      if (!(type in this.events)) {
-        this.events[type] = [];
+      if (!(type in this._$events)) {
+        this._$events[type] = [];
       }
 
-      this.events[type].push(callback);
+      this._$events[type].push(callback);
 
       return this;
     },
@@ -121,8 +125,8 @@
     once: function once(type, callback) {
       var self = this;
       function onceCb() {
-        callback.apply(this, arguments);
         self.removeEventListener(type, onceCb);
+        callback.apply(this, arguments);
       }
 
       this.addEventListener(type, onceCb);
@@ -145,8 +149,8 @@
           eventList,
           self = this;
 
-      if (event in this.events) {
-        eventList = this.events[event];
+      if (event in this._$events) {
+        eventList = this._$events[event];
 
         eventList.forEach(function(callback) {
           callback.apply(self, args);
@@ -163,9 +167,9 @@
      * @param {String} event event type to remove.
      */
     removeAllEventListeners: function removeAllEventListeners(name) {
-      if (name in this.events) {
+      if (name in this._$events) {
         //reuse array
-        this.events[name].length = 0;
+        this._$events[name].length = 0;
       }
 
       return this;
@@ -182,11 +186,11 @@
     removeEventListener: function removeEventListener(name, callback) {
       var i, length, events;
 
-      if (!(name in this.events)) {
+      if (!(name in this._$events)) {
         return false;
       }
 
-      events = this.events[name];
+      events = this._$events[name];
 
       for (i = 0, length = events.length; i < length; i++) {
         if (events[i] && events[i] === callback) {
@@ -202,29 +206,30 @@
 
   Responder.prototype.on = Responder.prototype.addEventListener;
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
-));
+  if (isNode) {
+    module.exports = Responder;
+  } else {
+    window.TestAgent.Responder = Responder;
+  }
+
+}());
 
 //depends on TestAgent.Responder
-(function(exports) {
+(function() {
   'use strict';
 
-  if (typeof(exports.TestAgent) === 'undefined') {
-    exports.TestAgent = {};
+  var isNode = typeof(window) === 'undefined',
+      Responder;
+
+  if (!isNode) {
+    if (typeof(window.TestAgent) === 'undefined') {
+      window.TestAgent = {};
+    }
+
+    Responder = TestAgent.Responder;
+  } else {
+    Responder = require('./responder');
   }
-
-  var Native, Responder, TestAgent;
-
-  //Hack Arounds for node
-  if (typeof(window) === 'undefined') {
-    Native = require('ws');
-    Responder = require('./responder').TestAgent.Responder;
-  }
-
-  TestAgent = exports.TestAgent;
-  Responder = Responder || TestAgent.Responder;
-  Native = (Native || WebSocket || MozWebSocket);
 
   //end
 
@@ -244,7 +249,7 @@
    * @param {Numeric} option.retryTimeout \
    * ( Time between retries 3000ms by default).
    */
-  var Client = TestAgent.WebsocketClient = function WebsocketClient(options) {
+  function Client(options) {
     var key;
     for (key in options) {
       if (options.hasOwnProperty(key)) {
@@ -254,6 +259,16 @@
     Responder.call(this);
 
     this.proxyEvents = ['open', 'close', 'message'];
+    this._proxiedEvents = {};
+
+    if (isNode) {
+      this.Native = require('ws');
+    } else {
+      this.Native = (Native || WebSocket || MozWebSocket);
+    }
+
+    this.on('open', this._setConnectionStatus.bind(this, true));
+    this.on('close', this._setConnectionStatus.bind(this, false));
 
     this.on('close', this._incrementRetry.bind(this));
     this.on('message', this._processMessage.bind(this));
@@ -267,7 +282,15 @@
   Client.RetryError.prototype = Object.create(Error.prototype);
 
   Client.prototype = Object.create(Responder.prototype);
-  Client.prototype.Native = Native;
+
+  /**
+   * True when connection is opened.
+   * Used to ensure messages are not sent
+   * when connection to server is closed.
+   *
+   * @type Boolean
+   */
+  Client.prototype.connectionOpen = false;
 
   //Retry
   Client.prototype.retry = false;
@@ -276,7 +299,7 @@
   Client.prototype.retryTimeout = 3000;
 
   Client.prototype.start = function start() {
-    var i, event;
+    var i, event, fn;
 
     if (this.retry && this.retries >= this.retryLimit) {
       throw new Client.RetryError(
@@ -284,11 +307,16 @@
       );
     }
 
+    if (this.socket) {
+      this.close();
+    }
+
     this.socket = new this.Native(this.url);
 
     for (i = 0; i < this.proxyEvents.length; i++) {
       event = this.proxyEvents[i];
-      this.socket.addEventListener(event, this._proxyEvent.bind(this, event));
+      fn = this._proxiedEvents[event] = this._proxyEvent.bind(this, event);
+      this.socket.addEventListener(event, fn, false);
     }
 
     this.emit('start', this);
@@ -301,13 +329,21 @@
    * @param {String} data object to send to the server.
    */
   Client.prototype.send = function send(event, data) {
-    this.socket.send(this.stringify(event, data));
+    if (this.connectionOpen) {
+      this.socket.send(this.stringify(event, data));
+    }
   };
 
   /**
    * Closes connection to the server
    */
   Client.prototype.close = function close(event, data) {
+    var event;
+
+    for (event in this._proxiedEvents) {
+      this.socket.removeEventListener(event, this._proxiedEvents[event], false);
+    }
+
     this.socket.close();
   };
 
@@ -333,9 +369,23 @@
     this.emit.apply(this, arguments);
   };
 
-}(
-  (typeof(window) === 'undefined') ? module.exports : window
-));
+  /**
+   * Sets connectionOpen.
+   *
+   * @param {Boolean} type connection status.
+   */
+  Client.prototype._setConnectionStatus = _setConnectionStatus;
+  function _setConnectionStatus(type) {
+    this.connectionOpen = type;
+  }
+
+  if (isNode) {
+    module.exports = Client;
+  } else {
+    window.TestAgent.WebsocketClient = Client;
+  }
+
+}());
 /**
 @namespace
 */
@@ -624,6 +674,9 @@
   (typeof(window) === 'undefined') ? module.exports : window
 ));
 (function(exports) {
+  var isNode = typeof(window) === 'undefined',
+      WebsocketClient;
+
   if (typeof(exports.Marionette) === 'undefined') {
     exports.Marionette = {};
   }
@@ -632,8 +685,10 @@
     exports.Marionette.Drivers = {};
   }
 
-  if (typeof(TestAgent) === 'undefined') {
-    TestAgent = require('test-agent/lib/test-agent/websocket-client').TestAgent;
+  if(isNode) {
+    WebsocketClient = require('test-agent/lib/test-agent/websocket-client');
+  } else {
+    WebsocketClient = TestAgent.WebsocketClient;
   }
 
   var Abstract;
@@ -647,7 +702,7 @@
   function Websocket(options) {
     Abstract.call(this, options);
 
-    this.client = new TestAgent.WebsocketClient(options);
+    this.client = new WebsocketClient(options);
     this.client.on('device response', this._onDeviceResponse.bind(this));
   }
 
@@ -1222,7 +1277,7 @@
 
   Client.prototype = {
 
-    CHROME: 'chrome',chrome
+    CHROME: 'chrome',
     CONTENT: 'content',
 
     /**

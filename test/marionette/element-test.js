@@ -5,19 +5,13 @@ describe('marionette/element', function() {
   var driver, subject, client, id, device,
        Element, Client;
 
-  cross.require(
-    'marionette/element',
-    'Marionette.Element', function(obj) {
-      Element = obj;
-    }
-  );
+  cross.require('element', function(obj) {
+    Element = obj;
+  });
 
-  cross.require(
-    'marionette/client',
-    'Marionette.Client', function(obj) {
-      Client = obj;
-    }
-  );
+  cross.require('client', function(obj) {
+    Client = obj;
+  });
 
   id = '{fake-uuid-root}';
 

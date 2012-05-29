@@ -1,6 +1,8 @@
 (function() {
 
-  if (typeof(window) === 'undefined') {
+  var isNode = typeof(window) === 'undefined';
+
+  if (isNode) {
     expect = require('expect.js');
     context = global;
   } else {
@@ -11,7 +13,7 @@
   //always load test-agent for now
 
   cross = {
-    isNode: typeof(window) === 'undefined',
+    isNode: isNode,
 
     nsFind: function(obj, string) {
       var result = obj,
@@ -33,7 +35,7 @@
           prefix = 'test-agent/lib/';
 
       if (cross.isNode) {
-        cb(this.nsFind(require(prefix + path), component));
+        cb(require(prefix + path));
       } else {
         context.require('../vendor/test-agent.js', function() {
           cb(this.nsFind(context, component));
@@ -44,42 +46,54 @@
 
     require: function(path, component, cb) {
 
+      if(/^test-agent/.test(path)) {
+        return cross.requireTestAgent.apply(this, arguments);
+      }
+
       if (!path.match(/.js$/)) {
         path += '.js';
       }
 
-      if (path.indexOf('test-agent') === 0) {
-        return this.requireTestAgent.apply(this, arguments);
-      }
+      if (typeof(component) === 'function') {
+        //new module pattern
+        cb = component;
+        path = '/lib/marionette/' + path;
 
-      path = '../lib/' + path;
-
-      if (cross.isNode) {
-        cb(this.nsFind(require(path), component));
+        if (isNode) {
+          cb(require('..' + path));
+        } else {
+          exports.require(path, function() {
+            cb(TestAgent.require(path));
+          });
+        }
       } else {
-        context.require(path, function() {
-          cb(this.nsFind(context, component));
-        }.bind(this));
+        //old system
+        path = '/lib/' + path;
+
+        if (isNode) {
+          cb(require('..' + path));
+        } else {
+          exports.require(path, function() {
+            cb(this.nsFind(exports, component));
+          }.bind(this));
+        }
       }
+
     }
   };
 
   //Universal utils for tests.
   //will be loaded for all tests and available
   //in static scope inside and outside of tests.
-  cross.require(
-    'marionette/example-commands',
-    'Marionette.ExampleCommands',
-    function(obj) {
-      context.exampleCmds = obj;
-    }
-  );
+  cross.require('example-commands', function(obj) {
+    context.exampleCmds = obj;
+  });
 
   cross.require(
     '../test/support/device-interaction',
     'DeviceInteraction',
     function(obj) {
-      context.DeviceInteraction = obj;
+      context.DeviceInteraction = obj.DeviceInteraction;
     }
   );
 
@@ -87,7 +101,7 @@
     '../test/support/fake-xhr',
     'FakeXhr',
     function(obj) {
-      context.FakeXhr = obj;
+      context.FakeXhr = obj.FakeXhr;
     }
   );
 
@@ -95,7 +109,7 @@
     '../test/support/mock-driver',
     'MockDriver',
     function(obj) {
-      context.MockDriver = obj;
+      context.MockDriver = obj.MockDriver;
     }
   );
 
