@@ -1,19 +1,24 @@
-describe('marionette/drivers/tcp', function() {
+describe('marionette/drivers/moz-tcp', function() {
 
-  if (typeof(window) !== 'undefined') {
+  if (typeof(window.MozTcp) === 'undefined') {
     return;
   }
 
   var Abstract,
-      Driver = require('../../../lib/marionette/drivers/tcp'),
-      FakeSocket = require('../../support/socket');
+      Driver,
+      CommandStream;
 
-  cross.require(
-    'marionette/drivers/abstract',
-    'Marionette.Drivers.Abstract', function(obj) {
-      Abstract = obj;
-    }
-  );
+  cross.require('command-stream', function(obj) {
+    CommandStream = obj;
+  });
+
+  cross.require('drivers/abstract', function(obj) {
+    Abstract = obj;
+  });
+
+  cross.require('drivers/moz-tcp', function(obj) {
+    Driver = obj;
+  });
 
   var subject,
       RealSocket,
@@ -109,4 +114,5 @@ describe('marionette/drivers/tcp', function() {
 
 
 });
+
 

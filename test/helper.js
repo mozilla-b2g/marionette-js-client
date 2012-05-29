@@ -7,7 +7,7 @@
     context = global;
   } else {
     context = window;
-    context.require('../vendor/expect.js');
+    context.require('/vendor/expect.js');
   }
 
   //always load test-agent for now
@@ -45,7 +45,13 @@
       if (cross.isNode) {
         cb(require(prefix + path));
       } else {
-        context.require('../vendor/test-agent.js', function() {
+        try {
+          cb(this.nsFind(context, component));
+          console.log('FOUND: ', component);
+        } catch (e) {
+
+        }
+        context.require('/vendor/test-agent.js', function() {
           cb(this.nsFind(context, component));
         }.bind(this));
       }
@@ -104,6 +110,11 @@
     require('/lib/marionette/marionette.js');
   }
 
+  cross.require(
+    'test-agent/responder',
+    'TestAgent.Responder', function() {}
+  );
+
   cross.require('example-commands', function(obj) {
     context.exampleCmds = obj;
   });
@@ -114,6 +125,10 @@
 
   cross.require('support/fake-xhr', function(obj) {
     context.FakeXhr = obj;
+  });
+
+  cross.require('support/socket', function(obj) {
+    context.FakeSocket = obj;
   });
 
   cross.require('support/mock-driver', function(obj) {

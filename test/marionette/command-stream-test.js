@@ -34,7 +34,7 @@ describe('marionette/command-stream', function() {
     });
 
     it('should be an event emitter', function() {
-      expect(subject).to.be.a(Responder);
+      expect(subject.on).to.be.a(Function);
     });
 
     it('should have no commandLength', function() {

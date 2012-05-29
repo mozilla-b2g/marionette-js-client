@@ -1,4 +1,4 @@
-var FakeSocket = require('./support/socket'),
+var FakeSocket = require('../support/socket'),
     sockets = [],
     EventEmitter = require('events').EventEmitter,
     CommandStream = require('../../lib/marionette/command-stream'),

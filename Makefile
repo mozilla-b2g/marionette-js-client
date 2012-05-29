@@ -2,7 +2,7 @@ VENDOR=./vendor/
 REPORTER=Spec
 DEV_FILE=./marionette.js
 
-.PHONY: docs .vendor test test-node test-browser
+.PHONY: docs .vendor test test-node test-browser test-xpc
 
 test-server:
 	./node_modules/test-agent/bin/js-test-agent server --growl
@@ -38,11 +38,18 @@ package :
 	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
 	cat ./lib/marionette/index.js >> $(DEV_FILE)
 
-test : package test-node test-browser
+test : package test-node test-browser test-xpc
 
 test-browser:
 	@echo "NOTICE: You must have a client connected to test agent."
 	./node_modules/test-agent/bin/js-test-agent test --reporter $(REPORTER)
+
+test-xpc:
+	./node_modules/xpcwindow/bin/xpcwindow \
+		xpc-test.js \
+		test/marionette/*-test.js \
+		test/marionette/drivers/abstract-test.js \
+		test/marionette/drivers/moz-tcp-test.js
 
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
