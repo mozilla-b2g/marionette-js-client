@@ -13,7 +13,8 @@
 
   "devDependencies": {
     "mocha": "~1.0",
-    "expect.js": "0.1.2"
+    "expect.js": "0.1.2",
+    "xpcwindow": "0.0.1"
   },
 
   "license": "MIT",

@@ -29,6 +29,7 @@ package :
 	cat ./node_modules/test-agent/lib/test-agent/websocket-client.js >> $(DEV_FILE)
 	cat ./lib/marionette/marionette.js >> $(DEV_FILE)
 	cat ./lib/marionette/xhr.js >> $(DEV_FILE)
+	cat ./lib/marionette/command-stream.js >> $(DEV_FILE)
 	cat ./lib/marionette/element.js >> $(DEV_FILE)
 	cat ./lib/marionette/client.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/abstract.js >> $(DEV_FILE)
@@ -47,6 +48,7 @@ test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
 	  ./test/node/*-test.js \
 	  ./test/marionette/index-test.js \
+	  ./test/marionette/command-stream-test.js \
 	  ./test/marionette/xhr-test.js \
 	  ./test/marionette/client-test.js \
 	  ./test/marionette/element-test.js \

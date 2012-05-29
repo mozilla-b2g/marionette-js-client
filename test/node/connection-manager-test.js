@@ -1,7 +1,7 @@
 var FakeSocket = require('./support/socket'),
     sockets = [],
     EventEmitter = require('events').EventEmitter,
-    CommandStream = require('../../lib/node/command-stream'),
+    CommandStream = require('../../lib/marionette/command-stream'),
     ConnectionManger = require('../../lib/node/connection-manager');
 
 

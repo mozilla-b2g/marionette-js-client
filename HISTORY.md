@@ -1,3 +1,6 @@
+# 0.3.2
+  - Adding compat for xpcwindow
+
 # 0.3.1
   - Major internal rewrite of module definition.
 

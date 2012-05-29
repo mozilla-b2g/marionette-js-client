@@ -1,13 +1,22 @@
-var CommandStream = require('../../lib/node/command-stream'),
-    Buffer = require('buffer').Buffer,
-    EventEmitter = require('events').EventEmitter;
+describe('marionette/command-stream', function() {
 
-describe('command-stream', function() {
+  var subject, socket,
+      Responder,
+      CommandStream;
 
-  var subject, socket;
+  cross.require(
+    'test-agent/responder',
+    'TestAgent.Responder', function(obj) {
+      Responder = obj;
+    }
+  );
+
+  cross.require('command-stream', function(obj) {
+    CommandStream = obj;
+  });
 
   beforeEach(function() {
-    socket = new EventEmitter();
+    socket = new Responder();
     subject = new CommandStream(socket);
   });
 
@@ -25,7 +34,7 @@ describe('command-stream', function() {
     });
 
     it('should be an event emitter', function() {
-      expect(subject).to.be.a(EventEmitter);
+      expect(subject).to.be.a(Responder);
     });
 
     it('should have no commandLength', function() {
@@ -129,7 +138,7 @@ describe('command-stream', function() {
 
 
     function add(string, log) {
-      var buffer = new Buffer(string);
+      var buffer = string;
       subject.add(buffer);
     }
 

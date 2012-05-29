@@ -6,6 +6,7 @@
     "/test/marionette/client-test.js",
     "/test/marionette/element-test.js",
     "/test/marionette/index-test.js",
-    "/test/marionette/xhr-test.js"
+    "/test/marionette/xhr-test.js",
+    "/test/marionette/command-stream-test.js"
   ]
 }

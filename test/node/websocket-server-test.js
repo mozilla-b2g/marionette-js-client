@@ -1,6 +1,6 @@
 var Server = require('../../lib/node/websocket-server'),
     EventEmitter = require('events').EventEmitter,
-    CommandStream = require('../../lib/node/command-stream'),
+    CommandStream = require('../../lib/marionette/command-stream'),
     ConnectionManger = require('../../lib/node/connection-manager'),
     FakeSocket = require('./support/socket'),
     WSClient = require('./support/ws-client'),
