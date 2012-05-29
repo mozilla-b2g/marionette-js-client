@@ -34,6 +34,7 @@ package :
 	cat ./lib/marionette/client.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/abstract.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/websocket.js >> $(DEV_FILE)
+	cat ./lib/marionette/drivers/moz-tcp.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/httpd-polling.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
 	cat ./lib/marionette/index.js >> $(DEV_FILE)

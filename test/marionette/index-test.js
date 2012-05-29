@@ -22,8 +22,13 @@ describe('marionette/index', function() {
     expect(Index.Drivers.Websocket).to.be.an(Object);
     expect(Index.Drivers.HttpdPolling).to.be.an(Object);
 
+
     if (typeof(window) === 'undefined') {
       expect(Index.Drivers.Tcp).to.be.an(Object);
+    } else {
+      if (typeof(window.MozTCPSocket) !== 'undefined') {
+        expect(Index.Drivers.MozTcp).to.be.an(Object);
+      }
     }
   });
 
