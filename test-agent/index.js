@@ -13,9 +13,11 @@
   worker.use(TestAgent.BrowserWorker.MochaDriver, {
     /* path to mocha */
     mochaUrl: '../vendor/mocha.js',
-    testHelperUrl: '../test/helper.js'
+    testHelperUrl: '../test/helper.js',
+    reporter: 'HTML'
   });
 
+  worker.use(TestAgent.BrowserWorker.Websocket);
   worker.use(TestAgent.BrowserWorker.TestUi);
   worker.use(TestAgent.BrowserWorker.ErrorReporting);
 
