@@ -746,7 +746,13 @@
    */
   proto.send = function send(data) {
     debug('writing ', data, 'to socket');
-    this.socket.write(this.stringify(data), 'utf8');
+    if(this.socket.write) {
+      //nodejs socket
+      this.socket.write(this.stringify(data), 'utf8');
+    } else {
+      //moztcp socket
+      this.socket.send(this.stringify(data));
+    }
   };
 
   /**
@@ -1892,7 +1898,7 @@
 
 
     this.connectionId = 0;
-    this.host = options.host || 'localhost';
+    this.host = options.host || '127.0.0.1';
     this.port = options.port || 2828;
   }
 
@@ -2174,8 +2180,6 @@
 (function(module, ns) {
 
   var exports = module.exports;
-
-  console.log(ns._paths.drivers);
 
   exports.Element = ns.require('element');
   exports.Client = ns.require('client');

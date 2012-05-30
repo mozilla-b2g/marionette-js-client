@@ -110,19 +110,30 @@ describe('marionette/command-stream', function() {
 
     var calledWith = [], data = {uniq: true};
 
-    beforeEach(function() {
-      calledWith = [];
+    function sendsToSocket(fnName) {
+      beforeEach(function() {
+        subject.socket[fnName] = function() {
+          calledWith = Array.prototype.slice.call(arguments);
+        };
+        subject.send(data);
+      });
 
-      subject.socket.write = function() {
-        calledWith = Array.prototype.slice.call(arguments);
-      };
+      it('should write to socket', function() {
+        expect(calledWith[0]).to.be(subject.stringify(data));
+      });
+    }
 
-      subject.send(data);
+
+    describe('when using socket.send', function() {
+      sendsToSocket('send');
     });
 
-    it('should write to socket in utf8', function() {
-      expect(calledWith[0]).to.be(subject.stringify(data));
-      expect(calledWith[1]).to.be('utf8');
+    describe('when using socket.write', function() {
+      sendsToSocket('write');
+
+      it('should write in utf8', function() {
+        expect(calledWith[1]).to.be('utf8');
+      });
     });
 
   });
