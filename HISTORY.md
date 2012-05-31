@@ -1,3 +1,6 @@
+# 0.4.0
+  - XPC Shell support via xpcwindow. 
+
 # 0.3.2
   - Adding compat for xpcwindow
 
