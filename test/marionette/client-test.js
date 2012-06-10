@@ -372,6 +372,17 @@ describe('marionette/client', function() {
 
   });
 
+  describe('.importScript', function() {
+    device.
+      issues('importScript', 'foo').
+      shouldSend({
+        type: 'importScript',
+        script: 'foo',
+      }).
+      serverResponds('ok').
+      callbackReceives('ok');
+  });
+
   describe('.setScriptTimeout', function() {
     device.
       issues('setScriptTimeout', 100).

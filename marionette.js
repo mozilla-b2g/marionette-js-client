@@ -1363,6 +1363,39 @@
     },
 
     /**
+     * Imports a script into the marionette
+     * context for the duration of the session.
+     *
+     * Good for prototyping new marionette commands.
+     *
+     * @param {String} script javascript string blob.
+     * @param {Function} callback called with boolean.
+     */
+    importScript: function(script, callback) {
+      var cmd = { type: 'importScript', script: script };
+      return this._sendCommand(cmd, 'ok', callback);
+    },
+
+    /**
+     * Switches context of marionette to specific iframe.
+     *
+     *
+     * @param {String|Marionette.Element} id iframe id or element.
+     * @param {Function} callback called with boolean.
+     */
+    switchToFrame: function switchToFrame(id, callback) {
+      var cmd = { type: 'switchToFrame' };
+
+      if (id instanceof Element) {
+        cmd.element = id.id;
+      } else {
+        cmd.value = id;
+      }
+
+      return this._sendCommand(cmd, 'ok', callback);
+    },
+
+    /**
      * Switches context of window.
      *
      * @param {String} context either: 'chome' or 'content'.
