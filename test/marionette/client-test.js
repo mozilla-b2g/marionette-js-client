@@ -338,6 +338,40 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
+  describe('.switchToFrame', function() {
+
+    describe('when given a non-element', function() {
+      device.
+        issues('switchToFrame', '1d').
+        shouldSend({
+          type: 'switchToFrame',
+          value: '1d'
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
+
+
+
+    describe('when given an element', function() {
+      var el;
+
+      beforeEach(function() {
+        el = new Element('77', subject);
+        subject.switchToFrame(el, commandCallback);
+      });
+
+      device.
+        shouldSend({
+          type: 'switchToFrame',
+          element: '77'
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
+
+  });
+
   describe('.setScriptTimeout', function() {
     device.
       issues('setScriptTimeout', 100).
