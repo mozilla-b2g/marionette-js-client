@@ -19,8 +19,9 @@
 
     return {
 
-      commandCallback: function commandCallback(data) {
+      commandCallback: function commandCallback(error, data) {
         commandCallback.value = data;
+        commandCallback.error = error;
       },
 
       issues: function issues() {

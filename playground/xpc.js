@@ -5,17 +5,31 @@
 
   var driver = new Marionette.Drivers.MozTcp();
 
-  driver.connect(function() {
-     var client = new Marionette.Client(driver);
-     client.startSession(function() {
-       client.goUrl('http://google.com', function(e) {
-         client.deleteSession(function(){
-           window.xpcEventLoop.stop(); 
-         });
-       });
-     });
+driver.connect(function() {
+  var client = new Marionette.Client(driver, {
+    defaultCallback: function defaultCallback(err, value) {
+      if (err) {
+        console.log(err)
+        throwMe = err;
+      }
+    }
   });
 
+  client.
+    startSession(function() {
+      client.
+        getUrl().
+        setContext('content').
+        findElement('fooza').
+        //executeScript('function zoomba() { a(); } zoomba();').
+        deleteSession(function deleteSes() {
+          window.xpcEventLoop.stop();
+          if (throwMe) {
+            throw throwMe;
+          }
+        });
+    });
+});
 
   window.xpcEventLoop.start();
 }(this));

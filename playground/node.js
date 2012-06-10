@@ -10,14 +10,13 @@ var script = function shitWorks() {
   });
 }.toString();
 
-
 driver.connect(function() {
-  console.log('CONNECTED!');
   var client = new Marionette.Client(driver, {
-    defaultCallback: function(value) {
-      console.log('--- response start --');
-      console.log(arguments)
-      console.log('--- response end --');
+    defaultCallback: function defaultCallback(err, value) {
+      if (err) {
+        console.log(err)
+        throwMe = err;
+      }
     }
   });
 
@@ -26,10 +25,13 @@ driver.connect(function() {
       client.
         getUrl().
         setContext('content').
-        executeAsyncScript(script, function(out) {
-          console.log(util.inspect(out, true));
-        }, 1000).
-        deleteSession();
+        findElement('fooza').
+        //executeScript('function zoomba() { a(); } zoomba();').
+        deleteSession(function deleteSes() {
+          if (throwMe) {
+            throw throwMe;
+          }
+        });
     });
 });
 

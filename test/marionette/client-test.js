@@ -1,10 +1,14 @@
 describe('marionette/client', function() {
 
   var subject, driver, cb, cbResponse,
-      result, device, Element, Client;
+      result, device, Element, Client, Exception;
 
   cross.require('element', function(obj) {
     Element = obj;
+  });
+
+  cross.require('error', function(obj) {
+    Exception = obj;
   });
 
   cross.require('client', function(obj) {
@@ -32,6 +36,61 @@ describe('marionette/client', function() {
     it('should save .driver', function() {
       expect(subject.driver).to.be(driver);
     });
+  });
+
+  describe('._handleCallback', function() {
+    var calledWith;
+
+    function usesCallback() {
+
+      it('should handle errors', function() {
+        var calledWith, err;
+
+        err = {
+          status: 500,
+          message: 'foo',
+          stacktrace: 'bar'
+        };
+
+        subject._handleCallback(function() {
+          calledWith = arguments;
+        }, err, null);
+
+        expect(calledWith[0]).to.be.a(
+          Exception.GenericError
+        );
+
+        expect(calledWith[0].message).to.contain('foo');
+      });
+
+      it('should use callback when provided', function(done) {
+        subject._handleCallback(function(err, val) {
+          expect(err).to.be(1);
+          expect(val).to.be(2);
+          done();
+        }, 1, 2);
+      });
+    }
+
+    describe('with default', function() {
+
+      beforeEach(function() {
+        calledWith = null;
+        subject.defaultCallback = function() {
+          calledWith = arguments;
+        }
+      });
+
+      it('should use default when no callback is provided', function() {
+        subject._handleCallback(null, 1, 2);
+        expect(calledWith).to.eql([1, 2]);
+      });
+
+      usesCallback();
+
+    });
+
+    usesCallback();
   });
 
   describe('.searchMethods', function() {
@@ -144,34 +203,60 @@ describe('marionette/client', function() {
   describe('._sendCommand', function() {
     var cmd, response,
         calledTransform, result,
-        cbValue;
+        calledWith;
 
-    beforeEach(function(done) {
-      cmd = exampleCmds.getUrl();
-      response = exampleCmds.getUrlResponse();
+    describe('on success', function() {
 
-      calledTransform = false;
-      subject._transformResultValue = function(value) {
-        calledTransform = true;
-        expect(value).to.be(response.value);
-        return 'foo';
-      }
+      beforeEach(function(done) {
+        cmd = exampleCmds.getUrl();
+        response = exampleCmds.getUrlResponse();
 
-      result = subject._sendCommand(cmd, 'value', function(data) {
-        cbValue = data;
-        done();
+        calledTransform = false;
+        subject._transformResultValue = function(value) {
+          calledTransform = true;
+          expect(value).to.be(response.value);
+          return 'foo';
+        }
+
+        result = subject._sendCommand(cmd, 'value', function() {
+          calledWith = arguments;
+          done();
+        });
+
+        driver.respond(response);
       });
 
-      driver.respond(response);
+      it('should send given command and format the result', function() {
+        expect(result).to.be(subject);
+      });
+
+      it('should send command through _transformResultValue', function() {
+        expect(calledTransform).to.be(true);
+        expect(calledWith[1]).to.be('foo');
+      });
+
     });
 
-    it('should send given command and format the result', function() {
-      expect(result).to.be(subject);
-    });
+    describe('on error', function() {
 
-    it('should send command through _transformResultValue', function() {
-      expect(calledTransform).to.be(true);
-      expect(cbValue).to.be('foo');
+      beforeEach(function(done) {
+        calledWith = null;
+        cmd = exampleCmds.getUrl();
+        response = exampleCmds.error();
+
+        subject._sendCommand(cmd, 'value', function(err, data) {
+          calledWith = arguments;
+          done();
+        });
+
+        driver.respond(response);
+      });
+
+      it('should pass error to callback', function() {
+        expect(calledWith[0]).to.be.ok();
+        expect(calledWith[1]).to.not.be.ok();
+      });
+
     });
 
   });
@@ -552,7 +637,7 @@ describe('marionette/client', function() {
     });
 
     it('should send callback response', function() {
-      expect(cbResponse[0]).to.eql(response);
+      expect(cbResponse[1]).to.eql(response);
     });
 
   });
