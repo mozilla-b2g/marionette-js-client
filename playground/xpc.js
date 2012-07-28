@@ -3,6 +3,7 @@
 
   importScripts('../marionette.js');
 
+  console.log(Marionette.Drivers);
   var driver = new Marionette.Drivers.MozTcp();
 
 driver.connect(function() {

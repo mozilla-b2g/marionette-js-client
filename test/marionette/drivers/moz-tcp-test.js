@@ -1,6 +1,6 @@
 describe('marionette/drivers/moz-tcp', function() {
 
-  if (typeof(window.MozTcp) === 'undefined') {
+  if (typeof(window.TCPSocket) === 'undefined') {
     return;
   }
 
@@ -94,7 +94,7 @@ describe('marionette/drivers/moz-tcp', function() {
     });
 
     it('should create a socket for connection', function() {
-      expect(sockets[0].host).to.be('localhost');
+      expect(sockets[0].host).to.be('127.0.0.1');
       expect(sockets[0].port).to.be(2828);
     });
 

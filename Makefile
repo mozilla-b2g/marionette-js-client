@@ -60,12 +60,12 @@ test-browser:
 	@echo "NOTICE: You must have a client connected to test agent."
 	./node_modules/test-agent/bin/js-test-agent test --reporter $(REPORTER)
 
+XPC_TEST_FILES=test/marionette/*-test.js \
+	test/marionette/drivers/abstract-test.js \
+	test/marionette/drivers/moz-tcp-test.js
+
 test-xpc: install-xulrunner
-	PATH=$$PWD/xulrunner-sdk/bin:$$PATH ./node_modules/xpcwindow/bin/xpcwindow \
-		xpc-test.js \
-		test/marionette/*-test.js \
-		test/marionette/drivers/abstract-test.js \
-		test/marionette/drivers/moz-tcp-test.js
+	PATH=$$PWD/xulrunner-sdk/bin:$$PATH ./node_modules/xpcwindow/bin/xpcwindow xpc-test.js $(XPC_TEST_FILES)
 
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \

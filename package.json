@@ -13,7 +13,7 @@
   "devDependencies": {
     "mocha": "~1.0",
     "expect.js": "0.1.2",
-    "xpcwindow": "0.1.0",
+    "xpcwindow": "0.2.0",
     "jsdoc-toolkit": "~0.0"
   },
 
