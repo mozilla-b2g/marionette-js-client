@@ -1,3 +1,6 @@
+# 0.5.0
+  - Better MozTCP support.
+
 # 0.4.0
   - XPC Shell support via xpcwindow. 
 
