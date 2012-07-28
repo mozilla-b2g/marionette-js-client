@@ -7,3 +7,7 @@
 ./build
 ./docs
 Makefile
+./xulrunner-sdk
+./HISTORY.md
+./xpc-test.js
+./test-agent-server.js
