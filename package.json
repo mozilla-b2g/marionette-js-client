@@ -10,6 +10,10 @@
     "debug": "~0.6"
   },
 
+  "scripts": {
+    "test": "make test-node"
+  },
+
   "devDependencies": {
     "mocha": "~1.0",
     "expect.js": "0.1.2",

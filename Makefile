@@ -3,7 +3,7 @@ SYS=$(shell uname -s)
 ARCH=$(shell uname -m)
 
 VENDOR=./vendor/
-REPORTER=Spec
+REPORTER=spec
 DEV_FILE=./marionette.js
 
 ifeq ($(SYS),Darwin)
