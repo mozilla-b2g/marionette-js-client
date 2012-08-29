@@ -1,3 +1,8 @@
+# 0.5.0
+  - Update MozTCP socket api
+  - update to latest xpcwindow
+  - node debug style logging for xpcwindow runner
+
 # 0.4.1
   - Better MozTCP support.
 
