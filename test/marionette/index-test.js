@@ -1,5 +1,9 @@
-if (!cross.isNode) {
+if (cross.isBrowser) {
   require('/marionette.js');
+}
+
+if (cross.isXpc) {
+  window.xpcModule.require('../../../marionette.js');
 }
 
 describe('marionette/index', function() {

@@ -3,7 +3,7 @@ SYS=$(shell uname -s)
 ARCH=$(shell uname -m)
 
 VENDOR=./vendor/
-REPORTER=spec
+REPORTER=Spec
 DEV_FILE=./marionette.js
 
 ifeq ($(SYS),Darwin)
@@ -64,8 +64,8 @@ XPC_TEST_FILES=test/marionette/*-test.js \
 	test/marionette/drivers/abstract-test.js \
 	test/marionette/drivers/moz-tcp-test.js
 
-test-xpc: install-xulrunner
-	PATH=$$PWD/xulrunner-sdk/bin:$$PATH ./node_modules/xpcwindow/bin/xpcwindow xpc-test.js $(XPC_TEST_FILES)
+test-xpc:
+	./node_modules/xpcwindow/bin/xpcwindow-mocha test/xpc-helper.js $(XPC_TEST_FILES)
 
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
@@ -80,34 +80,3 @@ test-node:
 	  ./test/marionette/drivers/tcp-test.js \
 	  ./test/marionette/drivers/websocket-test.js \
 	  ./test/marionette/drivers/httpd-polling-test.js
-
-# The below is stolen from the gaia makefile
-
-# The install-xulrunner target arranges to get xulrunner downloaded and sets up
-# some commands for invoking it. But it is platform dependent
-XULRUNNER_BASE_URL=http://ftp.mozilla.org/pub/mozilla.org/xulrunner
-ifeq ($(SYS),Darwin)
-# We're on a mac
-XULRUNNER_DOWNLOAD=$(XULRUNNER_BASE_URL)/nightly/2012/05/2012-05-08-03-05-17-mozilla-central/xulrunner-15.0a1.en-US.mac-x86_64.sdk.tar.bz2
-XULRUNNER=./xulrunner-sdk/bin/run-mozilla.sh
-XPCSHELL=./xulrunner-sdk/bin/xpcshell
-
-install-xulrunner:
-	test -d xulrunner-sdk || ($(DOWNLOAD_CMD) $(XULRUNNER_DOWNLOAD) && tar xjf xulrunner*.tar.bz2 && rm xulrunner*.tar.bz2)
-
-else
-# Not a mac: assume linux
-# Linux only!
-# downloads and installs locally xulrunner to run the xpchsell
-# script that creates the offline cache
-ifeq ($(ARCH),x86_64)
-XULRUNNER_DOWNLOAD=$(XULRUNNER_BASE_URL)/releases/11.0/runtimes/xulrunner-11.0.en-US.linux-x86_64.tar.bz2
-else
-XULRUNNER_DOWNLOAD=$(XULRUNNER_BASE_URL)/releases/11.0/runtimes/xulrunner-11.0.en-US.linux-i686.tar.bz2
-endif
-XULRUNNER=./xulrunner/run-mozilla.sh
-XPCSHELL=./xulrunner/xpcshell
-
-install-xulrunner :
-	test -d xulrunner || ($(DOWNLOAD_CMD) $(XULRUNNER_DOWNLOAD) && tar xjf xulrunner*.tar.bz2 && rm xulrunner*.tar.bz2)
-endif

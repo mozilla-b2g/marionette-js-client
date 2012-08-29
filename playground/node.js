@@ -11,6 +11,7 @@ var script = function shitWorks() {
 }.toString();
 
 driver.connect(function() {
+  var throwMe;
   var client = new Marionette.Client(driver, {
     defaultCallback: function defaultCallback(err, value) {
       if (err) {
@@ -25,13 +26,16 @@ driver.connect(function() {
       client.
         getUrl().
         setContext('content').
-        findElement('fooza').
-        //executeScript('function zoomba() { a(); } zoomba();').
-        deleteSession(function deleteSes() {
-          if (throwMe) {
-            throw throwMe;
-          }
-        });
-    });
+        findElement('#notifications-container', function(err, el) {
+          el.getAttribute('outerHTML', function() {
+            console.log('done??');
+          });
+          client.deleteSession(function deleteSes() {
+            if (throwMe) {
+              throw throwMe;
+            }
+          });
+        })
+  });
 });
 

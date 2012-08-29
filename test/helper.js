@@ -1,19 +1,22 @@
 (function() {
 
   var isNode = typeof(window) === 'undefined';
+  var isXpc = !isNode && (typeof(window.xpcModule) !== 'undefined');
 
   if (isNode) {
     expect = require('expect.js');
     context = global;
   } else {
     context = window;
-    context.require('/vendor/expect.js');
+    context.require('../vendor/expect.js');
   }
 
   //always load test-agent for now
 
   cross = {
     isNode: isNode,
+    isXpc: isXpc,
+    isBrowser: !isNode && !isXpc,
 
     requireLib: function(path, cb) {
       if (this.isNode) {
@@ -47,7 +50,6 @@
       } else {
         try {
           cb(this.nsFind(context, component));
-          console.log('FOUND: ', component);
         } catch (e) {
 
         }

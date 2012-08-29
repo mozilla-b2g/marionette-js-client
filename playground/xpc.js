@@ -21,15 +21,17 @@ driver.connect(function() {
       client.
         getUrl().
         setContext('content').
-        findElement('fooza').
-        //executeScript('function zoomba() { a(); } zoomba();').
-        deleteSession(function deleteSes() {
-          window.xpcEventLoop.stop();
-          if (throwMe) {
-            throw throwMe;
-          }
-        });
-    });
+        findElement('#notifications-container', function(err, el) {
+          el.getAttribute('outerHTML', function() {
+            console.log('done??');
+          });
+          client.deleteSession(function deleteSes() {
+            if (throwMe) {
+              throw throwMe;
+            }
+          });
+        })
+  });
 });
 
   window.xpcEventLoop.start();
