@@ -18,7 +18,7 @@
     "mocha": "~1.0",
     "expect.js": "0.1.2",
     "xpcwindow": "0.4.4",
-    "jsdoc-toolkit": "~0.0"
+    "yuidocjs": "~0.3"
   },
 
   "license": "MIT",
