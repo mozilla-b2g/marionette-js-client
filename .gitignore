@@ -2,3 +2,4 @@ vendor/*
 node_modules
 xulrunner-sdk
 .DS_Store
+api-docs/
