@@ -6,7 +6,6 @@
   "logo": "none",
   "options": {
     "paths": "lib/marionette/",
-    "outdir": "docs/api/",
     "themedir": "docs/theme",
     "linkNatives": true
   }
