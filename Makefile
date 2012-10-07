@@ -66,6 +66,7 @@ doc-publish:
 	git commit -m "regenerate api docs"
 	git push origin gh-pages --force
 	git checkout master
+	rm -Rf docs/api/
 
 .PHONY: test
 test : package test-node test-browser test-xpc
