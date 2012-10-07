@@ -13,17 +13,17 @@ Designed to run on nodejs & xpcshell.
 
 Fork repo
 
-```` sh
+``` sh
 npm install .
-````
+```
 
 ### Running tests
 
 Node:
 
-```` sh
+``` sh
 make test-node
-````
+```
 
 Browser:
 
