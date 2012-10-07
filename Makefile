@@ -59,14 +59,15 @@ doc-server:
 
 .PHONY: doc-publish
 doc-publish:
-	rm -Rf docs/api/
-	$(YUIDOCJS) $(DOC_PARAMS) -o ./api-docs/ $(DOC_DIR) -c ./yuidoc.json
+	$(YUIDOCJS) $(DOC_PARAMS) -o ./api-docs-temp/ $(DOC_DIR) -c ./yuidoc.json
 	git checkout gh-pages
+	rm -Rf api-docs
+	mv api-docs-temp api-docs
 	git add api-docs
 	git commit -m "regenerate api docs"
 	git push origin gh-pages --force
 	git checkout master
-	rm -Rf docs/api/
+	rm -Rf api-docs-temp/
 
 .PHONY: test
 test : package test-node test-browser test-xpc
