@@ -16,15 +16,23 @@ SED_INPLACE_NO_SUFFIX = sed -i
 DOWNLOAD_CMD = wget
 endif
 
-.PHONY: docs .vendor test test-node test-browser test-xpc
+# doc variables
+YUIDOCJS?=./node_modules/yuidocjs/lib/cli.js
+DOC_PARAMS?=--themedir ./docs/theme
+DOC_DIR=./lib/marionette
 
+.PHONY: test-server
 test-server:
 	./node_modules/test-agent/bin/js-test-agent server --growl
 
-docs:
-	mkdir -p docs/api
-	rm -Rf ./docs/api/
-	./node_modules/jsdoc-toolkit/app/run.js --recurse=10 -p -a -d=./docs/api/ -t=./build/jsdoc-template/ ./lib/
+.PHONY: doc-server
+doc-server:
+	$(YUIDOCJS) $(DOC_PARAMS) --server $(DOC_DIR)
+
+.PHONY: docs
+doc:
+	rm -Rf docs/api/
+	$(YUIDOCJS) $(DOC_PARAMS) -o ./docs/api/ $(DOC_DIR) -c ./yuidoc.json
 
 
 package :
@@ -54,8 +62,10 @@ package :
 	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
 	cat ./lib/marionette/index.js >> $(DEV_FILE)
 
+.PHONY: test
 test : package test-node test-browser test-xpc
 
+.PHONY: test-browser
 test-browser:
 	@echo "NOTICE: You must have a client connected to test agent."
 	./node_modules/test-agent/bin/js-test-agent test --reporter $(REPORTER)
@@ -64,9 +74,11 @@ XPC_TEST_FILES=test/marionette/*-test.js \
 	test/marionette/drivers/abstract-test.js \
 	test/marionette/drivers/moz-tcp-test.js
 
+.PHONY: test-xpc
 test-xpc:
 	./node_modules/xpcwindow/bin/xpcwindow-mocha test/xpc-helper.js $(XPC_TEST_FILES)
 
+.PHONY: test-node
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
 	  ./test/node/*-test.js \
