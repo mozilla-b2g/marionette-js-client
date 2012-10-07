@@ -17,7 +17,10 @@ Fork repo
 npm install .
 ```
 
-### Running tests
+### Tests
+
+Tests are written in [Mocha](https://github.com/visionmedia/mocha) / [Chai](http://chaijs.com/)
+
 
 Node:
 
