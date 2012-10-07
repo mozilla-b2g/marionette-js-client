@@ -27,7 +27,7 @@ make test-node
 
 Browser:
 
-```` sh
+``` sh
 make package
 make test-server
 # GOTO: http://localhost:8789/test-agent/index.html in your browser
@@ -35,4 +35,4 @@ make test-server
 make test-browser
 # you can also use
 # "make test" to run both node and browser tests.
-````
+```
