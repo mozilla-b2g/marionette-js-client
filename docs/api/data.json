@@ -1,0 +1,2022 @@
+{
+    "project": {
+        "name": "Marionette JS Client",
+        "description": "JavaScript API/Client for Marionette (https://developer.mozilla.org/en-US/docs/Marionette)",
+        "version": "0.5.0",
+        "url": "https://github.com/lightsofapollo/marionette_js_client",
+        "logo": "none"
+    },
+    "files": {
+        "lib/marionette/drivers/abstract.js": {
+            "name": "lib/marionette/drivers/abstract.js",
+            "modules": {},
+            "classes": {
+                "Marionette.Drivers.Abstract": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/drivers/httpd-polling.js": {
+            "name": "lib/marionette/drivers/httpd-polling.js",
+            "modules": {},
+            "classes": {
+                "Marionette.Drivers.Httpd": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/drivers/moz-tcp.js": {
+            "name": "lib/marionette/drivers/moz-tcp.js",
+            "modules": {},
+            "classes": {
+                "Marionette.Drivers.MozTcp": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/drivers/tcp.js": {
+            "name": "lib/marionette/drivers/tcp.js",
+            "modules": {},
+            "classes": {
+                "Marionette.Drivers.Tcp": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/drivers/websocket.js": {
+            "name": "lib/marionette/drivers/websocket.js",
+            "modules": {},
+            "classes": {
+                "Marionette.Drivers.Websocket": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/client.js": {
+            "name": "lib/marionette/client.js",
+            "modules": {},
+            "classes": {
+                "Marionette.Client": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/command-stream.js": {
+            "name": "lib/marionette/command-stream.js",
+            "modules": {},
+            "classes": {
+                "Marionette.CommandStream": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/element.js": {
+            "name": "lib/marionette/element.js",
+            "modules": {},
+            "classes": {
+                "Marionette.Element": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/error.js": {
+            "name": "lib/marionette/error.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/marionette.js": {
+            "name": "lib/marionette/marionette.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/xhr.js": {
+            "name": "lib/marionette/xhr.js",
+            "modules": {},
+            "classes": {
+                "": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "Marionette.Drivers.Abstract": {
+            "name": "Marionette.Drivers.Abstract",
+            "shortname": "Marionette.Drivers.Abstract",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 3,
+            "description": "Abstract driver that will handle\n all common tasks between implementations.\n Such as error handling, request/response queuing\n and timeouts.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "set options on prototype.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Marionette.Drivers.Httpd": {
+            "name": "Marionette.Drivers.Httpd",
+            "shortname": "Marionette.Drivers.Httpd",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 9,
+            "description": "Creates instance of http proxy backend.",
+            "deprecated": true,
+            "extends": "Marionette.Drivers.Abstract",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "key/value pairs to add to prototype.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Marionette.Drivers.MozTcp": {
+            "name": "Marionette.Drivers.MozTcp",
+            "shortname": "Marionette.Drivers.MozTcp",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/marionette/drivers/moz-tcp.js",
+            "line": 66,
+            "description": "Connects to gecko marionette server using mozTCP api.\n\n\n    // default options are fine for b2g-desktop\n    // or a device device /w port forwarding.\n    var tcp = new Marionette.Drivers.MozTcp();\n\n    tcp.connect(function() {\n      // ready to use with client\n    });",
+            "extends": "Marionette.Drivers.Abstract",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "connection options.",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "host",
+                            "description": "ip/host.",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"127.0.0.1\""
+                        },
+                        {
+                            "name": "port",
+                            "description": "marionette server port.",
+                            "type": "Numeric",
+                            "optional": true,
+                            "optdefault": "\"2828\""
+                        }
+                    ]
+                }
+            ]
+        },
+        "Marionette.Drivers.Tcp": {
+            "name": "Marionette.Drivers.Tcp",
+            "shortname": "Marionette.Drivers.Tcp",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 9,
+            "description": "NodeJS only tcp socket driver for marionette.\nSee {{#crossLink \"Marionette.Drivers.MozTcp\"}}{{/crossLink}}\nfor the gecko/xpcom vesion of this driver.",
+            "extends": "Marionette.Drivers.Abstract",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "connection options.",
+                    "type": "Options",
+                    "props": [
+                        {
+                            "name": "host",
+                            "description": "host.",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"localhost\""
+                        },
+                        {
+                            "name": "port",
+                            "description": "port.",
+                            "type": "Numeric",
+                            "optional": true,
+                            "optdefault": "\"2828\""
+                        }
+                    ]
+                }
+            ]
+        },
+        "Marionette.Drivers.Websocket": {
+            "name": "Marionette.Drivers.Websocket",
+            "shortname": "Marionette.Drivers.Websocket",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/marionette/drivers/websocket.js",
+            "line": 11,
+            "description": "WebSocket interface for marionette.\nGenerally {{#crossLink \"Marionette.Drivers.Tcp\"}}{{/crossLink}}\nwill be faster and more reliable but WebSocket can expose devices\nover http instead of a pure socket.",
+            "extends": "Marionette.Drivers.Abstract",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "options for abstract/prototype.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Marionette.Client": {
+            "name": "Marionette.Client",
+            "shortname": "Marionette.Client",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/marionette/client.js",
+            "line": 22,
+            "description": "Initializes client.\nYou must create and initialize\na driver and pass it into the client before\nusing the client itself.\n\n    // all drivers conform to this api\n\n    var driver = new Marionette.Dirver.MozTcp({});\n    var client;\n\n    driver.connect(function(err) {\n      if (err) {\n        // handle error case...\n      }\n\n      client = new Marionette.Client(driver, {\n          // optional default callback can be used to implement\n          // a generator interface or other non-callback based api.\n         defaultCallback: function(err, result) {\n           console.log('CALLBACK GOT:', err, result);\n         }\n      });\n\n      // by default commands run in a queue.\n      // assuming there is not a fatal error each command\n      // will execute sequentially.\n      client.startSession().\n             goUrl('http://google.com').\n             executeScript(function() {\n               alert(document.title);\n             });\n      }\n    });",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "driver",
+                    "description": "fully initialized client.",
+                    "type": "Marionette.Drivers.Abstract"
+                },
+                {
+                    "name": "options",
+                    "description": "options for driver.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Marionette.CommandStream": {
+            "name": "Marionette.CommandStream",
+            "shortname": "Marionette.CommandStream",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/marionette/command-stream.js",
+            "line": 20,
+            "description": "Command stream accepts a socket or any event\nemitter that will emit data events",
+            "params": [
+                {
+                    "name": "socket",
+                    "description": "socket instance.",
+                    "type": "EventEmitter"
+                }
+            ],
+            "is_constructor": 1
+        },
+        "Marionette.Element": {
+            "name": "Marionette.Element",
+            "shortname": "Marionette.Element",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "namespace": "",
+            "file": "lib/marionette/element.js",
+            "line": 6,
+            "description": "Creates an element reference\nbased on an id and a client instance.\nYou should never need to manually create\nan instance of element.\n\nUse {{#crossLink \"Marionette.Client/findElement\"}}{{/crossLink}} or\n{{#crossLink \"Marionette.Client/findElements\"}}{{/crossLink}} to create\ninstance(s) of this class.",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "id of element.",
+                    "type": "String"
+                },
+                {
+                    "name": "client",
+                    "description": "client instance.",
+                    "type": "Marionette.Client"
+                }
+            ]
+        },
+        "": {
+            "file": "lib/marionette/xhr.js",
+            "line": 13,
+            "description": "Creates a XHR wrapper.\nDepending on the platform this is loaded\nfrom the correct wrapper type will be used.\n\nOptions are derived from properties on the prototype.\nSee each property for its default value.",
+            "name": "Marionette.Xhr",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "options for xhr.",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "method",
+                            "description": "any HTTP verb like 'GET' or 'POST'.",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"GET\""
+                        },
+                        {
+                            "name": "async",
+                            "description": "false will indicate\n                  a synchronous request.",
+                            "type": "Boolean",
+                            "optional": true
+                        },
+                        {
+                            "name": "headers",
+                            "description": "full of http headers.",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "data",
+                            "description": "post data.",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "classitems": [
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 21,
+            "description": "Timeout for commands",
+            "itemtype": "property",
+            "name": "timeout",
+            "type": "Numeric",
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 29,
+            "description": "Waiting for a command to finish?",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "property",
+            "name": "_waiting",
+            "type": "Boolean",
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 38,
+            "description": "Is system ready for commands?",
+            "itemtype": "property",
+            "name": "ready",
+            "type": "Boolean",
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 46,
+            "description": "Connection id for the server.",
+            "itemtype": "property",
+            "name": "connectionId",
+            "type": "Numeric",
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 54,
+            "description": "Sends remote command to server.\nEach command will be queued while waiting for\nany pending commands. This ensures order of\nresponse is correct.",
+            "itemtype": "method",
+            "name": "send",
+            "params": [
+                {
+                    "name": "command",
+                    "description": "remote command to send to marionette.",
+                    "type": "Object"
+                },
+                {
+                    "name": "callback",
+                    "description": "executed when response comes back.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 82,
+            "description": "Connects to a remote server.\nRequires a _connect function to be defined.\n\n    MyClass.prototype._connect = function _connect(){\n      //open a socket to marrionete accept response\n      //you *must* call _onDeviceResponse with the first\n      //response from marionette it looks like this:\n      //{ from: 'root', applicationType: 'gecko', traits: [] }\n      this.connectionId = result.id;\n    }",
+            "itemtype": "method",
+            "name": "connect",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "executes\n  after successfully connecting to the server.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 108,
+            "description": "Destroys connection to server\n\nWill immediately close connection to server\nclosing any pending responses.",
+            "itemtype": "method",
+            "name": "close",
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 124,
+            "description": "Checks queue if not waiting for a response\nSends command to websocket server",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_nextCommand",
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/abstract.js",
+            "line": 140,
+            "description": "Handles responses from devices.\nWill only respond to the event if the connectionId\nis equal to the event id and the client is ready.",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "response from server.",
+                    "type": "Object"
+                }
+            ],
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_onDeviceResponse",
+            "class": "Marionette.Drivers.Abstract"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 1,
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 34,
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 36,
+            "description": "Location of the http server that will proxy to marionette",
+            "memberof": "Marionette.Drivers.Httpd#",
+            "name": "proxyUrl",
+            "type": "String",
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 44,
+            "description": "Port that proxy should connect to.",
+            "name": "port",
+            "memberof": "Marionette.Drivers.Httpd#",
+            "type": "Numeric",
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 53,
+            "description": "Server proxy should connect to.",
+            "name": "server",
+            "memberof": "Marionette.Drivers.Httpd#",
+            "type": "String",
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 63,
+            "description": "Sends command to server for this connection",
+            "name": "_sendCommand",
+            "memberof": "Marionette.Drivers.Httpd#",
+            "params": [
+                {
+                    "name": "command",
+                    "description": "remote marionette command.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 77,
+            "description": "Sends DELETE message to server to close marionette connection.\nAborts all polling operations.",
+            "name": "_close",
+            "memberof": "Marionette.Drivers.Httpd#",
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 96,
+            "description": "Opens connection for device.",
+            "name": "_connect",
+            "memberof": "Marionette.Drivers.Httpd#",
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 119,
+            "description": "Creates xhr request",
+            "memberof": "Marionette.Drivers.Httpd#",
+            "name": "_request",
+            "params": [
+                {
+                    "name": "method",
+                    "description": "http method like 'POST' or 'GET'.",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "optional.",
+                    "type": "Object"
+                },
+                {
+                    "name": "callback",
+                    "description": "after xhr completes \\\nreceives parsed data as first argument and xhr object as second.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "xhr wrapper.",
+                "type": "Marionette.Xhr"
+            },
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/httpd-polling.js",
+            "line": 156,
+            "description": "Handles response to multiple messages.\nRequeues the _pollingRequest on success\n\n   {\n     messages: [\n       { id: 1, response: {} },\n       ....\n     ]\n   }",
+            "this": "",
+            "name": "_onQueueResponse",
+            "memberof": "Marionette.Drivers.Httpd#",
+            "params": [
+                {
+                    "name": "queue",
+                    "description": "list of messages.",
+                    "type": "Object"
+                },
+                {
+                    "name": "xhr",
+                    "description": "xhr instance.",
+                    "type": "Marionette.Xhr"
+                }
+            ],
+            "class": "Marionette.Drivers.Httpd"
+        },
+        {
+            "file": "lib/marionette/drivers/moz-tcp.js",
+            "line": 12,
+            "description": "Horrible hack to work around\nmissing stuff in TCPSocket & add\nnode compatible api.",
+            "class": "Marionette.Drivers.MozTcp"
+        },
+        {
+            "file": "lib/marionette/drivers/moz-tcp.js",
+            "line": 63,
+            "class": "Marionette.Drivers.MozTcp"
+        },
+        {
+            "file": "lib/marionette/drivers/moz-tcp.js",
+            "line": 100,
+            "description": "Sends a command to the server.",
+            "params": [
+                {
+                    "name": "cmd",
+                    "description": "remote marionette command.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Marionette.Drivers.MozTcp"
+        },
+        {
+            "file": "lib/marionette/drivers/moz-tcp.js",
+            "line": 109,
+            "description": "Opens TCP socket for marionette client.",
+            "class": "Marionette.Drivers.MozTcp"
+        },
+        {
+            "file": "lib/marionette/drivers/moz-tcp.js",
+            "line": 120,
+            "description": "Receives command from server.",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "response from marionette server.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Marionette.Drivers.MozTcp"
+        },
+        {
+            "file": "lib/marionette/drivers/moz-tcp.js",
+            "line": 132,
+            "description": "Closes connection to marionette.",
+            "class": "Marionette.Drivers.MozTcp"
+        },
+        {
+            "file": "lib/marionette/drivers/moz-tcp.js",
+            "line": 141,
+            "class": "Marionette.Drivers.MozTcp"
+        },
+        {
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 6,
+            "class": "Marionette.Drivers.Tcp"
+        },
+        {
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 29,
+            "itemtype": "property",
+            "name": "host",
+            "type": "String",
+            "class": "Marionette.Drivers.Tcp"
+        },
+        {
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 35,
+            "itemtype": "property",
+            "name": "port",
+            "type": "Numeric",
+            "class": "Marionette.Drivers.Tcp"
+        },
+        {
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 44,
+            "description": "Sends a command to the server.",
+            "params": [
+                {
+                    "name": "cmd",
+                    "description": "remote marionette command.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Marionette.Drivers.Tcp"
+        },
+        {
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 53,
+            "description": "Opens TCP socket for marionette client.",
+            "class": "Marionette.Drivers.Tcp"
+        },
+        {
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 65,
+            "description": "Receives command from server.",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "response from marionette server.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Marionette.Drivers.Tcp"
+        },
+        {
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 77,
+            "description": "Closes connection to marionette.",
+            "class": "Marionette.Drivers.Tcp"
+        },
+        {
+            "file": "lib/marionette/drivers/tcp.js",
+            "line": 86,
+            "class": "Marionette.Drivers.Tcp"
+        },
+        {
+            "file": "lib/marionette/drivers/websocket.js",
+            "line": 31,
+            "description": "Sends a command to the websocket server.",
+            "params": [
+                {
+                    "name": "command",
+                    "description": "remote marionette command.",
+                    "type": "Object"
+                }
+            ],
+            "access": "private",
+            "tagname": "",
+            "class": "Marionette.Drivers.Websocket"
+        },
+        {
+            "file": "lib/marionette/drivers/websocket.js",
+            "line": 44,
+            "description": "Opens a connection to the websocket server and creates\na device connection.",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "sent when initial response comes back.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Drivers.Websocket"
+        },
+        {
+            "file": "lib/marionette/drivers/websocket.js",
+            "line": 69,
+            "description": "Closes connection to marionette.",
+            "class": "Marionette.Drivers.Websocket"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 73,
+            "description": "Constant for chrome context.",
+            "type": "{String}",
+            "itemtype": "property",
+            "name": "CHROME",
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 81,
+            "description": "Constant for content context.",
+            "type": "{String}",
+            "itemtype": "property",
+            "name": "CONTENT",
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 89,
+            "description": "Actor id for instance",
+            "itemtype": "property",
+            "name": "actor",
+            "type": "String",
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 97,
+            "description": "Session id for instance.",
+            "itemtype": "property",
+            "name": "session",
+            "type": "String",
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 105,
+            "description": "Sends a command to the server.\nAdds additional information like actor and session\nto command if not present.",
+            "itemtype": "method",
+            "name": "send",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "cb",
+                    "description": "executed when response is sent.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 149,
+            "description": "Sends request and formats response.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_sendCommand",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "command",
+                    "description": "marionette command.",
+                    "type": "Object"
+                },
+                {
+                    "name": "responseKey",
+                    "description": "the part of the response to pass \\\n                            unto the callback.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "wrapped callback.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 171,
+            "description": "Finds the actor for this instance.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_getActorId",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "executed when response is sent.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 191,
+            "description": "Starts a remote session.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_newSession",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "optional.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 209,
+            "description": "Finds actor and creates connection to marionette.\nThis is a combination of calling getMarionetteId and then newSession.",
+            "itemtype": "method",
+            "name": "startSession",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "executed when session is started.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 224,
+            "description": "Destroys current session.",
+            "chainable": 1,
+            "itemtype": "method",
+            "name": "deleteSession",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "executed when session is destroyed.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 244,
+            "description": "Callback will receive the id of the current window.",
+            "chainable": 1,
+            "itemtype": "method",
+            "name": "getWindow",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "executed with id of current window.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 257,
+            "description": "Callback will receive an array of window ids.",
+            "itemtype": "method",
+            "name": "getWindow",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "executes with an array of ids.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 269,
+            "description": "Switches context of marionette to specific window.",
+            "itemtype": "method",
+            "name": "switchToWindow",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "id",
+                    "description": "window id you can find these with getWindow(s).",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "called with boolean.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 283,
+            "description": "Imports a script into the marionette\ncontext for the duration of the session.\n\nGood for prototyping new marionette commands.",
+            "itemtype": "method",
+            "name": "importScript",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "script",
+                    "description": "javascript string blob.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "called with boolean.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 299,
+            "description": "Switches context of marionette to specific iframe.",
+            "itemtype": "method",
+            "name": "switchToFrame",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "id",
+                    "description": "iframe id or element.",
+                    "type": "String|Marionette.Element"
+                },
+                {
+                    "name": "callback",
+                    "description": "called with boolean.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 320,
+            "description": "Switches context of window.",
+            "itemtype": "method",
+            "name": "setContext",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "context",
+                    "description": "either: 'chome' or 'content'.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "receives boolean.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 337,
+            "description": "Sets the script timeout",
+            "itemtype": "method",
+            "name": "setScriptTimeout",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "timeout",
+                    "description": "max time in ms.",
+                    "type": "Numeric"
+                },
+                {
+                    "name": "callback",
+                    "description": "executed with boolean status.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 351,
+            "description": "setSearchTimeout",
+            "itemtype": "method",
+            "name": "setSearchTimeout",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "timeout",
+                    "description": "max time in ms.",
+                    "type": "Numeric"
+                },
+                {
+                    "name": "callback",
+                    "description": "executed with boolean status.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 365,
+            "description": "Gets url location for device.",
+            "itemtype": "method",
+            "name": "getUrl",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "receives url.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 377,
+            "description": "Refreshes current window on device.",
+            "itemtype": "method",
+            "name": "refresh",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "boolean success.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 389,
+            "description": "Drives browser to a url.",
+            "itemtype": "method",
+            "name": "goUrl",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "url",
+                    "description": "location.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "executes when finished driving browser to url.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 402,
+            "description": "Drives window forward.",
+            "itemtype": "method",
+            "name": "goForward",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "receives boolean.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 415,
+            "description": "Drives window back.",
+            "itemtype": "method",
+            "name": "goBack",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "receives boolean.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 427,
+            "description": "Logs a message on marionette server.",
+            "itemtype": "method",
+            "name": "log",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "message",
+                    "description": "log message.",
+                    "type": "String"
+                },
+                {
+                    "name": "level",
+                    "description": "arbitrary log level.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "receives boolean.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 443,
+            "description": "Retrieves all logs on the marionette server.\nThe response from marionette is an array of arrays.\n\n    device.getLogs(function(err, logs){\n      //logs => [\n        [\n          'msg',\n          'level',\n          'Fri Apr 27 2012 11:00:32 GMT-0700 (PDT)'\n        ]\n      ]\n    });",
+            "itemtype": "method",
+            "name": "getLogs",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "receive an array of logs.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 467,
+            "description": "Executes a remote script will block.\nScript is *not* wrapped in a function.",
+            "itemtype": "method",
+            "name": "executeJsScript",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "script",
+                    "description": "script to run.",
+                    "type": "String"
+                },
+                {
+                    "name": "args",
+                    "description": "optional args for script.",
+                    "type": "Array",
+                    "optional": true
+                },
+                {
+                    "name": "timeout",
+                    "description": "optional args for timeout.",
+                    "type": "Array",
+                    "optional": true
+                },
+                {
+                    "name": "callback",
+                    "description": "will receive result of the return \\\n                           call in the script if there is one.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 500,
+            "description": "Executes a remote script will block. Script is wrapped in a function.\n\n    // its is very important to remember that the contents of this\n    // method are \"stringified\" (Function#toString) and sent over the\n    // wire to execute on the device. So things like scope will not be\n    // the same. If you need to pass other information in arguments\n    // option should be used.\n\n    // assume that this element is the result of findElement\n    var element;\n    var config = {\n       event: 'magicCustomEvent',\n       detail: { foo: true  }\n    };\n\n    var remoteArgs = [element, details];\n\n    // unlike other callbacks this one will execute _on device_\n    function remoteFn(element, details) {\n       // element in this context is a real dom element now.\n       var event = document.createEvent('CustomEvent');\n       event.initCustomEvent(config.event, true, true, event.detail);\n       element.dispatchEvent(event);\n\n       return { success: true };\n    }\n\n    client.executeJsScript(remoteFn, remoteArgs, function(err, value) {\n      // value => { success: true }\n    });",
+            "itemtype": "method",
+            "name": "executeScript",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "script",
+                    "description": "script to run.",
+                    "type": "String"
+                },
+                {
+                    "name": "args",
+                    "description": "optional args for script.",
+                    "type": "Array",
+                    "optional": true
+                },
+                {
+                    "name": "callback",
+                    "description": "will receive result of the return \\\n                           call in the script if there is one.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 553,
+            "description": "Script is wrapped in a function and will be executed asynchronously.\n\nNOTE: that setScriptTimeout _must_ be set prior to using this method\n      as the timeout defaults to zero.\n\n\n   function remote () {\n     window.addEventListener('someevent', function() {\n       // special method to notify that async script is complete.\n       marionetteScriptFinished({ fromRemote: true })\n     });\n   }\n\n   client.executeAsyncScript(remote, function(err, value) {\n     // value === { fromRemote: true }\n   });",
+            "itemtype": "method",
+            "name": "executeAsyncScript",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "script",
+                    "description": "script to run.",
+                    "type": "String"
+                },
+                {
+                    "name": "args",
+                    "description": "optional args for script.",
+                    "type": "Array",
+                    "optional": true
+                },
+                {
+                    "name": "callback",
+                    "description": "will receive result of the return \\\n                           call in the script if there is one.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 592,
+            "description": "Finds element.",
+            "itemtype": "method",
+            "name": "_findElement",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "type of command to send like 'findElement'.",
+                    "type": "String"
+                },
+                {
+                    "name": "query",
+                    "description": "search query.",
+                    "type": "String"
+                },
+                {
+                    "name": "method",
+                    "description": "search method.",
+                    "type": "String"
+                },
+                {
+                    "name": "elementId",
+                    "description": "id of element to search within.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "executes with element uuid(s).",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 649,
+            "description": "Attempts to find a dom element (via css selector, xpath, etc...)\n\"elements\" returned are instances of\n{{#crossLink \"Marionette.Element\"}}{{/crossLink}}\n\n\n    // with default options\n    client.findElement('#css-selector', function(err, element) {\n       if (err) {\n         // handle case where element was not found\n       }\n\n       // see element interface for all methods, etc..\n       element.click(function() {\n\n       });\n    });",
+            "itemtype": "method",
+            "name": "findElement",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "query",
+                    "description": "search query.",
+                    "type": "String"
+                },
+                {
+                    "name": "method",
+                    "description": "search method.",
+                    "type": "String"
+                },
+                {
+                    "name": "elementId",
+                    "description": "id of element to search within.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "executes with element uuid.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 682,
+            "description": "Finds multiple elements in the dom. This method has the same\napi signature as {{#crossLink \"findElement\"}}{{/crossLink}} the\nonly difference is where findElement returns a single element\nthis method will return an array of elements in the callback.\n\n\n    // find all links in the document\n    client.findElements('a[href]', function(err, element) {\n    });",
+            "itemtype": "method",
+            "name": "findElements",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "query",
+                    "description": "search query.",
+                    "type": "String"
+                },
+                {
+                    "name": "method",
+                    "description": "search method.",
+                    "type": "String"
+                },
+                {
+                    "name": "elementId",
+                    "description": "id of element to search within.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "executes with an array of element uuids.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 708,
+            "description": "Converts an function into a string\nthat can be sent to marionette.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_convertFunction",
+            "params": [
+                {
+                    "name": "fn",
+                    "description": "function to call on the server.",
+                    "type": "Function|String"
+                }
+            ],
+            "return": {
+                "description": "function string.",
+                "type": "String"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 725,
+            "description": "Processes result of command\nif an {'ELEMENT': 'uuid'} combination\nis returned a Marionette.Element\ninstance will be created and returned.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_transformResultValue",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "original result from server.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "processed result.",
+                "type": "Object|Marionette.Element"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 744,
+            "description": "Prepares arguments for script commands.\nFormats Marionette.Element's sod\nmarionette can use them in script commands.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_prepareArguments",
+            "params": [
+                {
+                    "name": "arguments",
+                    "description": "list of args for wrapped function.",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "processed arguments.",
+                "type": "Array"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 768,
+            "description": "Executes a remote string of javascript.\nthe javascript string will be wrapped in a function\nby marionette.",
+            "itemtype": "method",
+            "name": "_executeScript",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "objects of execute script.",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "type",
+                            "description": "command type like 'executeScript'.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "value",
+                            "description": "javascript string.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "args",
+                            "description": "arguments for script.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "timeout",
+                            "description": "timeout only used in 'executeJSScript'.",
+                            "type": "Boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "callback",
+                    "description": "executes when script finishes.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/command-stream.js",
+            "line": 46,
+            "description": "Length prefix",
+            "itemtype": "property",
+            "name": "prefix",
+            "type": "String",
+            "class": "Marionette.CommandStream"
+        },
+        {
+            "file": "lib/marionette/command-stream.js",
+            "line": 54,
+            "description": "name of the event this class\nwill emit when a response to a\ncommand is received.",
+            "itemtype": "property",
+            "name": "commandEvent",
+            "type": "String",
+            "class": "Marionette.CommandStream"
+        },
+        {
+            "file": "lib/marionette/command-stream.js",
+            "line": 64,
+            "description": "Parses command into a string to\nbe sent over a tcp socket to marionette.",
+            "itemtype": "method",
+            "name": "stringify",
+            "params": [
+                {
+                    "name": "command",
+                    "description": "marionette command.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "command as a string.",
+                "type": "String"
+            },
+            "class": "Marionette.CommandStream"
+        },
+        {
+            "file": "lib/marionette/command-stream.js",
+            "line": 84,
+            "description": "Accepts raw string command parses it and\nemits a commandEvent.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_handleCommand",
+            "params": [
+                {
+                    "name": "string",
+                    "description": "raw response from marionette.",
+                    "type": "String"
+                }
+            ],
+            "class": "Marionette.CommandStream"
+        },
+        {
+            "file": "lib/marionette/command-stream.js",
+            "line": 100,
+            "description": "Checks if current buffer is ready to read.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_checkBuffer",
+            "return": {
+                "description": "true when in a command and buffer \\\n                  is ready to begin reading.",
+                "type": "Boolean"
+            },
+            "class": "Marionette.CommandStream"
+        },
+        {
+            "file": "lib/marionette/command-stream.js",
+            "line": 122,
+            "description": "Read current buffer.\nDrain and emit all comands from the buffer.",
+            "itemtype": "method",
+            "name": "_readBuffer",
+            "access": "private",
+            "tagname": "",
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.CommandStream"
+        },
+        {
+            "file": "lib/marionette/command-stream.js",
+            "line": 146,
+            "description": "Writes a command to the socket.\nHandles conversion and formatting of object.",
+            "itemtype": "method",
+            "name": "send",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "marionette command.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Marionette.CommandStream"
+        },
+        {
+            "file": "lib/marionette/command-stream.js",
+            "line": 164,
+            "description": "Adds a chunk (string or buffer) to the\ntotal buffer of this instance.",
+            "this": "",
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "buffer or string to add.",
+                    "type": "String|Buffer"
+                }
+            ],
+            "class": "Marionette.CommandStream"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 1,
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 26,
+            "description": "Sends remote command processes the result.\nAppends element id to each command.",
+            "itemtype": "method",
+            "name": "_sendCommand",
+            "chainable": 1,
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "command",
+                    "description": "marionette request.",
+                    "type": "Object"
+                },
+                {
+                    "name": "responseKey",
+                    "description": "key in the response to pass to callback.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "callback function receives the result of\n                           response[responseKey] as its first argument.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 49,
+            "description": "Finds a single child of this element.",
+            "itemtype": "method",
+            "name": "findElement",
+            "params": [
+                {
+                    "name": "query",
+                    "description": "search string.",
+                    "type": "String"
+                },
+                {
+                    "name": "method",
+                    "description": "search method.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "element callback.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 63,
+            "description": "Finds a all children of this element that match a pattern.",
+            "itemtype": "method",
+            "name": "findElements",
+            "params": [
+                {
+                    "name": "query",
+                    "description": "search string.",
+                    "type": "String"
+                },
+                {
+                    "name": "method",
+                    "description": "search method.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "element callback.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 77,
+            "description": "Shortcut method to execute\na function with this element as first argument.",
+            "itemtype": "method",
+            "name": "scriptWith",
+            "params": [
+                {
+                    "name": "script",
+                    "description": "remote script.",
+                    "type": "Function|String"
+                },
+                {
+                    "name": "callback",
+                    "description": "callback when script completes.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 90,
+            "description": "Checks to see if two elements are equal",
+            "itemtype": "method",
+            "name": "equals",
+            "params": [
+                {
+                    "name": "element",
+                    "description": "element to test.",
+                    "type": "String|Marionette.Element"
+                },
+                {
+                    "name": "callback",
+                    "description": "called with boolean.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 112,
+            "description": "Gets attribute value for element.",
+            "itemtype": "method",
+            "name": "getAttribute",
+            "params": [
+                {
+                    "name": "attr",
+                    "description": "attribtue name.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "gets called with attribute's value.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 129,
+            "description": "Sends typing event keys to element.",
+            "itemtype": "method",
+            "name": "sendKeys",
+            "params": [
+                {
+                    "name": "string",
+                    "description": "message to type.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "boolean success.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 146,
+            "description": "Clicks element.",
+            "itemtype": "method",
+            "name": "click",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "boolean result.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 160,
+            "description": "Gets text of element",
+            "itemtype": "method",
+            "name": "text",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "text of element.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 174,
+            "description": "Gets value of element",
+            "itemtype": "method",
+            "name": "value",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "value of element.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 188,
+            "description": "Clears element.",
+            "itemtype": "method",
+            "name": "clear",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "value of element.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 202,
+            "description": "Checks if element is selected.",
+            "itemtype": "method",
+            "name": "selected",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "boolean argument.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 217,
+            "description": "Checks if element is enabled.",
+            "itemtype": "method",
+            "name": "enabled",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "boolean argument.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/element.js",
+            "line": 231,
+            "description": "Checks if element is displayed.",
+            "itemtype": "method",
+            "name": "displayed",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "boolean argument.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "self.",
+                "type": "Object"
+            },
+            "class": "Marionette.Element"
+        },
+        {
+            "file": "lib/marionette/error.js",
+            "line": 72,
+            "description": "Returns an error object given\na error object from the marionette client.\nExpected input follows this format:\n\nCodes are from:\nhttp://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes\n\n   {\n     message: \"Something\",\n     stacktrace: \"wentwrong@line\",\n     status: 17\n   }",
+            "params": [
+                {
+                    "name": "obj",
+                    "description": "remote error object.",
+                    "type": "Object"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/marionette.js",
+            "line": 3,
+            "description": "Define a list of paths\nthis will only be used in the browser.",
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/marionette.js",
+            "line": 10,
+            "description": "Exports object is a shim\nwe use in the browser to\ncreate an object that will behave much\nlike module.exports",
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/marionette.js",
+            "line": 22,
+            "description": "Unified require between browser/node.\nPath is relative to this file so you\nwill want to use it like this from any depth.\n\n\n  var Leaf = ns.require('sub/leaf');",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "path lookup relative to this file.",
+                    "type": "String"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/marionette.js",
+            "line": 41,
+            "description": "Maps exports to a file path.",
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/marionette.js",
+            "line": 53,
+            "description": "Module object constructor.\n\n\n   var module = Module('sub/leaf');\n   module.exports = function Leaf(){}",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "path",
+                    "description": "file path.",
+                    "type": "String"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/marionette.js",
+            "line": 73,
+            "description": "Reference self as exports\nwhich also happens to be the constructor\nso you can assign items to the namespace:\n\n   //assign to Module.X\n   //assume module.exports is Module\n   module.exports.X = Foo; //Module.X === Foo;\n   Module.exports('foo'); //creates module.exports object.",
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/marionette.js",
+            "line": 86,
+            "description": "In the browser assign\nto a global namespace\nobviously 'Module' would\nbe whatever your global namespace is.",
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/xhr.js",
+            "line": 1,
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/xhr.js",
+            "line": 44,
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/xhr.js",
+            "line": 63,
+            "description": "Aborts request if its in progress.",
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/xhr.js",
+            "line": 72,
+            "description": "Sends request to server.",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "success/failure handler.",
+                    "type": "Function"
+                }
+            ],
+            "class": ""
+        }
+    ]
+}
