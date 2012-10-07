@@ -21,20 +21,7 @@ YUIDOCJS?=./node_modules/yuidocjs/lib/cli.js
 DOC_PARAMS?=--themedir ./docs/theme
 DOC_DIR=./lib/marionette
 
-.PHONY: test-server
-test-server:
-	./node_modules/test-agent/bin/js-test-agent server --growl
-
-.PHONY: doc-server
-doc-server:
-	$(YUIDOCJS) $(DOC_PARAMS) --server $(DOC_DIR)
-
-.PHONY: docs
-doc:
-	rm -Rf docs/api/
-	$(YUIDOCJS) $(DOC_PARAMS) -o ./docs/api/ $(DOC_DIR) -c ./yuidoc.json
-
-
+.PHONY: package
 package :
 	rm -Rf $(VENDOR)/
 	mkdir $(VENDOR)
@@ -61,6 +48,19 @@ package :
 	cat ./lib/marionette/drivers/httpd-polling.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
 	cat ./lib/marionette/index.js >> $(DEV_FILE)
+
+.PHONY: test-server
+test-server:
+	./node_modules/test-agent/bin/js-test-agent server --growl
+
+.PHONY: doc-server
+doc-server:
+	$(YUIDOCJS) $(DOC_PARAMS) --server $(DOC_DIR)
+
+.PHONY: docs
+doc:
+	rm -Rf docs/api/
+	$(YUIDOCJS) $(DOC_PARAMS) -o ./docs/api/ $(DOC_DIR) -c ./yuidoc.json
 
 .PHONY: test
 test : package test-node test-browser test-xpc
