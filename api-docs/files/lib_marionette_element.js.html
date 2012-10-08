@@ -276,15 +276,13 @@
     },
 
     &#x2F;**
-     * Gets value of element
+     * Returns tag name of element.
      *
-     * @method value
-     * @param {Function} callback value of element.
-     * @return {Object} self.
+     * @param {Function} callback node style [err, tagName].
      *&#x2F;
-    value: function value(callback) {
+    tagName: function tagName(callback) {
       var cmd = {
-        type: &#x27;getElementValue&#x27;
+        type: &#x27;getElementTagName&#x27;,
       };
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },

@@ -410,11 +410,16 @@
      * @param {Function} callback called with boolean.
      *&#x2F;
     switchToFrame: function switchToFrame(id, callback) {
+      if (typeof(id) === &#x27;function&#x27;) {
+        callback = id;
+        id = null;
+      }
+
       var cmd = { type: &#x27;switchToFrame&#x27; };
 
       if (id instanceof Element) {
         cmd.element = id.id;
-      } else {
+      } else if (id) {
         cmd.value = id;
       }
 
