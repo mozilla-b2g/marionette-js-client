@@ -1074,15 +1074,13 @@
     },
 
     /**
-     * Gets value of element
+     * Returns tag name of element.
      *
-     * @method value
-     * @param {Function} callback value of element.
-     * @return {Object} self.
+     * @param {Function} callback node style [err, tagName].
      */
-    value: function value(callback) {
+    tagName: function tagName(callback) {
       var cmd = {
-        type: 'getElementValue'
+        type: 'getElementTagName',
       };
       return this._sendCommand(cmd, 'value', callback);
     },
@@ -1463,11 +1461,16 @@
      * @param {Function} callback called with boolean.
      */
     switchToFrame: function switchToFrame(id, callback) {
+      if (typeof(id) === 'function') {
+        callback = id;
+        id = null;
+      }
+
       var cmd = { type: 'switchToFrame' };
 
       if (id instanceof Element) {
         cmd.element = id.id;
-      } else {
+      } else if (id) {
         cmd.value = id;
       }
 

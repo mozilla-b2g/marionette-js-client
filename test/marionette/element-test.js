@@ -176,9 +176,9 @@ describe('marionette/element', function() {
       callbackReceives('ok');
   });
 
+  simpleCommand('tagName', 'getElementTagName', 'value');
   simpleCommand('click', 'clickElement', 'ok');
   simpleCommand('text', 'getElementText', 'value');
-  simpleCommand('value', 'getElementValue', 'value');
   simpleCommand('clear', 'clearElement', 'ok');
   simpleCommand('selected', 'isElementSelected', 'value');
   simpleCommand('enabled', 'isElementEnabled', 'value');

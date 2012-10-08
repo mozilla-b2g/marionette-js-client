@@ -351,7 +351,13 @@ describe('marionette/client', function() {
         callbackReceives('ok');
     });
 
-
+    describe('when given nothing', function() {
+      device.
+        issues('switchToFrame').
+        shouldSend({ type: 'switchToFrame' }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
 
     describe('when given an element', function() {
       var el;
