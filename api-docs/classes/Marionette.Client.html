@@ -1719,16 +1719,17 @@ instance will be created and returned.</p>
 <p>NOTE: that setScriptTimeout <em>must</em> be set prior to using this method
       as the timeout defaults to zero.</p>
 
-<p>function remote () {
-     window.addEventListener('someevent', function() {
-       // special method to notify that async script is complete.
-       marionetteScriptFinished({ fromRemote: true })
-     });
-   }</p>
+<pre class="code"><code class="prettyprint">function remote () {
+  window.addEventListener('someevent', function() {
+    // special method to notify that async script is complete.
+    marionetteScriptFinished({ fromRemote: true })
+  });
+}
 
-<p>client.executeAsyncScript(remote, function(err, value) {
-     // value === { fromRemote: true }
-   });</p>
+client.executeAsyncScript(remote, function(err, value) {
+  // value === { fromRemote: true }
+});
+</code></pre>
     </div>
 
     

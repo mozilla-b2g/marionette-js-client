@@ -666,16 +666,16 @@
      *       as the timeout defaults to zero.
      *
      *
-     *    function remote () {
-     *      window.addEventListener(&#x27;someevent&#x27;, function() {
-     *        &#x2F;&#x2F; special method to notify that async script is complete.
-     *        marionetteScriptFinished({ fromRemote: true })
-     *      });
-     *    }
+     *     function remote () {
+     *       window.addEventListener(&#x27;someevent&#x27;, function() {
+     *         &#x2F;&#x2F; special method to notify that async script is complete.
+     *         marionetteScriptFinished({ fromRemote: true })
+     *       });
+     *     }
      *
-     *    client.executeAsyncScript(remote, function(err, value) {
-     *      &#x2F;&#x2F; value === { fromRemote: true }
-     *    });
+     *     client.executeAsyncScript(remote, function(err, value) {
+     *       &#x2F;&#x2F; value === { fromRemote: true }
+     *     });
      *
      *
      * @method executeAsyncScript

@@ -1250,7 +1250,7 @@
         {
             "file": "lib/marionette/client.js",
             "line": 558,
-            "description": "Script is wrapped in a function and will be executed asynchronously.\n\nNOTE: that setScriptTimeout _must_ be set prior to using this method\n      as the timeout defaults to zero.\n\n\n   function remote () {\n     window.addEventListener('someevent', function() {\n       // special method to notify that async script is complete.\n       marionetteScriptFinished({ fromRemote: true })\n     });\n   }\n\n   client.executeAsyncScript(remote, function(err, value) {\n     // value === { fromRemote: true }\n   });",
+            "description": "Script is wrapped in a function and will be executed asynchronously.\n\nNOTE: that setScriptTimeout _must_ be set prior to using this method\n      as the timeout defaults to zero.\n\n\n    function remote () {\n      window.addEventListener('someevent', function() {\n        // special method to notify that async script is complete.\n        marionetteScriptFinished({ fromRemote: true })\n      });\n    }\n\n    client.executeAsyncScript(remote, function(err, value) {\n      // value === { fromRemote: true }\n    });",
             "itemtype": "method",
             "name": "executeAsyncScript",
             "chainable": 1,
