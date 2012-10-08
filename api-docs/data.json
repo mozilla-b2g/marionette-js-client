@@ -1828,6 +1828,8 @@
             "file": "lib/marionette/element.js",
             "line": 174,
             "description": "Returns tag name of element.",
+            "itemtype": "method",
+            "name": "tagName",
             "params": [
                 {
                     "name": "callback",
@@ -1839,7 +1841,7 @@
         },
         {
             "file": "lib/marionette/element.js",
-            "line": 186,
+            "line": 187,
             "description": "Clears element.",
             "itemtype": "method",
             "name": "clear",
@@ -1858,7 +1860,7 @@
         },
         {
             "file": "lib/marionette/element.js",
-            "line": 200,
+            "line": 201,
             "description": "Checks if element is selected.",
             "itemtype": "method",
             "name": "selected",
@@ -1877,7 +1879,7 @@
         },
         {
             "file": "lib/marionette/element.js",
-            "line": 215,
+            "line": 216,
             "description": "Checks if element is enabled.",
             "itemtype": "method",
             "name": "enabled",
@@ -1896,7 +1898,7 @@
         },
         {
             "file": "lib/marionette/element.js",
-            "line": 229,
+            "line": 230,
             "description": "Checks if element is displayed.",
             "itemtype": "method",
             "name": "displayed",
