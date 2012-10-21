@@ -545,6 +545,33 @@ describe('marionette/client', function() {
       });
     }
 
+    describe('with overriden Element', function() {
+      var MyElement;
+
+      beforeEach(function() {
+        MyElement = function () {
+          Element.apply(this, arguments);
+        }
+
+        MyElement.prototype = { __proto__: Element.prototype };
+        subject.Element = MyElement;
+      });
+
+      device.
+        issues('_findElement', 'findElement', '#wow').
+        shouldSend({
+          type: 'findElement',
+          value: '#wow',
+          using: 'css selector'
+        }).
+        serverResponds('findElementResponse');
+
+      it('should return an instance of MyElement', function() {
+        var value = device.commandCallback.value;
+        expect(value).to.be.a(MyElement);
+      });
+    });
+
     describe('simple find with defaults', function() {
       device.
         issues('_findElement', 'findElement', '#wow').

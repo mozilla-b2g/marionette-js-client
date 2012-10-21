@@ -1,3 +1,6 @@
+# 0.5.1
+  - Make it easier to override default element
+
 # 0.5.0
   - Update MozTCP socket api
   - update to latest xpcwindow
