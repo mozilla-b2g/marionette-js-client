@@ -732,7 +732,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 73,
+            "line": 75,
             "description": "Constant for chrome context.",
             "type": "{String}",
             "itemtype": "property",
@@ -741,7 +741,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 81,
+            "line": 83,
             "description": "Constant for content context.",
             "type": "{String}",
             "itemtype": "property",
@@ -750,7 +750,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 89,
+            "line": 91,
             "description": "Actor id for instance",
             "itemtype": "property",
             "name": "actor",
@@ -759,7 +759,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 97,
+            "line": 99,
             "description": "Session id for instance.",
             "itemtype": "property",
             "name": "session",
@@ -768,7 +768,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 105,
+            "line": 107,
             "description": "Sends a command to the server.\nAdds additional information like actor and session\nto command if not present.",
             "itemtype": "method",
             "name": "send",
@@ -784,7 +784,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 149,
+            "line": 151,
             "description": "Sends request and formats response.",
             "access": "private",
             "tagname": "",
@@ -812,7 +812,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 171,
+            "line": 173,
             "description": "Finds the actor for this instance.",
             "access": "private",
             "tagname": "",
@@ -829,7 +829,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 191,
+            "line": 193,
             "description": "Starts a remote session.",
             "access": "private",
             "tagname": "",
@@ -846,7 +846,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 209,
+            "line": 211,
             "description": "Finds actor and creates connection to marionette.\nThis is a combination of calling getMarionetteId and then newSession.",
             "itemtype": "method",
             "name": "startSession",
@@ -861,7 +861,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 224,
+            "line": 226,
             "description": "Destroys current session.",
             "chainable": 1,
             "itemtype": "method",
@@ -877,7 +877,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 244,
+            "line": 246,
             "description": "Callback will receive the id of the current window.",
             "chainable": 1,
             "itemtype": "method",
@@ -897,7 +897,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 257,
+            "line": 259,
             "description": "Callback will receive an array of window ids.",
             "itemtype": "method",
             "name": "getWindow",
@@ -913,7 +913,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 269,
+            "line": 271,
             "description": "Switches context of marionette to specific window.",
             "itemtype": "method",
             "name": "switchToWindow",
@@ -934,7 +934,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 283,
+            "line": 285,
             "description": "Imports a script into the marionette\ncontext for the duration of the session.\n\nGood for prototyping new marionette commands.",
             "itemtype": "method",
             "name": "importScript",
@@ -955,7 +955,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 299,
+            "line": 301,
             "description": "Switches context of marionette to specific iframe.",
             "itemtype": "method",
             "name": "switchToFrame",
@@ -976,7 +976,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 325,
+            "line": 327,
             "description": "Switches context of window.",
             "itemtype": "method",
             "name": "setContext",
@@ -997,7 +997,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 342,
+            "line": 344,
             "description": "Sets the script timeout",
             "itemtype": "method",
             "name": "setScriptTimeout",
@@ -1022,7 +1022,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 356,
+            "line": 358,
             "description": "setSearchTimeout",
             "itemtype": "method",
             "name": "setSearchTimeout",
@@ -1047,7 +1047,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 370,
+            "line": 372,
             "description": "Gets url location for device.",
             "itemtype": "method",
             "name": "getUrl",
@@ -1063,7 +1063,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 382,
+            "line": 384,
             "description": "Refreshes current window on device.",
             "itemtype": "method",
             "name": "refresh",
@@ -1082,7 +1082,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 394,
+            "line": 396,
             "description": "Drives browser to a url.",
             "itemtype": "method",
             "name": "goUrl",
@@ -1103,7 +1103,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 407,
+            "line": 409,
             "description": "Drives window forward.",
             "itemtype": "method",
             "name": "goForward",
@@ -1119,7 +1119,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 420,
+            "line": 422,
             "description": "Drives window back.",
             "itemtype": "method",
             "name": "goBack",
@@ -1135,7 +1135,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 432,
+            "line": 434,
             "description": "Logs a message on marionette server.",
             "itemtype": "method",
             "name": "log",
@@ -1165,7 +1165,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 448,
+            "line": 450,
             "description": "Retrieves all logs on the marionette server.\nThe response from marionette is an array of arrays.\n\n    device.getLogs(function(err, logs){\n      //logs => [\n        [\n          'msg',\n          'level',\n          'Fri Apr 27 2012 11:00:32 GMT-0700 (PDT)'\n        ]\n      ]\n    });",
             "itemtype": "method",
             "name": "getLogs",
@@ -1181,7 +1181,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 472,
+            "line": 474,
             "description": "Executes a remote script will block.\nScript is *not* wrapped in a function.",
             "itemtype": "method",
             "name": "executeJsScript",
@@ -1218,7 +1218,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 505,
+            "line": 507,
             "description": "Executes a remote script will block. Script is wrapped in a function.\n\n    // its is very important to remember that the contents of this\n    // method are \"stringified\" (Function#toString) and sent over the\n    // wire to execute on the device. So things like scope will not be\n    // the same. If you need to pass other information in arguments\n    // option should be used.\n\n    // assume that this element is the result of findElement\n    var element;\n    var config = {\n       event: 'magicCustomEvent',\n       detail: { foo: true  }\n    };\n\n    var remoteArgs = [element, details];\n\n    // unlike other callbacks this one will execute _on device_\n    function remoteFn(element, details) {\n       // element in this context is a real dom element now.\n       var event = document.createEvent('CustomEvent');\n       event.initCustomEvent(config.event, true, true, event.detail);\n       element.dispatchEvent(event);\n\n       return { success: true };\n    }\n\n    client.executeJsScript(remoteFn, remoteArgs, function(err, value) {\n      // value => { success: true }\n    });",
             "itemtype": "method",
             "name": "executeScript",
@@ -1249,7 +1249,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 558,
+            "line": 560,
             "description": "Script is wrapped in a function and will be executed asynchronously.\n\nNOTE: that setScriptTimeout _must_ be set prior to using this method\n      as the timeout defaults to zero.\n\n\n    function remote () {\n      window.addEventListener('someevent', function() {\n        // special method to notify that async script is complete.\n        marionetteScriptFinished({ fromRemote: true })\n      });\n    }\n\n    client.executeAsyncScript(remote, function(err, value) {\n      // value === { fromRemote: true }\n    });",
             "itemtype": "method",
             "name": "executeAsyncScript",
@@ -1280,7 +1280,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 597,
+            "line": 599,
             "description": "Finds element.",
             "itemtype": "method",
             "name": "_findElement",
@@ -1317,7 +1317,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 654,
+            "line": 656,
             "description": "Attempts to find a dom element (via css selector, xpath, etc...)\n\"elements\" returned are instances of\n{{#crossLink \"Marionette.Element\"}}{{/crossLink}}\n\n\n    // with default options\n    client.findElement('#css-selector', function(err, element) {\n       if (err) {\n         // handle case where element was not found\n       }\n\n       // see element interface for all methods, etc..\n       element.click(function() {\n\n       });\n    });",
             "itemtype": "method",
             "name": "findElement",
@@ -1348,7 +1348,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 687,
+            "line": 689,
             "description": "Finds multiple elements in the dom. This method has the same\napi signature as {{#crossLink \"findElement\"}}{{/crossLink}} the\nonly difference is where findElement returns a single element\nthis method will return an array of elements in the callback.\n\n\n    // find all links in the document\n    client.findElements('a[href]', function(err, element) {\n    });",
             "itemtype": "method",
             "name": "findElements",
@@ -1379,7 +1379,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 713,
+            "line": 715,
             "description": "Converts an function into a string\nthat can be sent to marionette.",
             "access": "private",
             "tagname": "",
@@ -1400,7 +1400,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 730,
+            "line": 732,
             "description": "Processes result of command\nif an {'ELEMENT': 'uuid'} combination\nis returned a Marionette.Element\ninstance will be created and returned.",
             "access": "private",
             "tagname": "",
@@ -1421,7 +1421,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 749,
+            "line": 751,
             "description": "Prepares arguments for script commands.\nFormats Marionette.Element's sod\nmarionette can use them in script commands.",
             "access": "private",
             "tagname": "",
@@ -1442,7 +1442,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 773,
+            "line": 775,
             "description": "Executes a remote string of javascript.\nthe javascript string will be wrapped in a function\nby marionette.",
             "itemtype": "method",
             "name": "_executeScript",
