@@ -301,6 +301,11 @@
   Client.prototype.start = function start() {
     var i, event, fn;
 
+    if (this.socket && this.socket.readyState < 2) {
+      // don't open a socket is one is already open.
+      return;
+    }
+
     if (this.retry && this.retries >= this.retryLimit) {
       throw new Client.RetryError(
         'Retry limit has been reach retried ' + String(this.retries) + ' times'
@@ -2238,7 +2243,11 @@
 ));
 (function(module, ns) {
 
-  if (!window.navigator.mozTCPSocket) {
+  try {
+    if (!window.navigator.mozTCPSocket) {
+      return;
+    }
+  } catch(e) {
     return;
   }
 

@@ -1,6 +1,10 @@
 describe('marionette/drivers/moz-tcp', function() {
 
-  if (typeof(window.navigator.mozTCPSocket) === 'undefined') {
+  try {
+    if (typeof(window.navigator.mozTCPSocket) === 'undefined') {
+      return;
+    }
+  } catch(e) {
     return;
   }
 

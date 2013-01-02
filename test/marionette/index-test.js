@@ -30,8 +30,11 @@ describe('marionette/index', function() {
     if (typeof(window) === 'undefined') {
       expect(Index.Drivers.Tcp).to.be.an(Object);
     } else {
-      if (typeof(window.MozTCPSocket) !== 'undefined') {
-        expect(Index.Drivers.MozTcp).to.be.an(Object);
+      try {
+        if (typeof(window.navigator.mozTCPSocket) !== 'undefined') {
+          expect(Index.Drivers.MozTcp).to.be.an(Object);
+        }
+      } catch(e) {
       }
     }
   });
