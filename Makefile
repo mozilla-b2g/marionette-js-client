@@ -3,7 +3,8 @@ SYS=$(shell uname -s)
 ARCH=$(shell uname -m)
 
 VENDOR=./vendor/
-REPORTER=Spec
+REPORTER=spec
+BROWSER_REPORTER=Spec
 DEV_FILE=./marionette.js
 
 ifeq ($(SYS),Darwin)
@@ -75,7 +76,7 @@ test : package test-node test-browser test-xpc
 .PHONY: test-browser
 test-browser:
 	@echo "NOTICE: You must have a client connected to test agent."
-	./node_modules/test-agent/bin/js-test-agent test --reporter $(REPORTER)
+	./node_modules/test-agent/bin/js-test-agent test --reporter $(BROWSER_REPORTER)
 
 XPC_TEST_FILES=test/marionette/*-test.js \
 	test/marionette/drivers/abstract-test.js \
