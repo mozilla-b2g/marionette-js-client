@@ -1478,6 +1478,12 @@
 
       if (id instanceof this.Element) {
         cmd.element = id.id;
+      } else if (
+        id !== null &&
+        typeof(id) === 'object' &&
+        id.ELEMENT
+      ) {
+        cmd.element = id.ELEMENT;
       } else if (id) {
         cmd.value = id;
       }
