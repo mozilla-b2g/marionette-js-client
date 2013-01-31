@@ -1,3 +1,7 @@
+# 0.5.2
+ - Allow objects that look like elements act like element in
+switchToFrame 
+
 # 0.5.1
   - Make it easier to override default element
 

@@ -376,6 +376,23 @@ describe('marionette/client', function() {
         callbackReceives('ok');
     });
 
+    describe('when given an object with ELEMENT', function() {
+      var el;
+
+      beforeEach(function() {
+        el = { ELEMENT: 'foo' };
+        subject.switchToFrame(el, commandCallback);
+      });
+
+      device.
+        shouldSend({
+          type: 'switchToFrame',
+          element: 'foo'
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
+
   });
 
   describe('.importScript', function() {
