@@ -1,5 +1,10 @@
 (function() {
 
+  if (typeof(window) !== 'undefined') {
+    window.navigator;
+    window.Components;
+  }
+
   var isNode = typeof(window) === 'undefined';
   var isXpc = !isNode && (typeof(window.xpcModule) !== 'undefined');
 
