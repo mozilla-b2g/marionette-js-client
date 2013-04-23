@@ -7,6 +7,11 @@
 
   "dependencies" : {
     "debug": "~0.6"
+    "test-agent": "~0.8",
+    "debug": "~0.6",
+    "json-wire-protocol": "~0.0.1",
+    "sync-operation": "~0.0.2",
+    "browserify": "~2.13"
   },
 
   "scripts": {
