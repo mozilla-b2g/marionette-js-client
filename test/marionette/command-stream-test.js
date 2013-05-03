@@ -4,12 +4,9 @@ describe('marionette/command-stream', function() {
       Responder,
       CommandStream;
 
-  cross.require(
-    'test-agent/responder',
-    'TestAgent.Responder', function(obj) {
-      Responder = obj;
-    }
-  );
+  cross.require('responder', function(obj) {
+    Responder = obj;
+  });
 
   cross.require('command-stream', function(obj) {
     CommandStream = obj;

@@ -6,7 +6,6 @@
   "author": "James Lal",
 
   "dependencies" : {
-    "test-agent": "~0.8",
     "debug": "~0.6"
   },
 
@@ -18,7 +17,8 @@
     "mocha": "~1.7",
     "expect.js": "0.1.2",
     "xpcwindow": "0.4.4",
-    "yuidocjs": "~0.3"
+    "yuidocjs": "~0.3",
+    "test-agent": "~0.8"
   },
 
   "license": "MIT",

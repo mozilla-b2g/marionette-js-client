@@ -41,30 +41,8 @@
       return result;
     },
 
-    requireTestAgent: function(path, component, cb) {
-      var container = {},
-          prefix = 'test-agent/lib/';
-
-      if (cross.isNode) {
-        cb(require(prefix + path));
-      } else {
-        try {
-          cb(this.nsFind(context, component));
-        } catch (e) {
-
-        }
-        context.require('/vendor/test-agent.js', function() {
-          cb(this.nsFind(context, component));
-        }.bind(this));
-      }
-
-    },
-
     require: function(path, component, cb) {
 
-      if(/^test-agent/.test(path)) {
-        return cross.requireTestAgent.apply(this, arguments);
-      }
       if (typeof(component) === 'function') {
         //new module pattern
         cb = component;
@@ -112,10 +90,7 @@
     require('/lib/marionette/marionette.js');
   }
 
-  cross.require(
-    'test-agent/responder',
-    'TestAgent.Responder', function() {}
-  );
+  cross.require('responder', function(obj) {});
 
   cross.require('example-commands', function(obj) {
     context.exampleCmds = obj;
