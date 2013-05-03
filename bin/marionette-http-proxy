@@ -1,0 +1,5 @@
+#! /usr/bin/env node
+
+var ProxyServer = require('../lib/node/http-proxy.js');
+var server = new ProxyServer();
+server.listen();
