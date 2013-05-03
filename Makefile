@@ -47,6 +47,7 @@ package :
 	cat ./lib/marionette/drivers/websocket.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/moz-tcp.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/httpd-polling.js >> $(DEV_FILE)
+	cat ./lib/marionette/drivers/http-proxy.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
 	cat ./lib/marionette/index.js >> $(DEV_FILE)
 

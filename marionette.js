@@ -708,7 +708,7 @@
       }.bind(this);
 
       this.waiting = true;
-      xhr.send(this._seralize());
+      return xhr.send(this._seralize());
     }
   };
 
@@ -853,8 +853,10 @@
     var commandString;
 
     if (this._checkBuffer()) {
+      console.log(this.buffer.length, this.commandLength);
       if (this.buffer.length >= this.commandLength) {
         commandString = this.buffer.slice(0, this.commandLength);
+        console.log(commandString, '<--- str');
         this._handleCommand(commandString);
         this.buffer = this.buffer.slice(this.commandLength);
         this.inCommand = false;
@@ -892,8 +894,9 @@
    */
   proto.add = function add(buffer) {
     var lengthIndex, command;
+    var string = buffer.toString();
 
-    this.buffer += buffer.toString();
+    this.buffer += string;
     this._readBuffer();
   };
 
@@ -1227,6 +1230,19 @@
     }
     this.driver = driver;
     this.defaultCallback = options.defaultCallback || false;
+
+    // pick up some options from the driver
+    if (driver.defaultCallback && !this.defaultCallback) {
+      this.defaultCallback = driver.defaultCallback;
+    }
+
+    if (driver.isSync) {
+      this.isSync = driver.isSync;
+    }
+
+    if (!this.defaultCallback && driver.defaultCallback) {
+      this.defaultCallback = driver.defaultCallback;
+    }
   }
 
   Client.prototype = {
@@ -1288,7 +1304,11 @@
         cb = this.defaultCallback();
       }
 
-      this.driver.send(cmd, cb);
+      var driverSent = this.driver.send(cmd, cb);
+
+      if (this.isSync) {
+        return driverSent;
+      }
 
       return this;
     },
@@ -1306,7 +1326,7 @@
         args[0] = Exception.error(args[0]);
       }
 
-      callback.apply(this, args);
+      return callback.apply(this, args);
     },
 
     /**
@@ -1323,12 +1343,12 @@
      */
     _sendCommand: function(command, responseKey, callback) {
       var self = this;
+      var result;
 
-      this.send(command, function(data) {
+      return this.send(command, function(data) {
         var value = self._transformResultValue(data[responseKey]);
-        self._handleCallback(callback, data.error, value);
+        return self._handleCallback(callback, data.error, value);
       });
-      return this;
     },
 
     /**
@@ -1363,10 +1383,10 @@
 
       function newSession(data) {
         self.session = data.value;
-        self._handleCallback(callback, data.error, data);
+        return self._handleCallback(callback, data.error, data);
       }
 
-      this.send({ type: 'newSession' }, newSession);
+      return this.send({ type: 'newSession' }, newSession);
     },
 
     /**
@@ -1377,6 +1397,8 @@
      * @param {Function} callback executed when session is started.
      */
     startSession: function startSession(callback) {
+      callback = callback || this.defaultCallback;
+
       var self = this;
       return this._getActorId(function() {
         //actor will not be set if we send the command then
@@ -1396,12 +1418,10 @@
       var cmd = { type: 'deleteSession' },
           self = this;
 
-      this._sendCommand(cmd, 'ok', function(err, value) {
+      return this._sendCommand(cmd, 'ok', function(err, value) {
         self.driver.close();
         self._handleCallback(callback, err, value);
       });
-
-      return this;
     },
 
     /**
@@ -2603,9 +2623,76 @@
 ));
 (function(module, ns) {
 
+  var XHR = ns.require('xhr');
+
+  function request(url, options) {
+    options.url = url;
+    options.async = false;
+    options.headers = { 'Content-Type': 'application/json' };
+
+    var xhr = new XHR(options);
+    var response;
+    xhr.send(function(json) {
+      if (typeof(json) === 'string') {
+        // for node
+        json = JSON.parse(json);
+      }
+      response = json;
+    });
+    return response;
+  }
+
+  function HttpProxy(options) {
+    if (options && options.url) {
+      this.url = options.url;
+    }
+  }
+
+  HttpProxy.prototype = {
+    url: 'http://localhost:60023',
+    isSync: true,
+    defaultCallback: function(err, result) {
+      if (err) {
+        throw err;
+      }
+      return result;
+    },
+
+    connect: function() {
+      var data = request(this.url, { method: 'POST' });
+      this._id = data.id;
+    },
+
+    send: function(command, callback) {
+      if (!this._id) {
+        this.connect();
+      }
+
+      var wrapper = { id: this._id, payload: command };
+      var result = request(this.url, { method: 'PUT', data: wrapper });
+      return callback(result);
+    },
+
+    close: function() {
+      return request(this.url, { method: 'DELETE', data: { id: this._id } });
+    }
+  };
+
+  module.exports = HttpProxy;
+
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('drivers/http-proxy'), Marionette] :
+    [module, require('../marionette')]
+));
+
+(function(module, ns) {
+
   module.exports = {
     Abstract: ns.require('drivers/abstract'),
     HttpdPolling: ns.require('drivers/httpd-polling'),
+    HttpProxy: ns.require('drivers/http-proxy'),
     Websocket: ns.require('drivers/websocket')
   };
 
