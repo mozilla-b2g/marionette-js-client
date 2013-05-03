@@ -96,7 +96,7 @@ describe('node/http-proxy-test', function() {
         id = result.id;
         var socket = FakeSocket.sockets[FakeSocket.sockets.length - 1];
 
-        socket.close = function() {
+        socket.destroy = function() {
           expect(subject.activeSockets[id]).not.to.be.ok();
           done();
         };
@@ -120,7 +120,7 @@ describe('node/http-proxy-test', function() {
       var socketClosed = false;
       // get the fake socket
       var socket = FakeSocket.sockets[FakeSocket.sockets.length - 1];
-      socket.close = function() {
+      socket.destroy = function() {
         socketClosed = true;
       };
 
@@ -142,6 +142,7 @@ describe('node/http-proxy-test', function() {
     };
 
     beforeEach(function(done) {
+      subject.inactivityTimeout = 10;
       createRequest({ method: 'POST' }).send(function(json) {
         expect(json.id).to.be.ok();
         id = json.id;
@@ -166,7 +167,6 @@ describe('node/http-proxy-test', function() {
         done();
       });
     });
-
   });
 
 });
