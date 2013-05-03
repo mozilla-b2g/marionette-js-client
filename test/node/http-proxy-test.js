@@ -3,6 +3,20 @@ describe('node/http-proxy-test', function() {
   var ProxyServer = require('../../lib/node/http-proxy');
   var CommandStream = require('../../lib/marionette/command-stream');
   var XMLHttpRequest = require('../../lib/XMLHttpRequest.js').XMLHttpRequest;
+  var XHR = require('../../lib/marionette/xhr');
+
+  function createRequest(options) {
+    var base = {
+      url: 'http://localhost:60023',
+      headers: { 'Content-Type': 'application/json' }
+    };
+
+    for (var key in options) {
+      base[key] = options[key];
+    }
+
+    return new XHR(base);
+  }
 
   function createPost() {
     var url = 'http://localhost:' + subject.port + '/';
@@ -26,71 +40,128 @@ describe('node/http-proxy-test', function() {
   }
 
   var subject;
-  var socket;
 
   beforeEach(function() {
-    socket = new FakeSocket(2828, 'localhost');
-    subject = new ProxyServer(socket);
+    subject = new ProxyServer();
+    subject._createSocket = function() {
+      return new FakeSocket();
+    };
+
+    subject.listen();
   });
 
-  it('should have .socket', function() {
-    expect(subject.socket).to.be(socket);
+  afterEach(function() {
+    subject.close();
+  });
+
+  it('should have .activeSockets', function() {
+    expect(subject.activeSockets).to.be.ok();
   });
 
   it('should have .port', function() {
     expect(subject.port).to.be.ok();
   });
 
-  it('should have .stream', function() {
-    expect(subject.stream).to.be.an(CommandStream);
-    expect(subject.stream.socket).to.be(socket);
+  describe('POST /', function() {
+
+    it('should create socket / command stream given ID', function(done) {
+      var xhr = createRequest({
+        method: 'POST',
+        data: {}
+      });
+
+      xhr.send(function(data, xhr) {
+        // successful request
+        expect(data.id).to.be.ok();
+
+        var socketDetails = subject.activeSockets[data.id];
+
+        // creates socket
+        expect(socketDetails).to.be.ok();
+
+        // has stream and socket
+        expect(socketDetails.stream).to.be.a(CommandStream);
+        expect(socketDetails.socket).to.be.ok();
+        expect(socketDetails.id).to.be(data.id);
+
+        done();
+      });
+    });
+
+    it('should close socket if no activity after awhile', function(done) {
+      var id;
+
+      subject.inactivityTimeout = 10;
+      createRequest({ method: 'POST' }).send(function(result) {
+        id = result.id;
+        var socket = FakeSocket.sockets[FakeSocket.sockets.length - 1];
+
+        socket.close = function() {
+          expect(subject.activeSockets[id]).not.to.be.ok();
+          done();
+        };
+      });
+
+    });
   });
 
+  describe('DELETE /', function() {
+    var id;
 
-  describe('POST /{command}', function() {
+    beforeEach(function(done) {
+      createRequest({ method: 'POST' }).send(function(result) {
+        id = result.id;
+        expect(id).to.be.ok();
+        done();
+      });
+    });
+
+    it('should remove and close socket', function(done) {
+      var socketClosed = false;
+      // get the fake socket
+      var socket = FakeSocket.sockets[FakeSocket.sockets.length - 1];
+      socket.close = function() {
+        socketClosed = true;
+      };
+
+      createRequest({ method: 'DELETE', data: { id: id } }).send(function() {
+        expect(socketClosed).to.be.ok();
+        expect(subject.activeSockets[id]).not.to.be.ok();
+        done();
+      });
+
+    });
+  });
+
+  describe('PUT /{command}', function() {
+    var id;
+    var stream;
     var command = {
       type: 'goUrl',
       value: 'xx'
     };
 
-    beforeEach(function() {
-      subject.listen();
-    });
-
-    afterEach(function() {
-      subject.close();
-    });
-
-    function sendsStatusInvalid(done) {
-      subject.stream.send = function() {
-        done(new Error('should not send when 500'));
-      };
-
-      var xhr = createPost();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          expect(xhr.status).to.be(500);
-          done();
-        }
-      };
-
-      return xhr;
-    }
-
-    it('should send 500 for non json types', function(done) {
-      var xhr = sendsStatusInvalid(done);
-      xhr.send('xfoo');
+    beforeEach(function(done) {
+      createRequest({ method: 'POST' }).send(function(json) {
+        expect(json.id).to.be.ok();
+        id = json.id;
+        stream = subject.activeSockets[id].stream;
+        done();
+      });
     });
 
     it('should write command to command stream', function(done) {
       var sent = { foo: 'bar' };
-      subject.stream.send = function(data) {
-        expect(data).to.eql(command);
+      var wrapper = { id: id, payload: command };
+
+      var isComplete = false;
+      stream.send = function(data) {
         var json = JSON.stringify(sent);
-        subject.stream.add(json.length + ':' + json);
+        expect(data).to.eql(command);
+        stream.add(json.length + ':' + json);
       };
 
-      post(command, function(result) {
+      createRequest({ method: 'PUT', data: wrapper }).send(function(result) {
         expect(result).to.eql(sent);
         done();
       });
