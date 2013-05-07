@@ -1,3 +1,6 @@
+# 0.5.4
+  - remove test-agent dep
+
 # 0.5.2
  - Allow objects that look like elements act like element in
 switchToFrame 
