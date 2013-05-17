@@ -3,7 +3,8 @@ var util = require('util');
 var Marionette = require('../lib/marionette/index');
 var driver = new Marionette.Drivers.HttpProxy();
 
-process.on('uncaughtException', function() {
+process.on('uncaughtException', function(e) {
+  console.log('EPIC FAIL', e.message, e.stack);
   client.deleteSession();
 });
 
@@ -18,6 +19,7 @@ client.startSession();
 
 client.setScriptTimeout(50000);
 client.setContext('chrome');
+
 var apps = client.executeAsyncScript(function() {
   var appList = [];
   var mozApps = navigator.mozApps.mgmt;
@@ -35,19 +37,21 @@ var apps = client.executeAsyncScript(function() {
   req.onsuccess = function(e) {
     var apps = e.target.result;
     for (var i = 0; i < apps.length; i++) {
-      dump('ENTRYPOINT?:' + JSON.stringify(apps[i].manifest.entry_points) + '\n\n');
       appList.push({
-        //name: apps[i].manifest.name,
-        //manifestURL: apps[i].manifestURL,
+        name: apps[i].manifest.name,
+        manifestURL: apps[i].manifestURL,
         entryPoints: apps[i].manifest.entry_points
       });
+
+      if (apps[i].manifestURL.indexOf('calendar') !== -1) {
+        apps[i].launch();
+      }
     }
     marionetteScriptFinished(appList);
   };
   req.onerror = function() {
     marionetteScriptFinished();
   };
-
 });
 
 console.log(apps);
