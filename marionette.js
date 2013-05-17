@@ -727,6 +727,7 @@
 
   var isNode = typeof(window) === 'undefined';
   var isXpc = !isNode && (typeof(window.xpcModule) !== 'undefined');
+  var wire = require('json-wire-protocol');
 
   if (isNode) {
     debug = require('debug')('marionette:command-stream');
@@ -748,14 +749,14 @@
    * @constructor
    */
   function CommandStream(socket) {
-    this.buffer = '';
-    this.inCommand = false;
-    this.commandLength = 0;
     this.socket = socket;
+    this._handler = new wire.Stream();
+
+    this._handler.on('data', this.emit.bind(this, this.commandEvent));
 
     Responder.apply(this);
 
-    socket.on('data', this.add.bind(this));
+    socket.on('data', this._handler.write.bind(this._handler));
     socket.on('error', function() {
       console.log(arguments);
     });
@@ -764,14 +765,6 @@
   var proto = CommandStream.prototype = Object.create(
     Responder.prototype
   );
-
-  /**
-   * Length prefix
-   *
-   * @property prefix
-   * @type String
-   */
-  proto.prefix = ':';
 
   /**
    * name of the event this class
@@ -793,78 +786,7 @@
    * @return {String} command as a string.
    */
   proto.stringify = function stringify(command) {
-    var string;
-    if (typeof(command) === 'string') {
-      string = command;
-    } else {
-      string = JSON.stringify(command);
-    }
-
-    return String(string.length) + this.prefix + string;
-  };
-
-  /**
-   * Accepts raw string command parses it and
-   * emits a commandEvent.
-   *
-   * @private
-   * @method _handleCommand
-   * @param {String} string raw response from marionette.
-   */
-  proto._handleCommand = function _handleCommand(string) {
-    debug('got raw bytes ', string);
-    var data = JSON.parse(string);
-    debug('sending event', data);
-    this.emit(this.commandEvent, data);
-  };
-
-
-  /**
-   * Checks if current buffer is ready to read.
-   *
-   * @private
-   * @method _checkBuffer
-   * @return {Boolean} true when in a command and buffer \
-   *                   is ready to begin reading.
-   */
-  proto._checkBuffer = function _checkBuffer() {
-    var lengthIndex;
-    if (!this.inCommand) {
-      lengthIndex = this.buffer.indexOf(this.prefix);
-      if (lengthIndex !== -1) {
-        this.commandLength = parseInt(this.buffer.slice(0, lengthIndex));
-        this.buffer = this.buffer.slice(lengthIndex + 1);
-        this.inCommand = true;
-      }
-    }
-
-    return this.inCommand;
-  };
-
-  /**
-   * Read current buffer.
-   * Drain and emit all comands from the buffer.
-   *
-   * @method _readBuffer
-   * @private
-   * @return {Object} self.
-   */
-  proto._readBuffer = function _readBuffer() {
-    var commandString;
-
-    if (this._checkBuffer()) {
-      console.log(this.buffer.length, this.commandLength);
-      if (this.buffer.length >= this.commandLength) {
-        commandString = this.buffer.slice(0, this.commandLength);
-        console.log(commandString, '<--- str');
-        this._handleCommand(commandString);
-        this.buffer = this.buffer.slice(this.commandLength);
-        this.inCommand = false;
-
-        this._readBuffer();
-      }
-    }
-    return this;
+    return wire.stringify(command);
   };
 
   /**
@@ -893,11 +815,7 @@
    * @param {String|Buffer} buffer buffer or string to add.
    */
   proto.add = function add(buffer) {
-    var lengthIndex, command;
-    var string = buffer.toString();
-
-    this.buffer += string;
-    this._readBuffer();
+    this._handler.write(buffer);
   };
 
   module.exports = exports = CommandStream;
@@ -1346,7 +1264,12 @@
       var result;
 
       return this.send(command, function(data) {
-        var value = self._transformResultValue(data[responseKey]);
+        var value;
+        try {
+          value = self._transformResultValue(data[responseKey]);
+        } catch(e) {
+          console.log(data, '<___ WTF?');
+        }
         return self._handleCallback(callback, data.error, value);
       });
     },
@@ -1836,7 +1759,7 @@
         } else {
           element = new this.Element(result, self);
         }
-        self._handleCallback(callback, err, element);
+        return self._handleCallback(callback, err, element);
       });
     },
 
@@ -2633,6 +2556,7 @@
     var xhr = new XHR(options);
     var response;
     xhr.send(function(json) {
+      console.log(json, '<<');
       if (typeof(json) === 'string') {
         // for node
         json = JSON.parse(json);
