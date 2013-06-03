@@ -3,13 +3,7 @@
 */
 (function(module, ns) {
 
-  var Responder;
-
-  if (this.TestAgent) {
-    Responder = TestAgent.Responder;
-  } else {
-    Responder = require('test-agent/lib/test-agent/responder');
-  }
+  var Responder = ns.require('responder');
 
   FakeSocket = function() {
     Responder.call(this);

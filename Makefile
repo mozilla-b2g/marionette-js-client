@@ -35,16 +35,14 @@ package :
 	rm -f $(DEV_FILE)
 	touch $(DEV_FILE)
 	
-	cat ./node_modules/test-agent/lib/test-agent/responder.js >> $(DEV_FILE)
-	cat ./node_modules/test-agent/lib/test-agent/websocket-client.js >> $(DEV_FILE)
 	cat ./lib/marionette/marionette.js >> $(DEV_FILE)
+	cat ./lib/marionette/responder.js >> $(DEV_FILE)
 	cat ./lib/marionette/error.js >> $(DEV_FILE)
 	cat ./lib/marionette/xhr.js >> $(DEV_FILE)
 	cat ./lib/marionette/command-stream.js >> $(DEV_FILE)
 	cat ./lib/marionette/element.js >> $(DEV_FILE)
 	cat ./lib/marionette/client.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/abstract.js >> $(DEV_FILE)
-	cat ./lib/marionette/drivers/websocket.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/moz-tcp.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/httpd-polling.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
@@ -98,5 +96,4 @@ test-node:
 	  ./test/marionette/element-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
 	  ./test/marionette/drivers/tcp-test.js \
-	  ./test/marionette/drivers/websocket-test.js \
 	  ./test/marionette/drivers/httpd-polling-test.js
