@@ -23,7 +23,6 @@ describe('marionette/index', function() {
     expect(Index.CommandStream).to.be.an(Object);
 
     expect(Index.Drivers.Abstract).to.be.an(Object);
-    expect(Index.Drivers.Websocket).to.be.an(Object);
     expect(Index.Drivers.HttpdPolling).to.be.an(Object);
 
 
