@@ -41,6 +41,16 @@ describe('marionette/drivers/tcp', function() {
     subject = new Driver();
   });
 
+  it('should accept port and host', function() {
+    var subject = new Driver({
+      port: 8888,
+      host: 'foobar'
+    });
+
+    expect(subject.port).to.be(8888);
+    expect(subject.host).to.be('foobar');
+  });
+
   describe('._sendCommand', function() {
     var sent = [];
 
