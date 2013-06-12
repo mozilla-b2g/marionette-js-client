@@ -1,3 +1,6 @@
+# 0.5.5
+  - fix bug where tcp could not accept options
+  - add support for trying tcp connection if it fails.
 # 0.5.4
   - remove test-agent dep
 
