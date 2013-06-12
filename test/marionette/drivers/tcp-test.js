@@ -15,17 +15,24 @@ describe('marionette/drivers/tcp', function() {
     }
   );
 
+  function issueFirstResponse() {
+    subject._onDeviceResponse({
+      id: subject.connectionId,
+      response: {}
+    });
+  }
+
   var subject,
       RealSocket,
       sockets = [];
 
-  before(function() {
+  beforeEach(function() {
     RealSocket = Driver.Socket;
     Driver.Socket = FakeSocket;
     FakeSocket.sockets = sockets;
   });
 
-  after(function() {
+  afterEach(function() {
     Driver.Socket = RealSocket;
   });
 
@@ -54,14 +61,19 @@ describe('marionette/drivers/tcp', function() {
   describe('._sendCommand', function() {
     var sent = [];
 
-    beforeEach(function() {
-      subject._connect();
-      subject.client.send = function() {
-        sent.push(arguments);
-      }
-      subject.client.send({
-        type: 'foo',
+    beforeEach(function(done) {
+      subject.connect(function() {
+        subject.client.send = function() {
+          sent.push(arguments);
+        }
+        subject.client.send({
+          type: 'foo',
+        });
+        done();
       });
+
+      // issue first response so connect will fire
+      issueFirstResponse();
     });
 
     it('should send request to socket', function() {
@@ -93,22 +105,36 @@ describe('marionette/drivers/tcp', function() {
   });
 
   describe('._connect', function() {
+    describe('retrying', function() {
+      var net = require('net');
+      var port = 60066;
 
-    beforeEach(function() {
-      subject._connect();
-    });
+      beforeEach(function() {
+        Driver.Socket = RealSocket;
+        subject = new Driver({ port: port });
+      });
 
-    it('should create a socket for connection', function() {
-      expect(sockets[0].host).to.be('localhost');
-      expect(sockets[0].port).to.be(2828);
+      it('should eventually connect', function(done) {
+        subject._connect();
+        setTimeout(function() {
+          var server = net.createServer(function(socket) {
+            server.close();
+            done();
+          }).listen(port);
+        }, 50);
+      });
+
     });
 
   });
 
   describe('._close', function() {
-    beforeEach(function() {
-      subject._connect();
-      subject.close();
+    beforeEach(function(done) {
+      subject.connect(function() {
+        subject.close();
+        done();
+      });
+      issueFirstResponse();
     });
 
     it('should close socket', function() {
