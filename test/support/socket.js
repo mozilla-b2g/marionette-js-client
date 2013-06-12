@@ -20,9 +20,10 @@
   FakeSocket.sockets = [];
 
   FakeSocket.prototype = Object.create(Responder.prototype);
-  FakeSocket.prototype.connect = function(port, host) {
+  FakeSocket.prototype.connect = function(port, host, cb) {
     this.port = port;
     this.host = host;
+    cb && cb();
   };
 
 
