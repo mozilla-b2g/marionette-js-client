@@ -1,3 +1,7 @@
+# 0.5.6
+  - callbacks are no longer required in all operations.
+    default callbacks are noop.
+
 # 0.5.5
   - fix bug where tcp could not accept options
   - add support for trying tcp connection if it fails.

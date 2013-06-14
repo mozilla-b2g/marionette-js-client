@@ -297,6 +297,7 @@
   };
 
   Responder.prototype.on = Responder.prototype.addEventListener;
+  Responder.prototype.removeListener = Responder.prototype.removeEventListener;
 
   module.exports = Responder;
 
@@ -1190,7 +1191,6 @@
      * This is a combination of calling getMarionetteId and then newSession.
      *
      * @method startSession
-     * @non-chainable
      * @param {Function} callback executed when session is started.
      */
     startSession: function startSession(callback) {
