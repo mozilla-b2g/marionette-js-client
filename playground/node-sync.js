@@ -1,22 +1,14 @@
-var util = require('util');
-
 var Marionette = require('../lib/marionette/index');
-var driver = new Marionette.Drivers.HttpProxy();
 
 process.on('uncaughtException', function(e) {
   console.log('EPIC FAIL', e.message, e.stack);
-  client.deleteSession();
+  client && client.deleteSession();
 });
 
-function defaultCB(err, result) {
-  return result;
-}
-
+var driver = new Marionette.Drivers.HttpProxy();
 var client = new Marionette.Client(driver);
 
 client.startSession();
-
-
 client.setScriptTimeout(50000);
 client.setContext('chrome');
 

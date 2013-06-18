@@ -2546,7 +2546,17 @@
 ));
 (function(module, ns) {
 
-  var XHR = ns.require('xhr');
+  var spawn,
+      isNode = typeof(window) === 'undefined',
+      XHR = ns.require('xhr');
+
+  if (isNode) {
+    spawn = require('child_process').spawn;
+  } else {
+    spawn = function() {
+      throw new Error('Cannot spawn Http Proxy from Browser');
+    };
+  }
 
   function request(url, options) {
     options.url = url;
@@ -2556,7 +2566,6 @@
     var xhr = new XHR(options);
     var response;
     xhr.send(function(json) {
-      console.log(json, '<<');
       if (typeof(json) === 'string') {
         // for node
         json = JSON.parse(json);
@@ -2567,13 +2576,31 @@
   }
 
   function HttpProxy(options) {
+    if (options && options.hostname) {
+      this.hostname = options.hostname;
+    }
+
+    if (options && options.port) {
+      this.port = options.port;
+    }
+
+    // if we are given a url, assume proxy server
+    // is already running on that url, otherwise
+    // spawn the proxy server based on host and port
     if (options && options.url) {
       this.url = options.url;
+    } else {
+      this.url = 'http://' + this.hostname + ':' + this.port;
+      this.serverProcess = spawn(process.env.PWD + '/bin/marionette-http-proxy', [
+        this.port,
+        this.hostname
+      ]);
     }
   }
 
   HttpProxy.prototype = {
-    url: 'http://localhost:60023',
+    hostname: 'localhost',
+    port: 60023,
     isSync: true,
     defaultCallback: function(err, result) {
       if (err) {
@@ -2598,7 +2625,13 @@
     },
 
     close: function() {
-      return request(this.url, { method: 'DELETE', data: { id: this._id } });
+      var response = request(this.url, {
+        method: 'DELETE', data: { id: this._id }
+      });
+      if (this.serverProcess) {
+        this.serverProcess.kill();
+      }
+      return response;
     }
   };
 
