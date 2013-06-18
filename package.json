@@ -6,7 +6,7 @@
   "author": "James Lal",
 
   "dependencies" : {
-    "test-agent": "~0.8",
+    "test-agent": "~0.12",
     "debug": "~0.6",
     "json-wire-protocol": "~0.0.1",
     "sync-operation": "~0.0.2",

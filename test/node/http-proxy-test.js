@@ -41,17 +41,17 @@ describe('node/http-proxy-test', function() {
 
   var subject;
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     subject = new ProxyServer();
     subject._createSocket = function() {
       return new FakeSocket();
     };
 
-    subject.listen();
+    subject.listen(done);
   });
 
-  afterEach(function() {
-    subject.close();
+  afterEach(function(done) {
+    subject.close(done);
   });
 
   it('should have .activeSockets', function() {
@@ -159,7 +159,7 @@ describe('node/http-proxy-test', function() {
       stream.send = function(data) {
         var json = JSON.stringify(sent);
         expect(data).to.eql(command);
-        stream.add(json.length + ':' + json);
+        stream.add(new Buffer(json.length + ':' + json));
       };
 
       createRequest({ method: 'PUT', data: wrapper }).send(function(result) {
