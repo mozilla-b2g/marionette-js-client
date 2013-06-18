@@ -526,7 +526,7 @@
       }.bind(this);
 
       this.waiting = true;
-      xhr.send(this._seralize());
+      return xhr.send(this._seralize());
     }
   };
 
@@ -545,6 +545,7 @@
 
   var isNode = typeof(window) === 'undefined';
   var isXpc = !isNode && (typeof(window.xpcModule) !== 'undefined');
+  var wire = require('json-wire-protocol');
 
   if (isNode) {
     debug = require('debug')('marionette:command-stream');
@@ -563,14 +564,14 @@
    * @constructor
    */
   function CommandStream(socket) {
-    this.buffer = '';
-    this.inCommand = false;
-    this.commandLength = 0;
     this.socket = socket;
+    this._handler = new wire.Stream();
+
+    this._handler.on('data', this.emit.bind(this, this.commandEvent));
 
     Responder.apply(this);
 
-    socket.on('data', this.add.bind(this));
+    socket.on('data', this._handler.write.bind(this._handler));
     socket.on('error', function() {
       console.log(arguments);
     });
@@ -579,14 +580,6 @@
   var proto = CommandStream.prototype = Object.create(
     Responder.prototype
   );
-
-  /**
-   * Length prefix
-   *
-   * @property prefix
-   * @type String
-   */
-  proto.prefix = ':';
 
   /**
    * name of the event this class
@@ -608,76 +601,7 @@
    * @return {String} command as a string.
    */
   proto.stringify = function stringify(command) {
-    var string;
-    if (typeof(command) === 'string') {
-      string = command;
-    } else {
-      string = JSON.stringify(command);
-    }
-
-    return String(string.length) + this.prefix + string;
-  };
-
-  /**
-   * Accepts raw string command parses it and
-   * emits a commandEvent.
-   *
-   * @private
-   * @method _handleCommand
-   * @param {String} string raw response from marionette.
-   */
-  proto._handleCommand = function _handleCommand(string) {
-    debug('got raw bytes ', string);
-    var data = JSON.parse(string);
-    debug('sending event', data);
-    this.emit(this.commandEvent, data);
-  };
-
-
-  /**
-   * Checks if current buffer is ready to read.
-   *
-   * @private
-   * @method _checkBuffer
-   * @return {Boolean} true when in a command and buffer \
-   *                   is ready to begin reading.
-   */
-  proto._checkBuffer = function _checkBuffer() {
-    var lengthIndex;
-    if (!this.inCommand) {
-      lengthIndex = this.buffer.indexOf(this.prefix);
-      if (lengthIndex !== -1) {
-        this.commandLength = parseInt(this.buffer.slice(0, lengthIndex));
-        this.buffer = this.buffer.slice(lengthIndex + 1);
-        this.inCommand = true;
-      }
-    }
-
-    return this.inCommand;
-  };
-
-  /**
-   * Read current buffer.
-   * Drain and emit all comands from the buffer.
-   *
-   * @method _readBuffer
-   * @private
-   * @return {Object} self.
-   */
-  proto._readBuffer = function _readBuffer() {
-    var commandString;
-
-    if (this._checkBuffer()) {
-      if (this.buffer.length >= this.commandLength) {
-        commandString = this.buffer.slice(0, this.commandLength);
-        this._handleCommand(commandString);
-        this.buffer = this.buffer.slice(this.commandLength);
-        this.inCommand = false;
-
-        this._readBuffer();
-      }
-    }
-    return this;
+    return wire.stringify(command);
   };
 
   /**
@@ -706,10 +630,7 @@
    * @param {String|Buffer} buffer buffer or string to add.
    */
   proto.add = function add(buffer) {
-    var lengthIndex, command;
-
-    this.buffer += buffer.toString();
-    this._readBuffer();
+    this._handler.write(buffer);
   };
 
   module.exports = exports = CommandStream;
@@ -1044,6 +965,21 @@
     }
     this.driver = driver;
     this.defaultCallback = options.defaultCallback || false;
+
+    // pick up some options from the driver
+    if (driver.defaultCallback && !this.defaultCallback) {
+      this.defaultCallback = driver.defaultCallback;
+    }
+
+    if (driver.isSync) {
+      this.isSync = driver.isSync;
+    }
+
+    if (!this.defaultCallback) {
+      this.defaultCallback = driver.defaultCallback ?
+                             driver.defaultCallback :
+                             function() {};
+    }
   }
 
   Client.prototype = {
@@ -1105,7 +1041,11 @@
         cb = this.defaultCallback();
       }
 
-      this.driver.send(cmd, cb);
+      var driverSent = this.driver.send(cmd, cb);
+
+      if (this.isSync) {
+        return driverSent;
+      }
 
       return this;
     },
@@ -1123,7 +1063,7 @@
         args[0] = Exception.error(args[0]);
       }
 
-      callback.apply(this, args);
+      return callback.apply(this, args);
     },
 
     /**
@@ -1140,12 +1080,17 @@
      */
     _sendCommand: function(command, responseKey, callback) {
       var self = this;
+      var result;
 
-      this.send(command, function(data) {
-        var value = self._transformResultValue(data[responseKey]);
-        self._handleCallback(callback, data.error, value);
+      return this.send(command, function(data) {
+        var value;
+        try {
+          value = self._transformResultValue(data[responseKey]);
+        } catch(e) {
+          console.log('Error: unable to transform marionette response', data);
+        }
+        return self._handleCallback(callback, data.error, value);
       });
-      return this;
     },
 
     /**
@@ -1180,10 +1125,10 @@
 
       function newSession(data) {
         self.session = data.value;
-        self._handleCallback(callback, data.error, data);
+        return self._handleCallback(callback, data.error, data);
       }
 
-      this.send({ type: 'newSession' }, newSession);
+      return this.send({ type: 'newSession' }, newSession);
     },
 
     /**
@@ -1194,6 +1139,8 @@
      * @param {Function} callback executed when session is started.
      */
     startSession: function startSession(callback) {
+      callback = callback || this.defaultCallback;
+
       var self = this;
       return this._getActorId(function() {
         //actor will not be set if we send the command then
@@ -1213,12 +1160,10 @@
       var cmd = { type: 'deleteSession' },
           self = this;
 
-      this._sendCommand(cmd, 'ok', function(err, value) {
+      return this._sendCommand(cmd, 'ok', function(err, value) {
         self.driver.close();
         self._handleCallback(callback, err, value);
       });
-
-      return this;
     },
 
     /**
@@ -1633,7 +1578,7 @@
         } else {
           element = new this.Element(result, self);
         }
-        self._handleCallback(callback, err, element);
+        return self._handleCallback(callback, err, element);
       });
     },
 
@@ -2335,9 +2280,126 @@
 ));
 (function(module, ns) {
 
+  var DEFAULT_PORT = 60023;
+  var DEFAULT_MARIONETTE_PORT = 2828;
+  var DEFAULT_HOST = 'localhost';
+
+  var fork, proxyRunnerPath,
+      isNode = typeof(window) === 'undefined',
+      XHR = ns.require('xhr');
+
+  if (isNode) {
+    proxyRunnerPath = __dirname + '/../../http-proxy-runner';
+    fork = require('child_process').fork;
+  } else {
+    fork = function() {
+      throw new Error('Cannot fork Http Proxy from Browser');
+    };
+  }
+
+  function request(url, options) {
+    options.url = url;
+    options.async = false;
+    options.headers = { 'Content-Type': 'application/json' };
+
+    var xhr = new XHR(options);
+    var response;
+    xhr.send(function(json) {
+      if (typeof(json) === 'string') {
+        // for node
+        json = JSON.parse(json);
+      }
+      response = json;
+    });
+    return response;
+  }
+
+  function HttpProxy(options) {
+    if (options && options.hostname) {
+      this.hostname = options.hostname;
+    }
+
+    if (options && options.port) {
+      this.port = options.port;
+    }
+
+    if (options && options.marionettePort) {
+      this.marionettePort = options.marionettePort;
+    }
+
+    this.url = 'http://' + this.hostname + ':' + this.port;
+  }
+
+  HttpProxy.prototype = {
+    hostname: DEFAULT_HOST,
+    port: DEFAULT_PORT,
+    marionettePort: DEFAULT_MARIONETTE_PORT,
+    isSync: true,
+    defaultCallback: function(err, result) {
+      if (err) {
+        throw err;
+      }
+      return result;
+    },
+
+    _connectToMarionette: function(callback) {
+      var data = request(this.url, {
+        method: 'POST',
+        data: { port: this.marionettePort }
+      });
+      this._id = data.id;
+      callback();
+    },
+
+    connect: function(callback) {
+      this.serverProcess = fork(
+        proxyRunnerPath,
+        [
+          this.port,
+          this.hostname
+        ],
+        { stdio: 'inherit' }
+      );
+
+      this.serverProcess.on('message', function(data) {
+        if (data === 'ready') {
+          this._connectToMarionette(callback);
+        }
+      }.bind(this));
+    },
+
+    send: function(command, callback) {
+      var wrapper = { id: this._id, payload: command };
+      var result = request(this.url, { method: 'PUT', data: wrapper });
+      return callback(result);
+    },
+
+    close: function() {
+      var response = request(this.url, {
+        method: 'DELETE', data: { id: this._id }
+      });
+      if (this.serverProcess) {
+        this.serverProcess.kill();
+      }
+      return response;
+    }
+  };
+
+  module.exports = HttpProxy;
+
+}.apply(
+  this,
+  (this.Marionette) ?
+    [Marionette('drivers/http-proxy'), Marionette] :
+    [module, require('../marionette')]
+));
+
+(function(module, ns) {
+
   module.exports = {
     Abstract: ns.require('drivers/abstract'),
-    HttpdPolling: ns.require('drivers/httpd-polling')
+    HttpdPolling: ns.require('drivers/httpd-polling'),
+    HttpProxy: ns.require('drivers/http-proxy')
   };
 
   if (typeof(window) === 'undefined') {

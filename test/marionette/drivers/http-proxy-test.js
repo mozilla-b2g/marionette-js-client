@@ -2,49 +2,83 @@ describe('drivers/http-proxy', function() {
   if (!cross.isNode)
     return test('only works on node');
 
-  var FakeSocket = require('../../support/socket');
-  var ProxyServer = require('../../../lib/node/http-proxy');
   var Client = require('../../../lib/marionette/client');
   var Driver = require('../../../lib/marionette/drivers/http-proxy');
+  var host = require('marionette-host-environment');
 
-  var server;
-  var socket;
+  var b2g;
   var driver;
   var client;
-  var sentData;
 
-  afterEach(function() {
-    server.close();
-  });
+  function fetchApps() {
+    var appList = [];
+    var mozApps = navigator.mozApps.mgmt;
+    var req = mozApps.getAll();
+    var manifests = [];
 
-  beforeEach(function() {
-    sentData = [];
+    function copy(input) {
+      var obj = {};
+      for (var key in input) {
+        obj[key] = input[key];
+      }
+      return obj;
+    }
 
-    socket = new FakeSocket(2828, 'localhost');
-    server = new ProxyServer(socket);
-    server.listen();
+    req.onsuccess = function(e) {
+      var apps = e.target.result;
+      for (var i = 0; i < apps.length; i++) {
+        appList.push({
+          name: apps[i].manifest.name,
+          manifestURL: apps[i].manifestURL,
+          entryPoints: apps[i].manifest.entry_points
+        });
 
-    var realSend = server.stream.send;
-    server.stream.send = function(data) {
-      sentData.push(data);
-      realSend.apply(this, arguments);
+        if (apps[i].manifestURL.indexOf('calendar') !== -1) {
+          apps[i].launch();
+        }
+      }
+      marionetteScriptFinished(appList);
     };
+    req.onerror = function() {
+      marionetteScriptFinished();
+    };
+  }
 
-    var driver = new Driver();
-    client = new Client(driver, {
-      sync: true
+  before(function(done) {
+    this.timeout('100s');
+    host.spawn(__dirname + '/../../../b2g/', function(err, port, child) {
+      if (err) throw err;
+
+      b2g = child;
+
+      driver = new Driver({
+        marionettePort: port
+      });
+      driver.connect(function(err) {
+        if (err) throw err;
+
+        client = new Client(driver, {
+          sync: true
+        });
+
+        client.startSession();
+        client.setScriptTimeout(50000);
+        client.setContext('chrome');
+
+        done();
+      });
     });
   });
 
-  describe('starting session', function() {
-    beforeEach(function() {
-      client.startSession();
-    });
-
-    it('should send request', function() {
-      
-    });
-
+  after(function() {
+    client.deleteSession();
+    b2g.kill();
   });
+
+  it('should fetch all app data from b2g', function() {
+    var apps = client.executeAsyncScript(fetchApps);
+    expect(apps).to.be.an('array');
+  });
+
 });
 

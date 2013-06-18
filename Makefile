@@ -97,4 +97,5 @@ test-node:
 	  ./test/marionette/element-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
 	  ./test/marionette/drivers/tcp-test.js \
-	  ./test/marionette/drivers/httpd-polling-test.js
+	  ./test/marionette/drivers/httpd-polling-test.js \
+	  ./test/marionette/drivers/http-proxy-test.js
