@@ -1,5 +1,14 @@
 #! /usr/bin/env node
 
 var ProxyServer = require('../lib/node/http-proxy.js');
-var server = new ProxyServer();
+
+var port = process.argv[2];
+var hostname = process.argv[3];
+
+var server = new ProxyServer({
+  port: port,
+  hostname: hostname
+});
+
 server.listen();
+
