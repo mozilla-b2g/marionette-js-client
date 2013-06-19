@@ -45,6 +45,7 @@ package :
 	cat ./lib/marionette/drivers/abstract.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/moz-tcp.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/httpd-polling.js >> $(DEV_FILE)
+	cat ./lib/marionette/drivers/http-proxy.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
 	cat ./lib/marionette/index.js >> $(DEV_FILE)
 
@@ -96,4 +97,5 @@ test-node:
 	  ./test/marionette/element-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
 	  ./test/marionette/drivers/tcp-test.js \
-	  ./test/marionette/drivers/httpd-polling-test.js
+	  ./test/marionette/drivers/httpd-polling-test.js \
+	  ./test/marionette/drivers/http-proxy-test.js

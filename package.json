@@ -6,7 +6,10 @@
   "author": "James Lal",
 
   "dependencies" : {
-    "debug": "~0.6"
+    "debug": "~0.6",
+    "json-wire-protocol": "~0.0.1",
+    "sync-operation": "~0.0.2",
+    "browserify": "~2.13"
   },
 
   "scripts": {
@@ -18,7 +21,8 @@
     "expect.js": "0.1.2",
     "xpcwindow": "0.4.4",
     "yuidocjs": "~0.3",
-    "test-agent": "~0.12"
+    "test-agent": "~0.12",
+    "marionette-host-environment": "~0.1"
   },
 
   "license": "MIT",
