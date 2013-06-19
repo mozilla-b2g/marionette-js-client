@@ -1043,7 +1043,9 @@
       options = {};
     }
     this.driver = driver;
-    this.defaultCallback = options.defaultCallback || false;
+    this.defaultCallback =
+      // given default or noop
+      options.defaultCallback || function() {};
   }
 
   Client.prototype = {
