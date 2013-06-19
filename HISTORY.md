@@ -1,3 +1,6 @@
+# 0.5.7
+  - wait much longer for marionette tcp socket to become available.
+
 # 0.5.6
   - callbacks are no longer required in all operations.
     default callbacks are noop.
