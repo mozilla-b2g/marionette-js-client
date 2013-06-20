@@ -18,24 +18,12 @@ describe('marionette/command-stream', function() {
   });
 
   describe('initialization', function() {
-    it('should not be in a command', function() {
-      expect(subject.inCommand).to.be(false);
-    });
-
-    it('should have an empty buffer', function() {
-      expect(subject.buffer).to.be('');
-    });
-
     it('should save socket', function() {
       expect(subject.socket).to.be(socket);
     });
 
     it('should be an event emitter', function() {
       expect(subject.on).to.be.a(Function);
-    });
-
-    it('should have no commandLength', function() {
-      expect(subject.commandLength).to.be(0);
     });
   });
 
@@ -50,7 +38,7 @@ describe('marionette/command-stream', function() {
         calledWith = Array.prototype.slice.call(arguments);
       });
 
-      subject.socket.emit('data', subject.stringify(data));
+      subject.socket.emit('data', new Buffer(subject.stringify(data)));
     });
 
     it('should call add', function() {
@@ -66,7 +54,7 @@ describe('marionette/command-stream', function() {
     function shouldStringify() {
       it('should return json string with length + : prefix (n:jsonstring)', function() {
         var string = JSON.stringify(command);
-        expect(result).to.be(String(string.length) + subject.prefix + string);
+        expect(result).to.be(String(string.length) + ':' + string);
       });
     }
 
@@ -80,26 +68,11 @@ describe('marionette/command-stream', function() {
 
     describe('when given a string', function() {
       beforeEach(function() {
-        result = subject.stringify(JSON.stringify(command));
+        command = 'some random string';
+        result = subject.stringify(command);
       });
 
       shouldStringify();
-    });
-  });
-
-  describe('._handleCommand', function() {
-
-    var emitted, data = {uniq: true};
-
-    beforeEach(function() {
-      subject.on(subject.commandEvent, function() {
-        emitted = arguments[0];
-      });
-      subject._handleCommand(JSON.stringify(data));
-    });
-
-    it('should parse and emit command', function() {
-      expect(emitted).to.eql(data);
     });
   });
 
@@ -146,7 +119,7 @@ describe('marionette/command-stream', function() {
 
 
     function add(string, log) {
-      var buffer = string;
+      var buffer = new Buffer(string);
       subject.add(buffer);
     }
 

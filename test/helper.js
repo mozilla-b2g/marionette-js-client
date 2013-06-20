@@ -1,5 +1,10 @@
 (function() {
 
+  if (typeof(window) !== 'undefined') {
+    window.navigator;
+    window.Components;
+  }
+
   var isNode = typeof(window) === 'undefined';
   var isXpc = !isNode && (typeof(window.xpcModule) !== 'undefined');
 
@@ -88,6 +93,7 @@
   //in static scope inside and outside of tests.
   if (!isNode) {
     require('/lib/marionette/marionette.js');
+    require('/node_modules/json-wire-protocol/json-wire-protocol.js');
   }
 
   cross.require('responder', function(obj) {});
