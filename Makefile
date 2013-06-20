@@ -35,6 +35,7 @@ package :
 	rm -f $(DEV_FILE)
 	touch $(DEV_FILE)
 	
+	cat ./node_modules/json-wire-protocol/json-wire-protocol.js >> $(DEV_FILE)
 	cat ./lib/marionette/marionette.js >> $(DEV_FILE)
 	cat ./lib/marionette/responder.js >> $(DEV_FILE)
 	cat ./lib/marionette/error.js >> $(DEV_FILE)
