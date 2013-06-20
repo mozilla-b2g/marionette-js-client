@@ -1,16 +1,19 @@
 {
   "name": "marionette-client",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "main": "lib/marionette/index",
   "description": "Marionette Javascript Client",
   "author": "James Lal",
 
   "dependencies" : {
-    "debug": "~0.6"
+    "debug": "~0.6",
+    "json-wire-protocol": "~0.1.3",
+    "sync-operation": "~0.0.2",
+    "socket-retry-connect": "~0.0.1"
   },
 
   "scripts": {
-    "test": "make test-node REPORTER=dot"
+    "test": "make ci REPORTER=dot"
   },
 
   "devDependencies": {
@@ -18,7 +21,8 @@
     "expect.js": "0.1.2",
     "xpcwindow": "0.4.4",
     "yuidocjs": "~0.3",
-    "test-agent": "~0.12"
+    "test-agent": "~0.12",
+    "marionette-host-environment": "~0.2.1"
   },
 
   "license": "MIT",

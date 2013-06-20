@@ -1,5 +1,7 @@
-vendor/*
-node_modules
-xulrunner-sdk
+/vendor/*
+/node_modules
+/xulrunner-sdk
 .DS_Store
-api-docs/
+/api-docs/
+/test/b2g
+/b2g
