@@ -26,13 +26,24 @@ describe('marionette/drivers/tcp', function() {
       RealSocket,
       sockets = [];
 
+  var socketRetry = require('socket-retry-connect');
+  var realWaitForSocket;
+
   beforeEach(function() {
+    realWaitForSocket = socketRetry.waitForSocket;
+
     RealSocket = Driver.Socket;
     Driver.Socket = FakeSocket;
     FakeSocket.sockets = sockets;
+
+    socketRetry.waitForSocket = function(options, callback) {
+      var socket = new FakeSocket(options.port);
+      callback(null, socket);
+    };
   });
 
   afterEach(function() {
+    socketRetry.waitForSocket = realWaitForSocket;
     Driver.Socket = RealSocket;
   });
 
@@ -111,6 +122,7 @@ describe('marionette/drivers/tcp', function() {
 
       beforeEach(function() {
         Driver.Socket = RealSocket;
+        socketRetry.waitForSocket = realWaitForSocket;
         subject = new Driver({ port: port });
       });
 

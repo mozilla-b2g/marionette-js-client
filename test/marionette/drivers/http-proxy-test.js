@@ -10,43 +10,8 @@ describe('drivers/http-proxy', function() {
   var driver;
   var client;
 
-  function fetchApps() {
-    var appList = [];
-    var mozApps = navigator.mozApps.mgmt;
-    var req = mozApps.getAll();
-    var manifests = [];
-
-    function copy(input) {
-      var obj = {};
-      for (var key in input) {
-        obj[key] = input[key];
-      }
-      return obj;
-    }
-
-    req.onsuccess = function(e) {
-      var apps = e.target.result;
-      for (var i = 0; i < apps.length; i++) {
-        appList.push({
-          name: apps[i].manifest.name,
-          manifestURL: apps[i].manifestURL,
-          entryPoints: apps[i].manifest.entry_points
-        });
-
-        if (apps[i].manifestURL.indexOf('calendar') !== -1) {
-          apps[i].launch();
-        }
-      }
-      marionetteScriptFinished(appList);
-    };
-    req.onerror = function() {
-      marionetteScriptFinished();
-    };
-  }
-
   before(function(done) {
-    this.timeout('100s');
-    host.spawn(__dirname + '/../../../b2g/', function(err, port, child) {
+    host.spawn(__dirname + '/../../b2g/', function(err, port, child) {
       if (err) throw err;
 
       b2g = child;
@@ -62,9 +27,6 @@ describe('drivers/http-proxy', function() {
         });
 
         client.startSession();
-        client.setScriptTimeout(50000);
-        client.setContext('chrome');
-
         done();
       });
     });
@@ -75,9 +37,14 @@ describe('drivers/http-proxy', function() {
     b2g.kill();
   });
 
-  it('should fetch all app data from b2g', function() {
-    var apps = client.executeAsyncScript(fetchApps);
-    expect(apps).to.be.an('array');
+  it('can execute sync commands', function() {
+    client.goUrl('http://yahoo.com');
+    client.goUrl('http://google.com');
+    client.goUrl('http://yahoo.com');
+    var location = client.executeScript(function() {
+      return window.location.href;
+    });
+    expect(location.indexOf('yahoo.com') !== -1).to.be.ok();
   });
 
 });

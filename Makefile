@@ -70,7 +70,15 @@ doc-publish:
 	rm -Rf api-docs-temp/
 
 .PHONY: test
-test : package test-node test-browser test-xpc
+test : test/b2g package test-node test-browser test-xpc
+
+test/b2g:
+	./node_modules/marionette-host-environment/bin/marionette-host-environment test/b2g
+
+.PHONY: ci
+ci: test/b2g
+	Xvfb :99 &
+	DISPLAY=:99 make test-node
 
 .PHONY: test-browser
 test-browser:

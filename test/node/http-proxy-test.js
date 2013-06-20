@@ -40,17 +40,21 @@ describe('node/http-proxy-test', function() {
   }
 
   var subject;
+  var socketRetryConnect = require('socket-retry-connect');
+  var realWaitForSocket;
 
   beforeEach(function(done) {
-    subject = new ProxyServer();
-    subject._createSocket = function() {
-      return new FakeSocket();
+    realWaitForSocket = socketRetryConnect.waitForSocket;
+    socketRetryConnect.waitForSocket = function(options, cb) {
+      var fakeSocket = new FakeSocket(options.port);
+      process.nextTick(cb.bind(null, null, fakeSocket));
     };
-
+    subject = new ProxyServer();
     subject.listen(done);
   });
 
   afterEach(function(done) {
+    require('socket-retry-connect').waitForSocket = realWaitForSocket;
     subject.close(done);
   });
 
