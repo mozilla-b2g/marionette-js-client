@@ -1,3 +1,7 @@
+# 0.6
+  - sync api via http proxy bridge & other horrible/crazy/awesome
+hacks.
+
 # 0.5.7
   - wait much longer for marionette tcp socket to become available.
 
