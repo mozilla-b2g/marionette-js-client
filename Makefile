@@ -1,21 +1,7 @@
-# what OS are we on?
-SYS=$(shell uname -s)
-ARCH=$(shell uname -m)
-
 VENDOR=./vendor/
 REPORTER=spec
 BROWSER_REPORTER=Spec
 DEV_FILE=./marionette.js
-
-ifeq ($(SYS),Darwin)
-MD5SUM = md5 -r
-SED_INPLACE_NO_SUFFIX = sed -i ''
-DOWNLOAD_CMD = curl -s -O
-else
-MD5SUM = md5sum -b
-SED_INPLACE_NO_SUFFIX = sed -i
-DOWNLOAD_CMD = wget
-endif
 
 # doc variables
 YUIDOCJS?=./node_modules/yuidocjs/lib/cli.js

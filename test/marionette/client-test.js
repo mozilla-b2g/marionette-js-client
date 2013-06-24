@@ -307,14 +307,24 @@ describe('marionette/client', function() {
   });
 
   describe('.setContext', function() {
-    device.
-      issues('setContext', 'chrome').
-      shouldSend({
-        type: 'setContext',
-        value: 'chrome'
-      }).
-      serverResponds('ok').
-      callbackReceives('ok');
+    it('should have a default context', function() {
+      expect(subject.context).to.be('content');
+    });
+
+    describe('after setting context', function() {
+      device.
+        issues('setContext', 'chrome').
+        shouldSend({
+          type: 'setContext',
+          value: 'chrome'
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+
+      it('should remember context', function() {
+        expect(subject.context).to.be('chrome');
+      });
+    });
   });
 
   describe('.getWindows', function() {
