@@ -1,3 +1,6 @@
+# 0.7
+  - remember which context the client is in.
+
 # 0.6
   - sync api via http proxy bridge & other horrible/crazy/awesome
 hacks.

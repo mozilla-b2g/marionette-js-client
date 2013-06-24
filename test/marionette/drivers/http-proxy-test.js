@@ -6,6 +6,8 @@ describe('drivers/http-proxy', function() {
   var Driver = require('../../../lib/marionette/drivers/http-proxy');
   var host = require('marionette-host-environment');
 
+  this.timeout(20000);
+
   var b2g;
   var driver;
   var client;

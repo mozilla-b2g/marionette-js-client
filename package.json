@@ -1,6 +1,6 @@
 {
   "name": "marionette-client",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "lib/marionette/index",
   "description": "Marionette Javascript Client",
   "author": "James Lal",
@@ -22,7 +22,7 @@
     "xpcwindow": "0.4.4",
     "yuidocjs": "~0.3",
     "test-agent": "~0.12",
-    "marionette-host-environment": "~0.2.1"
+    "marionette-host-environment": "~0.3.0"
   },
 
   "license": "MIT",
