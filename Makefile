@@ -84,6 +84,7 @@ test-xpc:
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
 	  ./test/node/*-test.js \
+	  ./test/integration/*-test.js \
 	  ./test/marionette/index-test.js \
 	  ./test/marionette/command-stream-test.js \
 	  ./test/marionette/xhr-test.js \

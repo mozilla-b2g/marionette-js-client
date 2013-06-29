@@ -11,6 +11,7 @@
   if (isNode) {
     expect = require('expect.js');
     context = global;
+    global.integration = require('./integration');
   } else {
     context = window;
     context.require('../vendor/expect.js');
