@@ -157,6 +157,45 @@ describe('marionette/client', function() {
     });
   });
 
+  describe('.scope', function() {
+    describe('first subscope', function() {
+      var scope;
+      var options = {
+        scriptTimeout: 150,
+        searchTimeout: 175,
+        context: 'chrome'
+      };
+
+      beforeEach(function() {
+        scope = subject.scope(options);
+        // trigger the new command.
+        scope.goUrl();
+      });
+
+      Object.keys(options).forEach(function(key) {
+        var value = options[key];
+        it('should update .' + key, function() {
+          expect(scope[key]).to.be(value);
+          // has scoping changes
+          expect(scope._scope[key]).to.be(value);
+        });
+      });
+
+      it('should update the ._scope when state changes in scoped', function() {
+        scope.setScriptTimeout(250);
+        expect(scope._scope.scriptTimeout).to.be(250);
+      });
+
+      it('should not update sibling scope', function() {
+        var sibling = subject.scope(options);
+        sibling.setScriptTimeout(999);
+
+        expect(sibling._scope.scriptTimeout).to.be(999);
+        expect(scope._scope.scriptTimeout).not.to.be(999);
+      });
+    });
+  });
+
   describe('.startSession', function() {
     var result;
 
@@ -286,14 +325,23 @@ describe('marionette/client', function() {
   });
 
   describe('.setSearchTimeout', function() {
-    device.
-      issues('setSearchTimeout', 50).
-      shouldSend({
-        type: 'setSearchTimeout',
-        value: 50
-      }).
-      serverResponds('ok').
-      callbackReceives('ok');
+    it('should have default .searchTimeout', function() {
+      expect(subject.searchTimeout).to.be.ok();
+    });
+    describe('after setting', function() {
+      device.
+        issues('setSearchTimeout', 50).
+        shouldSend({
+          type: 'setSearchTimeout',
+          value: 50
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+
+      it('should set timeout', function() {
+        expect(subject.searchTimeout).to.be(50);
+      });
+    });
   });
 
   describe('.getWindow', function() {
@@ -349,18 +397,6 @@ describe('marionette/client', function() {
   });
 
   describe('.switchToFrame', function() {
-
-    describe('when given a non-element', function() {
-      device.
-        issues('switchToFrame', '1d').
-        shouldSend({
-          type: 'switchToFrame',
-          value: '1d'
-        }).
-        serverResponds('ok').
-        callbackReceives('ok');
-    });
-
     describe('when given nothing', function() {
       device.
         issues('switchToFrame').
@@ -417,14 +453,24 @@ describe('marionette/client', function() {
   });
 
   describe('.setScriptTimeout', function() {
-    device.
-      issues('setScriptTimeout', 100).
-      shouldSend({
-        type: 'setScriptTimeout',
-        value: 100
-      }).
-      serverResponds('ok').
-      callbackReceives('ok');
+    it('should have a default timeout', function() {
+      expect(subject.scriptTimeout).to.be.ok();
+    });
+
+    describe('after setting timeout', function() {
+      device.
+        issues('setScriptTimeout', 100).
+        shouldSend({
+          type: 'setScriptTimeout',
+          value: 100
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+
+      it('should update .scriptTimeout', function() {
+        expect(subject.scriptTimeout).to.be(100);
+      });
+    });
   });
 
   describe('.goUrl', function() {
@@ -518,7 +564,6 @@ describe('marionette/client', function() {
         ]);
       });
     });
-
   });
 
   describe('.refresh', function() {
@@ -821,5 +866,4 @@ describe('marionette/client', function() {
     });
 
   });
-
 });
