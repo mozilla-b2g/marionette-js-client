@@ -2136,10 +2136,13 @@
 
   var isNode = typeof(window) === 'undefined';
   var isXpc = !isNode && (typeof(window.xpcModule) !== 'undefined');
-  var wire = require('json-wire-protocol');
+  var wire;
 
   if (isNode) {
     debug = require('debug')('marionette:command-stream');
+    wire = require('json-wire-protocol');
+  } else {
+    wire = window.jsonWireProtocol;
   }
 
   if (isXpc) {
@@ -2491,6 +2494,13 @@
   var Element = ns.require('element'),
       Exception = ns.require('error');
 
+
+  var SCOPE_TO_METHOD = {
+    scriptTimeout: 'setScriptTimeout',
+    searchTimeout: 'setSearchTimeout',
+    context: 'setContext'
+  };
+
   var key;
   var searchMethods = {
     CLASS: 'class name',
@@ -2505,6 +2515,15 @@
 
   function isFunction(value) {
     return typeof(value) === 'function';
+  }
+
+  function setState(context, type, value) {
+    context._scope[type] = value;
+    context._state[type] = value;
+  }
+
+  function getState(context, type) {
+    return context._state[type];
   }
 
   /**
@@ -2571,6 +2590,19 @@
                              driver.defaultCallback :
                              function() {};
     }
+
+    // create the initial state for this client
+    this._state = {
+      context: 'content',
+      scriptTimeout: 5000,
+      searchTimeout: 250
+    };
+
+    // give the root client a scope.
+    this._scope = {};
+    for (var key in this._state) {
+      this._scope[key] = this._state[key];
+    }
   }
 
   Client.prototype = {
@@ -2594,6 +2626,39 @@
     CONTENT: 'content',
 
     /**
+     * The current scope of this client instance. Used with _state.
+     *
+     *   // Example
+     *   {
+     *      scriptTimeout: 500,
+     *      searchTimeout: 6000,
+     *      context: 'content',
+     *      window: 'window_id',
+     *      frame: 'frameId'
+     *   }
+     *
+     * @type {Object}
+     */
+    _scope: null,
+
+    /**
+     * The current state of the client.
+     *
+     *    // Example
+     *    {
+     *      scriptTimeout: 500,
+     *      searchTimeout: 6000,
+     *      context: 'content',
+     *      window: 'window_id',
+     *      frame: 'frameId'
+     *    }
+     *
+     * @private
+     * @type {Object}
+     */
+    _state: null,
+
+    /**
      * Actor id for instance
      *
      * @property actor
@@ -2609,6 +2674,43 @@
      */
     session: null,
 
+    // _state getters
+
+    /**
+     * @return {String} the current context.
+     */
+    get context() {
+      return getState(this, 'context');
+    },
+
+    /**
+     * @return {String|Marionette.Element} frame currently focused.
+     */
+    get frame() {
+      return getState(this, 'frame');
+    },
+
+    /**
+     * @return {String|Marionette.Element}
+     */
+    get window() {
+      return getState(this, 'window');
+    },
+
+    /**
+     * @return {Number} current scriptTimeout.
+     */
+    get scriptTimeout() {
+      return getState(this, 'scriptTimeout');
+    },
+
+    /**
+     * @return {Number} current search timeout.
+     */
+    get searchTimeout() {
+      return getState(this, 'searchTimeout');
+    },
+
     /**
      * Sends a command to the server.
      * Adds additional information like actor and session
@@ -2617,9 +2719,24 @@
      *
      * @method send
      * @chainable
+     * @param {Object} cmd to be sent over the wire.
      * @param {Function} cb executed when response is sent.
      */
     send: function send(cmd, cb) {
+      // first do scoping updates
+      if (this._scope && this._bypassScopeChecks !== true) {
+        // really dirty hack
+        this._bypassScopeChecks = true;
+        for (var key in this._scope) {
+          // !important otherwise throws infinite loop
+          if (this._state[key] !== this._scope[key]) {
+            this[SCOPE_TO_METHOD[key]](this._scope[key]);
+          }
+        }
+        // undo really dirty hack
+        this._bypassScopeChecks = false;
+      }
+
       if (!cmd.to) {
         cmd.to = this.actor || 'root';
       }
@@ -2720,6 +2837,45 @@
       }
 
       return this.send({ type: 'newSession' }, newSession);
+    },
+
+    /**
+     * Creates a client which has a fixed window, frame, scriptTimeout and
+     * searchTimeout.
+     *
+     *    var child = client.scope({ frame: myiframe });
+     *    var chrome = client.scope({ context: 'chrome' });
+     *
+     *    // executed in the given iframe in content
+     *    child.setContext('content');
+     *    child.findElement('...')
+     *
+     *    // executed in the root frame in chrome context.
+     *    chrome.executeScript();
+     *
+     *
+     * @param {Object} options for scopped client.
+     * @return {Marionette.Client} scoped client instance.
+     */
+    scope: function(options) {
+      var scopeOptions = {};
+      for (var key in this._scope) {
+        scopeOptions[key] = this._scope[key];
+      }
+
+      // copy the given options
+      for (key in options) {
+        var value = options[key];
+        scopeOptions[key] = value;
+      }
+
+      // create child
+      var scope = Object.create(this);
+
+      // assign the new scoping
+      scope._scope = scopeOptions;
+
+      return scope;
     },
 
     /**
@@ -2840,24 +2996,35 @@
       } else if (id) {
         cmd.value = id;
       }
-
       return this._sendCommand(cmd, 'ok', callback);
     },
 
     /**
-     * Switches context of window.
+     * Switches context of window. The current context can be found with
+     * .context.
+     *
+     *    // default context
+     *    client.context === 'content';
+     *
+     *    client.setContext('chrome', function() {
+     *      // .. wait for switch
+     *    });
+     *
+     *    client.context === 'chrome';
+     *
      *
      * @method setContext
      * @chainable
      * @param {String} context either: 'chome' or 'content'.
      * @param {Function} callback receives boolean.
      */
-    setContext: function setContext(content, callback) {
-      if (content !== this.CHROME && content !== this.CONTENT) {
+    setContext: function setContext(context, callback) {
+      if (context !== this.CHROME && context !== this.CONTENT) {
         throw new Error('content type must be "chrome" or "content"');
       }
 
-      var cmd = { type: 'setContext', value: content };
+      setState(this, 'context', context);
+      var cmd = { type: 'setContext', value: context };
       return this._sendCommand(cmd, 'ok', callback);
     },
 
@@ -2872,6 +3039,7 @@
      */
     setScriptTimeout: function setScriptTimeout(timeout, callback) {
       var cmd = { type: 'setScriptTimeout', value: timeout };
+      setState(this, 'scriptTimeout', timeout);
       return this._sendCommand(cmd, 'ok', callback);
     },
 
@@ -2886,6 +3054,7 @@
      */
     setSearchTimeout: function setSearchTimeout(timeout, callback) {
       var cmd = { type: 'setSearchTimeout', value: timeout };
+      setState(this, 'searchTimeout', timeout);
       return this._sendCommand(cmd, 'ok', callback);
     },
 
@@ -3928,6 +4097,7 @@
     isSync: true,
     defaultCallback: function(err, result) {
       if (err) {
+        console.log(err, '<<< THROW!')
         throw err;
       }
       return result;
