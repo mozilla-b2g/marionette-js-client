@@ -1,3 +1,7 @@
+# 0.8
+  - .scope method for making context/timeout transitions/restorations
+    trivial
+  - .waitFor method for polling from test runner environment -> host
 # 0.7
   - remember which context the client is in.
 
