@@ -84,6 +84,7 @@ test-xpc:
 test-node:
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
 	  ./test/node/*-test.js \
+	  ./test/integration/*-test.js \
 	  ./test/marionette/index-test.js \
 	  ./test/marionette/command-stream-test.js \
 	  ./test/marionette/xhr-test.js \
@@ -93,4 +94,4 @@ test-node:
 	  ./test/marionette/drivers/abstract-test.js \
 	  ./test/marionette/drivers/tcp-test.js \
 	  ./test/marionette/drivers/httpd-polling-test.js \
-	  ./test/marionette/drivers/http-proxy-test.js
+	  ./test/marionette/drivers/http-proxy-test.js -t 5s
