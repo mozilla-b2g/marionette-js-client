@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>lib&#x2F;marionette&#x2F;drivers&#x2F;httpd-polling.js - Marionette JS Client</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
-    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <title>lib/marionette/drivers/httpd-polling.js - Marionette JS Client</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.7.0/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -41,23 +41,21 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="..&#x2F;classes/Marionette.Client.html">Marionette.Client</a></li>
+                <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
+                <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
+                <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
+                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Websocket.html">Marionette.Drivers.Websocket</a></li>
+                <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Element.html">Marionette.Element</a></li>
-            
-                <li><a href="..&#x2F;classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
             
             </ul>
 
@@ -98,26 +96,26 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: lib&#x2F;marionette&#x2F;drivers&#x2F;httpd-polling.js</h1>
+                        <h1 class="file-heading">File: lib/marionette/drivers/httpd-polling.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-&#x2F;** @namespace *&#x2F;
+/** @namespace */
 (function(module, ns) {
 
-  var Abstract = ns.require(&#x27;drivers&#x2F;abstract&#x27;),
+  var Abstract = ns.require(&#x27;drivers/abstract&#x27;),
       Xhr = ns.require(&#x27;xhr&#x27;);
 
   Httpd.Xhr = Xhr;
 
-  &#x2F;**
+  /**
    * Creates instance of http proxy backend.
    *
    * @deprecated
    * @class Marionette.Drivers.Httpd
    * @extends Marionette.Drivers.Abstract
-   * @param {Object} options key&#x2F;value pairs to add to prototype.
-   *&#x2F;
+   * @param {Object} options key/value pairs to add to prototype.
+   */
   function Httpd(options) {
     var key;
     if (typeof(options) === &#x27;undefined&#x27;) {
@@ -135,56 +133,56 @@
 
   var proto = Httpd.prototype = Object.create(Abstract.prototype);
 
-  &#x2F;** @scope Marionette.Drivers.Httpd.prototype *&#x2F;
+  /** @scope Marionette.Drivers.Httpd.prototype */
 
-  &#x2F;**
+  /**
    * Location of the http server that will proxy to marionette
    * @memberOf Marionette.Drivers.Httpd#
    * @name proxyUrl
    * @type String
-   *&#x2F;
-  proto.proxyUrl = &#x27;&#x2F;marionette&#x27;;
+   */
+  proto.proxyUrl = &#x27;/marionette&#x27;;
 
-  &#x2F;**
+  /**
    * Port that proxy should connect to.
    *
    * @name port
    * @memberOf Marionette.Drivers.Httpd#
    * @type Numeric
-   *&#x2F;
+   */
   proto.port = 2828;
 
-  &#x2F;**
+  /**
    * Server proxy should connect to.
    *
    *
    * @name server
    * @memberOf Marionette.Drivers.Httpd#
    * @type String
-   *&#x2F;
+   */
   proto.server = &#x27;localhost&#x27;;
 
-  &#x2F;**
+  /**
    * Sends command to server for this connection
    *
    * @name _sendCommand
    * @memberOf Marionette.Drivers.Httpd#
    * @param {Object} command remote marionette command.
-   *&#x2F;
+   */
   proto._sendCommand = function _sendCommand(command) {
     this._request(&#x27;PUT&#x27;, command, function() {
-      &#x2F;&#x2F;error handling?
+      //error handling?
     });
   };
 
 
-  &#x2F;**
+  /**
    * Sends DELETE message to server to close marionette connection.
    * Aborts all polling operations.
    *
    * @name _close
    * @memberOf Marionette.Drivers.Httpd#
-   *&#x2F;
+   */
   proto._close = function _close() {
 
     if (this._pollingRequest) {
@@ -193,16 +191,16 @@
     }
 
     this._request(&#x27;DELETE&#x27;, null, function() {
-      &#x2F;&#x2F;handle close errors?
+      //handle close errors?
     });
   };
 
-  &#x2F;**
+  /**
    * Opens connection for device.
    *
    * @name _connect
    * @memberOf Marionette.Drivers.Httpd#
-   *&#x2F;
+   */
   proto._connect = function _connect() {
     var auth = {
       server: this.server,
@@ -215,12 +213,12 @@
         this.connectionId = data.id;
         this._pollingRequest = this._request(&#x27;GET&#x27;, deviceResponse);
       } else {
-        &#x2F;&#x2F;throw error
+        //throw error
       }
     }.bind(this));
   };
 
-  &#x2F;**
+  /**
    * Creates xhr request
    *
    * @memberOf Marionette.Drivers.Httpd#
@@ -230,7 +228,7 @@
    * @param {Object} callback after xhr completes \
    * receives parsed data as first argument and xhr object as second.
    * @return {Marionette.Xhr} xhr wrapper.
-   *&#x2F;
+   */
   proto._request = function _request(method, data, callback) {
     var request, url;
 
@@ -257,7 +255,7 @@
     return request;
   };
 
-  &#x2F;**
+  /**
    * Handles response to multiple messages.
    * Requeues the _pollingRequest on success
    *
@@ -273,7 +271,7 @@
    * @memberOf Marionette.Drivers.Httpd#
    * @param {Object} queue list of messages.
    * @param {Marionette.Xhr} xhr xhr instance.
-   *&#x2F;
+   */
   proto._onQueueResponse = function _onQueueResponse(queue, xhr) {
     var self = this;
 
@@ -281,14 +279,14 @@
       throw new Error(&#x27;XHR responded with code other then 200&#x27;);
     }
 
-    &#x2F;&#x2F;TODO: handle errors
+    //TODO: handle errors
     if (queue &amp;&amp; queue.messages) {
       queue.messages.forEach(function(response) {
         self._onDeviceResponse(response);
       });
     }
 
-    &#x2F;&#x2F;when we close the object _pollingRequest is destroyed.
+    //when we close the object _pollingRequest is destroyed.
     if (this._pollingRequest) {
       this._pollingRequest.send();
     }
@@ -300,8 +298,8 @@
 }.apply(
   this,
   (this.Marionette) ?
-    [Marionette(&#x27;drivers&#x2F;httpd-polling&#x27;), Marionette] :
-    [module, require(&#x27;..&#x2F;marionette&#x27;)]
+    [Marionette(&#x27;drivers/httpd-polling&#x27;), Marionette] :
+    [module, require(&#x27;../marionette&#x27;)]
 ));
 
     </pre>
@@ -313,13 +311,13 @@
         </div>
     </div>
 </div>
-<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="..&#x2F;assets/js/yui-prettify.js"></script>
-<script src="..&#x2F;assets/../api.js"></script>
-<script src="..&#x2F;assets/js/api-filter.js"></script>
-<script src="..&#x2F;assets/js/api-list.js"></script>
-<script src="..&#x2F;assets/js/api-search.js"></script>
-<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
 </body>
 </html>

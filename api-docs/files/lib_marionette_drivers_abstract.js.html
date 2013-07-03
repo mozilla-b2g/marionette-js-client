@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>lib&#x2F;marionette&#x2F;drivers&#x2F;abstract.js - Marionette JS Client</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
-    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <title>lib/marionette/drivers/abstract.js - Marionette JS Client</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.7.0/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -41,23 +41,21 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="..&#x2F;classes/Marionette.Client.html">Marionette.Client</a></li>
+                <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
+                <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
+                <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
+                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Websocket.html">Marionette.Drivers.Websocket</a></li>
+                <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Element.html">Marionette.Element</a></li>
-            
-                <li><a href="..&#x2F;classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
             
             </ul>
 
@@ -98,23 +96,23 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: lib&#x2F;marionette&#x2F;drivers&#x2F;abstract.js</h1>
+                        <h1 class="file-heading">File: lib/marionette/drivers/abstract.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
 (function(module, ns) {
 
-  &#x2F;**
+  /**
    *
    * Abstract driver that will handle
    * all common tasks between implementations.
-   * Such as error handling, request&#x2F;response queuing
+   * Such as error handling, request/response queuing
    * and timeouts.
    *
    * @constructor
    * @class Marionette.Drivers.Abstract
    * @param {Object} options set options on prototype.
-   *&#x2F;
+   */
   function Abstract(options) {
     this._sendQueue = [];
     this._responseQueue = [];
@@ -122,40 +120,40 @@
 
   Abstract.prototype = {
 
-    &#x2F;**
+    /**
      * Timeout for commands
      *
      * @property timeout
      * @type Numeric
-     *&#x2F;
+     */
     timeout: 10000,
 
-    &#x2F;**
+    /**
      * Waiting for a command to finish?
      *
      * @private
      * @property _waiting
      * @type Boolean
-     *&#x2F;
+     */
     _waiting: true,
 
-    &#x2F;**
+    /**
      * Is system ready for commands?
      *
      * @property ready
      * @type Boolean
-     *&#x2F;
+     */
     ready: false,
 
-    &#x2F;**
+    /**
      * Connection id for the server.
      *
      * @property connectionId
      * @type Numeric
-     *&#x2F;
+     */
     connectionId: null,
 
-    &#x2F;**
+    /**
      * Sends remote command to server.
      * Each command will be queued while waiting for
      * any pending commands. This ensures order of
@@ -165,7 +163,7 @@
      * @method send
      * @param {Object} command remote command to send to marionette.
      * @param {Function} callback executed when response comes back.
-     *&#x2F;
+     */
     send: function send(cmd, callback) {
       if (!this.ready) {
         throw new Error(&#x27;connection is not ready&#x27;);
@@ -183,22 +181,22 @@
       return this;
     },
 
-    &#x2F;**
+    /**
      * Connects to a remote server.
      * Requires a _connect function to be defined.
      *
      *     MyClass.prototype._connect = function _connect(){
-     *       &#x2F;&#x2F;open a socket to marrionete accept response
-     *       &#x2F;&#x2F;you *must* call _onDeviceResponse with the first
-     *       &#x2F;&#x2F;response from marionette it looks like this:
-     *       &#x2F;&#x2F;{ from: &#x27;root&#x27;, applicationType: &#x27;gecko&#x27;, traits: [] }
+     *       //open a socket to marrionete accept response
+     *       //you *must* call _onDeviceResponse with the first
+     *       //response from marionette it looks like this:
+     *       //{ from: &#x27;root&#x27;, applicationType: &#x27;gecko&#x27;, traits: [] }
      *       this.connectionId = result.id;
      *     }
      *
      * @method connect
      * @param {Function} callback executes
      *   after successfully connecting to the server.
-     *&#x2F;
+     */
     connect: function connect(callback) {
       this.ready = true;
       this._responseQueue.push(function(data) {
@@ -209,14 +207,14 @@
       this._connect();
     },
 
-    &#x2F;**
+    /**
      * Destroys connection to server
      *
      * Will immediately close connection to server
      * closing any pending responses.
      *
      * @method close
-     *&#x2F;
+     */
     close: function() {
       this.ready = false;
       this._responseQueue.length = 0;
@@ -225,13 +223,13 @@
       }
     },
 
-    &#x2F;**
+    /**
      * Checks queue if not waiting for a response
      * Sends command to websocket server
      *
      * @private
      * @method _nextCommand
-     *&#x2F;
+     */
     _nextCommand: function _nextCommand() {
       var nextCmd;
       if (!this._waiting &amp;&amp; this._sendQueue.length) {
@@ -241,7 +239,7 @@
       }
     },
 
-    &#x2F;**
+    /**
      * Handles responses from devices.
      * Will only respond to the event if the connectionId
      * is equal to the event id and the client is ready.
@@ -249,7 +247,7 @@
      * @param {Object} data response from server.
      * @private
      * @method _onDeviceResponse
-     *&#x2F;
+     */
     _onDeviceResponse: function _onDeviceResponse(data) {
       var cb;
       if (this.ready &amp;&amp; data.id === this.connectionId) {
@@ -268,8 +266,8 @@
 }.apply(
   this,
   (this.Marionette) ?
-    [Marionette(&#x27;drivers&#x2F;abstract&#x27;), Marionette] :
-    [module, require(&#x27;..&#x2F;marionette&#x27;)]
+    [Marionette(&#x27;drivers/abstract&#x27;), Marionette] :
+    [module, require(&#x27;../marionette&#x27;)]
 ));
 
     </pre>
@@ -281,13 +279,13 @@
         </div>
     </div>
 </div>
-<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="..&#x2F;assets/js/yui-prettify.js"></script>
-<script src="..&#x2F;assets/../api.js"></script>
-<script src="..&#x2F;assets/js/api-filter.js"></script>
-<script src="..&#x2F;assets/js/api-list.js"></script>
-<script src="..&#x2F;assets/js/api-search.js"></script>
-<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
 </body>
 </html>

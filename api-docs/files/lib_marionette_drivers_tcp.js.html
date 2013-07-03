@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>lib&#x2F;marionette&#x2F;drivers&#x2F;tcp.js - Marionette JS Client</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
-    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <title>lib/marionette/drivers/tcp.js - Marionette JS Client</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.7.0/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -41,23 +41,21 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="..&#x2F;classes/Marionette.Client.html">Marionette.Client</a></li>
+                <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
+                <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
+                <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
+                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Websocket.html">Marionette.Drivers.Websocket</a></li>
+                <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Element.html">Marionette.Element</a></li>
-            
-                <li><a href="..&#x2F;classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
             
             </ul>
 
@@ -98,22 +96,26 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: lib&#x2F;marionette&#x2F;drivers&#x2F;tcp.js</h1>
+                        <h1 class="file-heading">File: lib/marionette/drivers/tcp.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
 var Abstract, CommandStream;
+var net = require(&#x27;net&#x27;);
+var debug = require(&#x27;debug&#x27;)(&#x27;marionette:tcp&#x27;),
+    // we must reference the object not the function for mocking
+    retrySocket = require(&#x27;socket-retry-connect&#x27;);
 
-Abstract = require(&#x27;.&#x2F;abstract&#x27;);
-CommandStream = require(&#x27;..&#x2F;..&#x2F;marionette&#x2F;command-stream&#x27;);
+Abstract = require(&#x27;./abstract&#x27;);
+CommandStream = require(&#x27;../../marionette/command-stream&#x27;);
 
-&#x2F;** TCP **&#x2F;
-Tcp.Socket = require(&#x27;net&#x27;).Socket;
+/** TCP **/
+Tcp.Socket = net.Socket;
 
-&#x2F;**
+/**
  * NodeJS only tcp socket driver for marionette.
- * See {{#crossLink &quot;Marionette.Drivers.MozTcp&quot;}}{{&#x2F;crossLink}}
- * for the gecko&#x2F;xpcom vesion of this driver.
+ * See {{#crossLink &quot;Marionette.Drivers.MozTcp&quot;}}{{/crossLink}}
+ * for the gecko/xpcom vesion of this driver.
  *
  * @class Marionette.Drivers.Tcp
  * @extends Marionette.Drivers.Abstract
@@ -121,56 +123,61 @@ Tcp.Socket = require(&#x27;net&#x27;).Socket;
  * @param {Options} options connection options.
  *   @param {String} [options.host=&quot;localhost&quot;] host.
  *   @param {Numeric} [options.port=&quot;2828&quot;] port.
- *&#x2F;
+ */
 function Tcp(options) {
-  if (typeof(options)) {
+  if (!options) {
     options = {};
   }
+
   Abstract.call(this, options);
 
-
   this.connectionId = 0;
-  &#x2F;**
+  /**
    * @property host
    * @type String
-   *&#x2F;
+   */
   this.host = options.host || &#x27;localhost&#x27;;
 
-  &#x2F;**
+  /**
    * @property port
    * @type Numeric
-   *&#x2F;
+   */
   this.port = options.port || 2828;
 }
 
 Tcp.prototype = Object.create(Abstract.prototype);
 
-&#x2F;**
+/**
  * Sends a command to the server.
  *
  * @param {Object} cmd remote marionette command.
- *&#x2F;
+ */
 Tcp.prototype._sendCommand = function _sendCommand(cmd) {
   this.client.send(cmd);
 };
 
-&#x2F;**
+/**
  * Opens TCP socket for marionette client.
- *&#x2F;
+ */
 Tcp.prototype._connect = function connect() {
   var client, self = this;
+  var options = {
+   port: this.port, host: this.host
+  };
 
-  this.socket = new Tcp.Socket();
-  this.socket.connect(this.port, this.host);
-  client = this.client = new CommandStream(this.socket);
-  this.client.on(&#x27;command&#x27;, this._onClientCommand.bind(this));
+  retrySocket.waitForSocket(options, function(err, socket) {
+    debug(&#x27;got socket starting command stream&#x27;);
+    this.socket = socket;
+    client = this.client = new CommandStream(this.socket);
+    this.client.on(&#x27;command&#x27;, this._onClientCommand.bind(this));
+  }.bind(this));
 };
 
-&#x2F;**
+/**
  * Receives command from server.
  *
  * @param {Object} data response from marionette server.
- *&#x2F;
+ */
 Tcp.prototype._onClientCommand = function(data) {
   this._onDeviceResponse({
     id: this.connectionId,
@@ -178,16 +185,16 @@ Tcp.prototype._onClientCommand = function(data) {
   });
 };
 
-&#x2F;**
+/**
  * Closes connection to marionette.
- *&#x2F;
+ */
 Tcp.prototype._close = function close() {
   if (this.socket &amp;&amp; this.socket.destroy) {
     this.socket.destroy();
   }
 };
 
-&#x2F;** export *&#x2F;
+/** export */
 module.exports = exports = Tcp;
 
     </pre>
@@ -199,13 +206,13 @@ module.exports = exports = Tcp;
         </div>
     </div>
 </div>
-<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="..&#x2F;assets/js/yui-prettify.js"></script>
-<script src="..&#x2F;assets/../api.js"></script>
-<script src="..&#x2F;assets/js/api-filter.js"></script>
-<script src="..&#x2F;assets/js/api-list.js"></script>
-<script src="..&#x2F;assets/js/api-search.js"></script>
-<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
 </body>
 </html>

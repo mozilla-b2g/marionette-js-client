@@ -43,15 +43,6 @@
             "fors": {},
             "namespaces": {}
         },
-        "lib/marionette/drivers/websocket.js": {
-            "name": "lib/marionette/drivers/websocket.js",
-            "modules": {},
-            "classes": {
-                "Marionette.Drivers.Websocket": 1
-            },
-            "fors": {},
-            "namespaces": {}
-        },
         "lib/marionette/client.js": {
             "name": "lib/marionette/client.js",
             "modules": {},
@@ -88,6 +79,13 @@
         },
         "lib/marionette/marionette.js": {
             "name": "lib/marionette/marionette.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/marionette/responder.js": {
+            "name": "lib/marionette/responder.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -155,7 +153,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "lib/marionette/drivers/moz-tcp.js",
-            "line": 66,
+            "line": 70,
             "description": "Connects to gecko marionette server using mozTCP api.\n\n\n    // default options are fine for b2g-desktop\n    // or a device device /w port forwarding.\n    var tcp = new Marionette.Drivers.MozTcp();\n\n    tcp.connect(function() {\n      // ready to use with client\n    });",
             "extends": "Marionette.Drivers.Abstract",
             "is_constructor": 1,
@@ -192,7 +190,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 9,
+            "line": 13,
             "description": "NodeJS only tcp socket driver for marionette.\nSee {{#crossLink \"Marionette.Drivers.MozTcp\"}}{{/crossLink}}\nfor the gecko/xpcom vesion of this driver.",
             "extends": "Marionette.Drivers.Abstract",
             "is_constructor": 1,
@@ -220,26 +218,6 @@
                 }
             ]
         },
-        "Marionette.Drivers.Websocket": {
-            "name": "Marionette.Drivers.Websocket",
-            "shortname": "Marionette.Drivers.Websocket",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "lib/marionette/drivers/websocket.js",
-            "line": 11,
-            "description": "WebSocket interface for marionette.\nGenerally {{#crossLink \"Marionette.Drivers.Tcp\"}}{{/crossLink}}\nwill be faster and more reliable but WebSocket can expose devices\nover http instead of a pure socket.",
-            "extends": "Marionette.Drivers.Abstract",
-            "params": [
-                {
-                    "name": "options",
-                    "description": "options for abstract/prototype.",
-                    "type": "Object"
-                }
-            ]
-        },
         "Marionette.Client": {
             "name": "Marionette.Client",
             "shortname": "Marionette.Client",
@@ -249,8 +227,8 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "lib/marionette/client.js",
-            "line": 22,
-            "description": "Initializes client.\nYou must create and initialize\na driver and pass it into the client before\nusing the client itself.\n\n    // all drivers conform to this api\n\n    var driver = new Marionette.Dirver.MozTcp({});\n    var client;\n\n    driver.connect(function(err) {\n      if (err) {\n        // handle error case...\n      }\n\n      client = new Marionette.Client(driver, {\n          // optional default callback can be used to implement\n          // a generator interface or other non-callback based api.\n         defaultCallback: function(err, result) {\n           console.log('CALLBACK GOT:', err, result);\n         }\n      });\n\n      // by default commands run in a queue.\n      // assuming there is not a fatal error each command\n      // will execute sequentially.\n      client.startSession().\n             goUrl('http://google.com').\n             executeScript(function() {\n               alert(document.title);\n             });\n      }\n    });",
+            "line": 58,
+            "description": "Initializes client.\nYou must create and initialize\na driver and pass it into the client before\nusing the client itself.\n\n    // all drivers conform to this api\n\n    // var Marionette = require('marionette-client');\n    var driver = new Marionette.Drivers.Tcp({});\n    var client;\n\n    driver.connect(function(err) {\n      if (err) {\n        // handle error case...\n      }\n\n      client = new Marionette.Client(driver, {\n          // optional default callback can be used to implement\n          // a generator interface or other non-callback based api.\n         defaultCallback: function(err, result) {\n           console.log('CALLBACK GOT:', err, result);\n         }\n      });\n\n      // by default commands run in a queue.\n      // assuming there is not a fatal error each command\n      // will execute sequentially.\n      client.startSession(function () {\n        client.goUrl('http://google.com')\n          .executeScript(function() {\n            alert(document.title);\n          })\n          .deleteSession();\n      });\n    });",
             "is_constructor": 1,
             "params": [
                 {
@@ -274,7 +252,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "lib/marionette/command-stream.js",
-            "line": 20,
+            "line": 21,
             "description": "Command stream accepts a socket or any event\nemitter that will emit data events",
             "params": [
                 {
@@ -580,18 +558,18 @@
         },
         {
             "file": "lib/marionette/drivers/moz-tcp.js",
-            "line": 12,
+            "line": 16,
             "description": "Horrible hack to work around\nmissing stuff in TCPSocket & add\nnode compatible api.",
             "class": "Marionette.Drivers.MozTcp"
         },
         {
             "file": "lib/marionette/drivers/moz-tcp.js",
-            "line": 63,
+            "line": 67,
             "class": "Marionette.Drivers.MozTcp"
         },
         {
             "file": "lib/marionette/drivers/moz-tcp.js",
-            "line": 100,
+            "line": 104,
             "description": "Sends a command to the server.",
             "params": [
                 {
@@ -604,13 +582,13 @@
         },
         {
             "file": "lib/marionette/drivers/moz-tcp.js",
-            "line": 109,
+            "line": 113,
             "description": "Opens TCP socket for marionette client.",
             "class": "Marionette.Drivers.MozTcp"
         },
         {
             "file": "lib/marionette/drivers/moz-tcp.js",
-            "line": 120,
+            "line": 124,
             "description": "Receives command from server.",
             "params": [
                 {
@@ -623,23 +601,23 @@
         },
         {
             "file": "lib/marionette/drivers/moz-tcp.js",
-            "line": 132,
+            "line": 136,
             "description": "Closes connection to marionette.",
             "class": "Marionette.Drivers.MozTcp"
         },
         {
             "file": "lib/marionette/drivers/moz-tcp.js",
-            "line": 141,
+            "line": 145,
             "class": "Marionette.Drivers.MozTcp"
         },
         {
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 6,
+            "line": 10,
             "class": "Marionette.Drivers.Tcp"
         },
         {
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 29,
+            "line": 33,
             "itemtype": "property",
             "name": "host",
             "type": "String",
@@ -647,7 +625,7 @@
         },
         {
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 35,
+            "line": 39,
             "itemtype": "property",
             "name": "port",
             "type": "Numeric",
@@ -655,7 +633,7 @@
         },
         {
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 44,
+            "line": 48,
             "description": "Sends a command to the server.",
             "params": [
                 {
@@ -668,13 +646,13 @@
         },
         {
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 53,
+            "line": 57,
             "description": "Opens TCP socket for marionette client.",
             "class": "Marionette.Drivers.Tcp"
         },
         {
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 65,
+            "line": 74,
             "description": "Receives command from server.",
             "params": [
                 {
@@ -687,52 +665,67 @@
         },
         {
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 77,
+            "line": 86,
             "description": "Closes connection to marionette.",
             "class": "Marionette.Drivers.Tcp"
         },
         {
             "file": "lib/marionette/drivers/tcp.js",
-            "line": 86,
+            "line": 95,
             "class": "Marionette.Drivers.Tcp"
         },
         {
-            "file": "lib/marionette/drivers/websocket.js",
-            "line": 31,
-            "description": "Sends a command to the websocket server.",
-            "params": [
-                {
-                    "name": "command",
-                    "description": "remote marionette command.",
-                    "type": "Object"
-                }
-            ],
+            "file": "lib/marionette/client.js",
+            "line": 33,
+            "description": "Helper to set scope and state on a given client.",
             "access": "private",
             "tagname": "",
-            "class": "Marionette.Drivers.Websocket"
-        },
-        {
-            "file": "lib/marionette/drivers/websocket.js",
-            "line": 44,
-            "description": "Opens a connection to the websocket server and creates\na device connection.",
             "params": [
                 {
-                    "name": "callback",
-                    "description": "sent when initial response comes back.",
-                    "type": "Function"
+                    "name": "context",
+                    "description": "of a client.",
+                    "type": "Marionette.Client"
+                },
+                {
+                    "name": "type",
+                    "description": "property of client.",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "of type.",
+                    "type": "Object|String|Number|Null"
                 }
             ],
-            "class": "Marionette.Drivers.Websocket"
-        },
-        {
-            "file": "lib/marionette/drivers/websocket.js",
-            "line": 69,
-            "description": "Closes connection to marionette.",
-            "class": "Marionette.Drivers.Websocket"
+            "class": "Marionette.Client"
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 75,
+            "line": 46,
+            "description": "Helper to get state of given client.",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "of a client.",
+                    "type": "Marionette.Client"
+                },
+                {
+                    "name": "type",
+                    "description": "property of client.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "value of type.",
+                "type": "Object|String|Number|Null"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 141,
             "description": "Constant for chrome context.",
             "type": "{String}",
             "itemtype": "property",
@@ -741,7 +734,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 83,
+            "line": 149,
             "description": "Constant for content context.",
             "type": "{String}",
             "itemtype": "property",
@@ -750,7 +743,23 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 91,
+            "line": 157,
+            "description": "The current scope of this client instance. Used with _state.\n\n  // Example\n  {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n  }",
+            "type": "{Object}",
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 173,
+            "description": "The current state of the client.\n\n   // Example\n   {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n   }",
+            "access": "private",
+            "tagname": "",
+            "type": "{Object}",
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 190,
             "description": "Actor id for instance",
             "itemtype": "property",
             "name": "actor",
@@ -759,7 +768,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 99,
+            "line": 198,
             "description": "Session id for instance.",
             "itemtype": "property",
             "name": "session",
@@ -768,12 +777,62 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 107,
+            "line": 208,
+            "return": {
+                "description": "the current context.",
+                "type": "String"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 215,
+            "return": {
+                "description": "frame currently focused.",
+                "type": "String|Marionette.Element"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 222,
+            "return": {
+                "description": "",
+                "type": "String|Marionette.Element"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 229,
+            "return": {
+                "description": "current scriptTimeout.",
+                "type": "Number"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 236,
+            "return": {
+                "description": "current search timeout.",
+                "type": "Number"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 243,
             "description": "Sends a command to the server.\nAdds additional information like actor and session\nto command if not present.",
             "itemtype": "method",
             "name": "send",
             "chainable": 1,
             "params": [
+                {
+                    "name": "cmd",
+                    "description": "to be sent over the wire.",
+                    "type": "Object"
+                },
                 {
                     "name": "cb",
                     "description": "executed when response is sent.",
@@ -784,7 +843,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 151,
+            "line": 307,
             "description": "Sends request and formats response.",
             "access": "private",
             "tagname": "",
@@ -812,7 +871,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 173,
+            "line": 334,
             "description": "Finds the actor for this instance.",
             "access": "private",
             "tagname": "",
@@ -829,7 +888,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 193,
+            "line": 354,
             "description": "Starts a remote session.",
             "access": "private",
             "tagname": "",
@@ -846,7 +905,67 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 211,
+            "line": 372,
+            "description": "Creates a client which has a fixed window, frame, scriptTimeout and\nsearchTimeout.\n\n    client.setSearchTimeout(1000).setContext('content');\n\n    var timeout = client.scope({ searchTimeout: 250 });\n    var chrome = client.scope({ context: 'chrome' });\n\n    // executed with 250 timeout\n    timeout.findElement('...');\n\n    // executes in chrome context.\n    chrome.executeScript();\n\n    // executed in content with search timeout of 1000\n    client.findElement('...');",
+            "itemtype": "method",
+            "name": "scope",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "for scopped client.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "scoped client instance.",
+                "type": "Marionette.Client"
+            },
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 416,
+            "description": "Utility for waiting for a success condition to be met.\n\n    // sync style\n    client.waitFor(function() {\n      return element.displayed();\n    });\n\n    // async style\n    client.waitFor(function(done) {\n      element.displayed(done);\n    });\n\n\n   Options:\n     * (Number) interval: time between running test\n     * (Number) timeout: maximum wallclock time before failing test.",
+            "itemtype": "method",
+            "name": "waitFor",
+            "params": [
+                {
+                    "name": "test",
+                    "description": "to execute.",
+                    "type": "Function"
+                },
+                {
+                    "name": "options",
+                    "description": "for timeout see above.",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "interval",
+                            "description": "time between running test.",
+                            "type": "Number",
+                            "optional": true
+                        },
+                        {
+                            "name": "timeout",
+                            "description": "maximum wallclock time before failing test.",
+                            "type": "Number",
+                            "optional": true
+                        }
+                    ]
+                },
+                {
+                    "name": "callback",
+                    "description": "optional callback.",
+                    "type": "Function",
+                    "optional": true
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 492,
             "description": "Finds actor and creates connection to marionette.\nThis is a combination of calling getMarionetteId and then newSession.",
             "itemtype": "method",
             "name": "startSession",
@@ -861,7 +980,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 226,
+            "line": 509,
             "description": "Destroys current session.",
             "chainable": 1,
             "itemtype": "method",
@@ -877,7 +996,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 246,
+            "line": 527,
             "description": "Callback will receive the id of the current window.",
             "chainable": 1,
             "itemtype": "method",
@@ -897,7 +1016,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 259,
+            "line": 540,
             "description": "Callback will receive an array of window ids.",
             "itemtype": "method",
             "name": "getWindow",
@@ -913,7 +1032,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 271,
+            "line": 552,
             "description": "Switches context of marionette to specific window.",
             "itemtype": "method",
             "name": "switchToWindow",
@@ -934,7 +1053,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 285,
+            "line": 566,
             "description": "Imports a script into the marionette\ncontext for the duration of the session.\n\nGood for prototyping new marionette commands.",
             "itemtype": "method",
             "name": "importScript",
@@ -955,7 +1074,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 301,
+            "line": 582,
             "description": "Switches context of marionette to specific iframe.",
             "itemtype": "method",
             "name": "switchToFrame",
@@ -976,8 +1095,8 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 327,
-            "description": "Switches context of window.",
+            "line": 613,
+            "description": "Switches context of window. The current context can be found with\n.context.\n\n   // default context\n   client.context === 'content';\n\n   client.setContext('chrome', function() {\n     // .. wait for switch\n   });\n\n   client.context === 'chrome';",
             "itemtype": "method",
             "name": "setContext",
             "chainable": 1,
@@ -997,7 +1116,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 344,
+            "line": 642,
             "description": "Sets the script timeout",
             "itemtype": "method",
             "name": "setScriptTimeout",
@@ -1022,7 +1141,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 358,
+            "line": 657,
             "description": "setSearchTimeout",
             "itemtype": "method",
             "name": "setSearchTimeout",
@@ -1047,7 +1166,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 372,
+            "line": 672,
             "description": "Gets url location for device.",
             "itemtype": "method",
             "name": "getUrl",
@@ -1063,7 +1182,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 384,
+            "line": 684,
             "description": "Refreshes current window on device.",
             "itemtype": "method",
             "name": "refresh",
@@ -1082,7 +1201,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 396,
+            "line": 696,
             "description": "Drives browser to a url.",
             "itemtype": "method",
             "name": "goUrl",
@@ -1103,7 +1222,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 409,
+            "line": 709,
             "description": "Drives window forward.",
             "itemtype": "method",
             "name": "goForward",
@@ -1119,7 +1238,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 422,
+            "line": 722,
             "description": "Drives window back.",
             "itemtype": "method",
             "name": "goBack",
@@ -1135,7 +1254,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 434,
+            "line": 734,
             "description": "Logs a message on marionette server.",
             "itemtype": "method",
             "name": "log",
@@ -1165,7 +1284,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 450,
+            "line": 750,
             "description": "Retrieves all logs on the marionette server.\nThe response from marionette is an array of arrays.\n\n    device.getLogs(function(err, logs){\n      //logs => [\n        [\n          'msg',\n          'level',\n          'Fri Apr 27 2012 11:00:32 GMT-0700 (PDT)'\n        ]\n      ]\n    });",
             "itemtype": "method",
             "name": "getLogs",
@@ -1181,7 +1300,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 474,
+            "line": 774,
             "description": "Executes a remote script will block.\nScript is *not* wrapped in a function.",
             "itemtype": "method",
             "name": "executeJsScript",
@@ -1218,7 +1337,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 507,
+            "line": 807,
             "description": "Executes a remote script will block. Script is wrapped in a function.\n\n    // its is very important to remember that the contents of this\n    // method are \"stringified\" (Function#toString) and sent over the\n    // wire to execute on the device. So things like scope will not be\n    // the same. If you need to pass other information in arguments\n    // option should be used.\n\n    // assume that this element is the result of findElement\n    var element;\n    var config = {\n       event: 'magicCustomEvent',\n       detail: { foo: true  }\n    };\n\n    var remoteArgs = [element, details];\n\n    // unlike other callbacks this one will execute _on device_\n    function remoteFn(element, details) {\n       // element in this context is a real dom element now.\n       var event = document.createEvent('CustomEvent');\n       event.initCustomEvent(config.event, true, true, event.detail);\n       element.dispatchEvent(event);\n\n       return { success: true };\n    }\n\n    client.executeJsScript(remoteFn, remoteArgs, function(err, value) {\n      // value => { success: true }\n    });",
             "itemtype": "method",
             "name": "executeScript",
@@ -1249,7 +1368,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 560,
+            "line": 860,
             "description": "Script is wrapped in a function and will be executed asynchronously.\n\nNOTE: that setScriptTimeout _must_ be set prior to using this method\n      as the timeout defaults to zero.\n\n\n    function remote () {\n      window.addEventListener('someevent', function() {\n        // special method to notify that async script is complete.\n        marionetteScriptFinished({ fromRemote: true })\n      });\n    }\n\n    client.executeAsyncScript(remote, function(err, value) {\n      // value === { fromRemote: true }\n    });",
             "itemtype": "method",
             "name": "executeAsyncScript",
@@ -1280,7 +1399,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 599,
+            "line": 899,
             "description": "Finds element.",
             "itemtype": "method",
             "name": "_findElement",
@@ -1317,7 +1436,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 656,
+            "line": 956,
             "description": "Attempts to find a dom element (via css selector, xpath, etc...)\n\"elements\" returned are instances of\n{{#crossLink \"Marionette.Element\"}}{{/crossLink}}\n\n\n    // with default options\n    client.findElement('#css-selector', function(err, element) {\n       if (err) {\n         // handle case where element was not found\n       }\n\n       // see element interface for all methods, etc..\n       element.click(function() {\n\n       });\n    });",
             "itemtype": "method",
             "name": "findElement",
@@ -1348,7 +1467,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 689,
+            "line": 989,
             "description": "Finds multiple elements in the dom. This method has the same\napi signature as {{#crossLink \"findElement\"}}{{/crossLink}} the\nonly difference is where findElement returns a single element\nthis method will return an array of elements in the callback.\n\n\n    // find all links in the document\n    client.findElements('a[href]', function(err, element) {\n    });",
             "itemtype": "method",
             "name": "findElements",
@@ -1379,7 +1498,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 715,
+            "line": 1015,
             "description": "Converts an function into a string\nthat can be sent to marionette.",
             "access": "private",
             "tagname": "",
@@ -1400,7 +1519,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 732,
+            "line": 1032,
             "description": "Processes result of command\nif an {'ELEMENT': 'uuid'} combination\nis returned a Marionette.Element\ninstance will be created and returned.",
             "access": "private",
             "tagname": "",
@@ -1421,7 +1540,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 751,
+            "line": 1051,
             "description": "Prepares arguments for script commands.\nFormats Marionette.Element's sod\nmarionette can use them in script commands.",
             "access": "private",
             "tagname": "",
@@ -1442,7 +1561,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 775,
+            "line": 1075,
             "description": "Executes a remote string of javascript.\nthe javascript string will be wrapped in a function\nby marionette.",
             "itemtype": "method",
             "name": "_executeScript",
@@ -1490,16 +1609,7 @@
         },
         {
             "file": "lib/marionette/command-stream.js",
-            "line": 46,
-            "description": "Length prefix",
-            "itemtype": "property",
-            "name": "prefix",
-            "type": "String",
-            "class": "Marionette.CommandStream"
-        },
-        {
-            "file": "lib/marionette/command-stream.js",
-            "line": 54,
+            "line": 47,
             "description": "name of the event this class\nwill emit when a response to a\ncommand is received.",
             "itemtype": "property",
             "name": "commandEvent",
@@ -1508,7 +1618,7 @@
         },
         {
             "file": "lib/marionette/command-stream.js",
-            "line": 64,
+            "line": 57,
             "description": "Parses command into a string to\nbe sent over a tcp socket to marionette.",
             "itemtype": "method",
             "name": "stringify",
@@ -1527,52 +1637,7 @@
         },
         {
             "file": "lib/marionette/command-stream.js",
-            "line": 84,
-            "description": "Accepts raw string command parses it and\nemits a commandEvent.",
-            "access": "private",
-            "tagname": "",
-            "itemtype": "method",
-            "name": "_handleCommand",
-            "params": [
-                {
-                    "name": "string",
-                    "description": "raw response from marionette.",
-                    "type": "String"
-                }
-            ],
-            "class": "Marionette.CommandStream"
-        },
-        {
-            "file": "lib/marionette/command-stream.js",
-            "line": 100,
-            "description": "Checks if current buffer is ready to read.",
-            "access": "private",
-            "tagname": "",
-            "itemtype": "method",
-            "name": "_checkBuffer",
-            "return": {
-                "description": "true when in a command and buffer \\\n                  is ready to begin reading.",
-                "type": "Boolean"
-            },
-            "class": "Marionette.CommandStream"
-        },
-        {
-            "file": "lib/marionette/command-stream.js",
-            "line": 122,
-            "description": "Read current buffer.\nDrain and emit all comands from the buffer.",
-            "itemtype": "method",
-            "name": "_readBuffer",
-            "access": "private",
-            "tagname": "",
-            "return": {
-                "description": "self.",
-                "type": "Object"
-            },
-            "class": "Marionette.CommandStream"
-        },
-        {
-            "file": "lib/marionette/command-stream.js",
-            "line": 146,
+            "line": 70,
             "description": "Writes a command to the socket.\nHandles conversion and formatting of object.",
             "itemtype": "method",
             "name": "send",
@@ -1587,7 +1652,7 @@
         },
         {
             "file": "lib/marionette/command-stream.js",
-            "line": 164,
+            "line": 88,
             "description": "Adds a chunk (string or buffer) to the\ntotal buffer of this instance.",
             "this": "",
             "params": [
@@ -1986,6 +2051,186 @@
             "class": ""
         },
         {
+            "file": "lib/marionette/responder.js",
+            "line": 4,
+            "description": "Constructor",
+            "params": [
+                {
+                    "name": "list",
+                    "description": "of events to add onto responder.",
+                    "type": "Object"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 17,
+            "description": "Stringifies request to websocket",
+            "params": [
+                {
+                    "name": "command",
+                    "description": "command name.",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "object to be sent over the wire.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "json object.",
+                "type": "String"
+            },
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 29,
+            "description": "Parses request from WebSocket.",
+            "params": [
+                {
+                    "name": "json",
+                    "description": "json string to translate.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "ex: { event: 'test', data: {} }.",
+                "type": "Object"
+            },
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 50,
+            "description": "Events on this instance",
+            "type": "Object",
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 57,
+            "description": "Recieves json string event and dispatches an event.",
+            "params": [
+                {
+                    "name": "json",
+                    "description": "data object to respond to.",
+                    "type": "String|Object",
+                    "props": [
+                        {
+                            "name": "event",
+                            "description": "event to emit.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "data",
+                            "description": "data to emit with event.",
+                            "type": "Object"
+                        }
+                    ]
+                },
+                {
+                    "name": "params",
+                    "description": "option number of params to pass to emit.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "result of WebSocketCommon.parse.",
+                "type": "Object"
+            },
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 80,
+            "description": "Adds an event listener to this object.",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "event name.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "event callback.",
+                    "type": "Function"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 109,
+            "description": "Adds an event listener which will\nonly fire once and then remove itself.",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "event name.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "fired when event is emitted.",
+                    "type": "Function"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 129,
+            "description": "Emits an event.\n\nAccepts any number of additional arguments to pass unto\nevent listener.",
+            "params": [
+                {
+                    "name": "eventName",
+                    "description": "name of the event to emit.",
+                    "type": "String"
+                },
+                {
+                    "name": "arguments",
+                    "description": "additional arguments to pass.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 155,
+            "description": "Removes all event listeners for a given event type",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "event type to remove.",
+                    "type": "String"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "lib/marionette/responder.js",
+            "line": 170,
+            "description": "Removes a single event listener from a given event type\nand callback function.",
+            "params": [
+                {
+                    "name": "eventName",
+                    "description": "event name.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "same instance of event handler.",
+                    "type": "Function"
+                }
+            ],
+            "class": ""
+        },
+        {
             "file": "lib/marionette/xhr.js",
             "line": 1,
             "class": ""
@@ -2013,6 +2258,308 @@
                 }
             ],
             "class": ""
+        }
+    ],
+    "warnings": [
+        {
+            "message": "unknown tag: memberof",
+            "line": " lib/marionette/drivers/httpd-polling.js:36"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/drivers/httpd-polling.js:36"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/drivers/httpd-polling.js:44"
+        },
+        {
+            "message": "unknown tag: memberof",
+            "line": " lib/marionette/drivers/httpd-polling.js:44"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/drivers/httpd-polling.js:53"
+        },
+        {
+            "message": "unknown tag: memberof",
+            "line": " lib/marionette/drivers/httpd-polling.js:53"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/drivers/httpd-polling.js:63"
+        },
+        {
+            "message": "unknown tag: memberof",
+            "line": " lib/marionette/drivers/httpd-polling.js:63"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/drivers/httpd-polling.js:77"
+        },
+        {
+            "message": "unknown tag: memberof",
+            "line": " lib/marionette/drivers/httpd-polling.js:77"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/drivers/httpd-polling.js:96"
+        },
+        {
+            "message": "unknown tag: memberof",
+            "line": " lib/marionette/drivers/httpd-polling.js:96"
+        },
+        {
+            "message": "unknown tag: memberof",
+            "line": " lib/marionette/drivers/httpd-polling.js:119"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/drivers/httpd-polling.js:119"
+        },
+        {
+            "message": "unknown tag: this",
+            "line": " lib/marionette/drivers/httpd-polling.js:156"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/drivers/httpd-polling.js:156"
+        },
+        {
+            "message": "unknown tag: memberof",
+            "line": " lib/marionette/drivers/httpd-polling.js:156"
+        },
+        {
+            "message": "unknown tag: this",
+            "line": " lib/marionette/command-stream.js:88"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " lib/marionette/xhr.js:13"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/drivers/httpd-polling.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/drivers/httpd-polling.js:34"
+        },
+        {
+            "message": "Missing item type\nLocation of the http server that will proxy to marionette",
+            "line": " lib/marionette/drivers/httpd-polling.js:36"
+        },
+        {
+            "message": "Missing item type\nPort that proxy should connect to.",
+            "line": " lib/marionette/drivers/httpd-polling.js:44"
+        },
+        {
+            "message": "Missing item type\nServer proxy should connect to.",
+            "line": " lib/marionette/drivers/httpd-polling.js:53"
+        },
+        {
+            "message": "Missing item type\nSends command to server for this connection",
+            "line": " lib/marionette/drivers/httpd-polling.js:63"
+        },
+        {
+            "message": "Missing item type\nSends DELETE message to server to close marionette connection.\nAborts all polling operations.",
+            "line": " lib/marionette/drivers/httpd-polling.js:77"
+        },
+        {
+            "message": "Missing item type\nOpens connection for device.",
+            "line": " lib/marionette/drivers/httpd-polling.js:96"
+        },
+        {
+            "message": "Missing item type\nCreates xhr request",
+            "line": " lib/marionette/drivers/httpd-polling.js:119"
+        },
+        {
+            "message": "Missing item type\nHandles response to multiple messages.\nRequeues the _pollingRequest on success\n\n   {\n     messages: [\n       { id: 1, response: {} },\n       ....\n     ]\n   }",
+            "line": " lib/marionette/drivers/httpd-polling.js:156"
+        },
+        {
+            "message": "Missing item type\nHorrible hack to work around\nmissing stuff in TCPSocket & add\nnode compatible api.",
+            "line": " lib/marionette/drivers/moz-tcp.js:16"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/drivers/moz-tcp.js:67"
+        },
+        {
+            "message": "Missing item type\nSends a command to the server.",
+            "line": " lib/marionette/drivers/moz-tcp.js:104"
+        },
+        {
+            "message": "Missing item type\nOpens TCP socket for marionette client.",
+            "line": " lib/marionette/drivers/moz-tcp.js:113"
+        },
+        {
+            "message": "Missing item type\nReceives command from server.",
+            "line": " lib/marionette/drivers/moz-tcp.js:124"
+        },
+        {
+            "message": "Missing item type\nCloses connection to marionette.",
+            "line": " lib/marionette/drivers/moz-tcp.js:136"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/drivers/moz-tcp.js:145"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/drivers/tcp.js:10"
+        },
+        {
+            "message": "Missing item type\nSends a command to the server.",
+            "line": " lib/marionette/drivers/tcp.js:48"
+        },
+        {
+            "message": "Missing item type\nOpens TCP socket for marionette client.",
+            "line": " lib/marionette/drivers/tcp.js:57"
+        },
+        {
+            "message": "Missing item type\nReceives command from server.",
+            "line": " lib/marionette/drivers/tcp.js:74"
+        },
+        {
+            "message": "Missing item type\nCloses connection to marionette.",
+            "line": " lib/marionette/drivers/tcp.js:86"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/drivers/tcp.js:95"
+        },
+        {
+            "message": "Missing item type\nHelper to set scope and state on a given client.",
+            "line": " lib/marionette/client.js:33"
+        },
+        {
+            "message": "Missing item type\nHelper to get state of given client.",
+            "line": " lib/marionette/client.js:46"
+        },
+        {
+            "message": "Missing item type\nThe current scope of this client instance. Used with _state.\n\n  // Example\n  {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n  }",
+            "line": " lib/marionette/client.js:157"
+        },
+        {
+            "message": "Missing item type\nThe current state of the client.\n\n   // Example\n   {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n   }",
+            "line": " lib/marionette/client.js:173"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/client.js:208"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/client.js:215"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/client.js:222"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/client.js:229"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/client.js:236"
+        },
+        {
+            "message": "Missing item type\nAdds a chunk (string or buffer) to the\ntotal buffer of this instance.",
+            "line": " lib/marionette/command-stream.js:88"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/element.js:1"
+        },
+        {
+            "message": "Missing item type\nReturns an error object given\na error object from the marionette client.\nExpected input follows this format:\n\nCodes are from:\nhttp://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes\n\n   {\n     message: \"Something\",\n     stacktrace: \"wentwrong@line\",\n     status: 17\n   }",
+            "line": " lib/marionette/error.js:72"
+        },
+        {
+            "message": "Missing item type\nDefine a list of paths\nthis will only be used in the browser.",
+            "line": " lib/marionette/marionette.js:3"
+        },
+        {
+            "message": "Missing item type\nExports object is a shim\nwe use in the browser to\ncreate an object that will behave much\nlike module.exports",
+            "line": " lib/marionette/marionette.js:10"
+        },
+        {
+            "message": "Missing item type\nUnified require between browser/node.\nPath is relative to this file so you\nwill want to use it like this from any depth.\n\n\n  var Leaf = ns.require('sub/leaf');",
+            "line": " lib/marionette/marionette.js:22"
+        },
+        {
+            "message": "Missing item type\nMaps exports to a file path.",
+            "line": " lib/marionette/marionette.js:41"
+        },
+        {
+            "message": "Missing item type\nModule object constructor.\n\n\n   var module = Module('sub/leaf');\n   module.exports = function Leaf(){}",
+            "line": " lib/marionette/marionette.js:53"
+        },
+        {
+            "message": "Missing item type\nReference self as exports\nwhich also happens to be the constructor\nso you can assign items to the namespace:\n\n   //assign to Module.X\n   //assume module.exports is Module\n   module.exports.X = Foo; //Module.X === Foo;\n   Module.exports('foo'); //creates module.exports object.",
+            "line": " lib/marionette/marionette.js:73"
+        },
+        {
+            "message": "Missing item type\nIn the browser assign\nto a global namespace\nobviously 'Module' would\nbe whatever your global namespace is.",
+            "line": " lib/marionette/marionette.js:86"
+        },
+        {
+            "message": "Missing item type\nConstructor",
+            "line": " lib/marionette/responder.js:4"
+        },
+        {
+            "message": "Missing item type\nStringifies request to websocket",
+            "line": " lib/marionette/responder.js:17"
+        },
+        {
+            "message": "Missing item type\nParses request from WebSocket.",
+            "line": " lib/marionette/responder.js:29"
+        },
+        {
+            "message": "Missing item type\nEvents on this instance",
+            "line": " lib/marionette/responder.js:50"
+        },
+        {
+            "message": "Missing item type\nRecieves json string event and dispatches an event.",
+            "line": " lib/marionette/responder.js:57"
+        },
+        {
+            "message": "Missing item type\nAdds an event listener to this object.",
+            "line": " lib/marionette/responder.js:80"
+        },
+        {
+            "message": "Missing item type\nAdds an event listener which will\nonly fire once and then remove itself.",
+            "line": " lib/marionette/responder.js:109"
+        },
+        {
+            "message": "Missing item type\nEmits an event.\n\nAccepts any number of additional arguments to pass unto\nevent listener.",
+            "line": " lib/marionette/responder.js:129"
+        },
+        {
+            "message": "Missing item type\nRemoves all event listeners for a given event type",
+            "line": " lib/marionette/responder.js:155"
+        },
+        {
+            "message": "Missing item type\nRemoves a single event listener from a given event type\nand callback function.",
+            "line": " lib/marionette/responder.js:170"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/xhr.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/xhr.js:44"
+        },
+        {
+            "message": "Missing item type\nAborts request if its in progress.",
+            "line": " lib/marionette/xhr.js:63"
+        },
+        {
+            "message": "Missing item type\nSends request to server.",
+            "line": " lib/marionette/xhr.js:72"
         }
     ]
 }

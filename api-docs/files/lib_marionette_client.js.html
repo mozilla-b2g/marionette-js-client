@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>lib&#x2F;marionette&#x2F;client.js - Marionette JS Client</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
-    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <title>lib/marionette/client.js - Marionette JS Client</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.7.0/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -41,23 +41,21 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="..&#x2F;classes/Marionette.Client.html">Marionette.Client</a></li>
+                <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
+                <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
+                <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
+                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Websocket.html">Marionette.Drivers.Websocket</a></li>
+                <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Element.html">Marionette.Element</a></li>
-            
-                <li><a href="..&#x2F;classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
             
             </ul>
 
@@ -98,7 +96,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: lib&#x2F;marionette&#x2F;client.js</h1>
+                        <h1 class="file-heading">File: lib/marionette/client.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -106,6 +104,16 @@
 
   var Element = ns.require(&#x27;element&#x27;),
       Exception = ns.require(&#x27;error&#x27;);
+
+
+  var DEFAULT_WAIT_FOR_INTERVAL = 100;
+  var DEFAULT_WAIT_FOR_TIMEOUT = 10000;
+
+  var SCOPE_TO_METHOD = Object.freeze({
+    scriptTimeout: &#x27;setScriptTimeout&#x27;,
+    searchTimeout: &#x27;setSearchTimeout&#x27;,
+    context: &#x27;setContext&#x27;
+  });
 
   var key;
   var searchMethods = {
@@ -123,39 +131,67 @@
     return typeof(value) === &#x27;function&#x27;;
   }
 
-  &#x2F;**
+
+  /**
+   * Helper to set scope and state on a given client.
+   *
+   * @private
+   * @param {Marionette.Client} context of a client.
+   * @param {String} type property of client.
+   * @param {Object|String|Number|Null} value of type.
+   */
+  function setState(context, type, value) {
+    context._scope[type] = value;
+    context._state[type] = value;
+  }
+
+  /**
+   * Helper to get state of given client.
+   *
+   * @private
+   * @param {Marionette.Client} context of a client.
+   * @param {String} type property of client.
+   * @return {Object|String|Number|Null} value of type.
+   */
+  function getState(context, type) {
+    return context._state[type];
+  }
+
+  /**
    * Initializes client.
    * You must create and initialize
    * a driver and pass it into the client before
    * using the client itself.
    *
-   *     &#x2F;&#x2F; all drivers conform to this api
+   *     // all drivers conform to this api
    *
-   *     var driver = new Marionette.Dirver.MozTcp({});
+   *     // var Marionette = require(&#x27;marionette-client&#x27;);
+   *     var driver = new Marionette.Drivers.Tcp({});
    *     var client;
    *
    *     driver.connect(function(err) {
    *       if (err) {
-   *         &#x2F;&#x2F; handle error case...
+   *         // handle error case...
    *       }
    *
    *       client = new Marionette.Client(driver, {
-   *           &#x2F;&#x2F; optional default callback can be used to implement
-   *           &#x2F;&#x2F; a generator interface or other non-callback based api.
+   *           // optional default callback can be used to implement
+   *           // a generator interface or other non-callback based api.
    *          defaultCallback: function(err, result) {
    *            console.log(&#x27;CALLBACK GOT:&#x27;, err, result);
    *          }
    *       });
    *
-   *       &#x2F;&#x2F; by default commands run in a queue.
-   *       &#x2F;&#x2F; assuming there is not a fatal error each command
-   *       &#x2F;&#x2F; will execute sequentially.
-   *       client.startSession().
-   *              goUrl(&#x27;http:&#x2F;&#x2F;google.com&#x27;).
-   *              executeScript(function() {
-   *                alert(document.title);
-   *              });
-   *       }
+   *       // by default commands run in a queue.
+   *       // assuming there is not a fatal error each command
+   *       // will execute sequentially.
+   *       client.startSession(function () {
+   *         client.goUrl(&#x27;http://google.com&#x27;)
+   *           .executeScript(function() {
+   *             alert(document.title);
+   *           })
+   *           .deleteSession();
+   *       });
    *     });
    *
    *
@@ -163,52 +199,150 @@
    * @constructor
    * @param {Marionette.Drivers.Abstract} driver fully initialized client.
    * @param {Object} options options for driver.
-   *&#x2F;
+   */
   function Client(driver, options) {
     if (typeof(options) === &#x27;undefined&#x27;) {
       options = {};
     }
     this.driver = driver;
     this.defaultCallback = options.defaultCallback || false;
+
+    // pick up some options from the driver
+    if (driver.defaultCallback &amp;&amp; !this.defaultCallback) {
+      this.defaultCallback = driver.defaultCallback;
+    }
+
+    if (driver.isSync) {
+      this.isSync = driver.isSync;
+    }
+
+    if (!this.defaultCallback) {
+      this.defaultCallback = driver.defaultCallback ?
+                             driver.defaultCallback :
+                             function() {};
+    }
+
+    // create the initial state for this client
+    this._state = {
+      context: &#x27;content&#x27;,
+      scriptTimeout: 5000,
+      searchTimeout: 250
+    };
+
+    // give the root client a scope.
+    this._scope = {};
+    for (var key in this._state) {
+      this._scope[key] = this._state[key];
+    }
   }
 
   Client.prototype = {
 
     Element: Element,
 
-    &#x2F;**
+    /**
      * Constant for chrome context.
      *
      * @type {String}
      * @property CHROME
-     *&#x2F;
+     */
     CHROME: &#x27;chrome&#x27;,
 
-    &#x2F;**
+    /**
      * Constant for content context.
      *
      * @type {String}
      * @property CONTENT
-     *&#x2F;
+     */
     CONTENT: &#x27;content&#x27;,
 
-    &#x2F;**
+    /**
+     * The current scope of this client instance. Used with _state.
+     *
+     *   // Example
+     *   {
+     *      scriptTimeout: 500,
+     *      searchTimeout: 6000,
+     *      context: &#x27;content&#x27;,
+     *      window: &#x27;window_id&#x27;,
+     *      frame: &#x27;frameId&#x27;
+     *   }
+     *
+     * @type {Object}
+     */
+    _scope: null,
+
+    /**
+     * The current state of the client.
+     *
+     *    // Example
+     *    {
+     *      scriptTimeout: 500,
+     *      searchTimeout: 6000,
+     *      context: &#x27;content&#x27;,
+     *      window: &#x27;window_id&#x27;,
+     *      frame: &#x27;frameId&#x27;
+     *    }
+     *
+     * @private
+     * @type {Object}
+     */
+    _state: null,
+
+    /**
      * Actor id for instance
      *
      * @property actor
      * @type String
-     *&#x2F;
+     */
     actor: null,
 
-    &#x2F;**
+    /**
      * Session id for instance.
      *
      * @property session
      * @type String
-     *&#x2F;
+     */
     session: null,
 
-    &#x2F;**
+    // _state getters
+
+    /**
+     * @return {String} the current context.
+     */
+    get context() {
+      return getState(this, &#x27;context&#x27;);
+    },
+
+    /**
+     * @return {String|Marionette.Element} frame currently focused.
+     */
+    get frame() {
+      return getState(this, &#x27;frame&#x27;);
+    },
+
+    /**
+     * @return {String|Marionette.Element}
+     */
+    get window() {
+      return getState(this, &#x27;window&#x27;);
+    },
+
+    /**
+     * @return {Number} current scriptTimeout.
+     */
+    get scriptTimeout() {
+      return getState(this, &#x27;scriptTimeout&#x27;);
+    },
+
+    /**
+     * @return {Number} current search timeout.
+     */
+    get searchTimeout() {
+      return getState(this, &#x27;searchTimeout&#x27;);
+    },
+
+    /**
      * Sends a command to the server.
      * Adds additional information like actor and session
      * to command if not present.
@@ -216,9 +350,25 @@
      *
      * @method send
      * @chainable
+     * @param {Object} cmd to be sent over the wire.
      * @param {Function} cb executed when response is sent.
-     *&#x2F;
+     */
     send: function send(cmd, cb) {
+      // first do scoping updates
+      if (this._scope &amp;&amp; this._bypassScopeChecks !== true) {
+        // calling the methods may cause an infinite loop so make sure
+        // we don&#x27;t hit this code path again inside of the loop.
+        this._bypassScopeChecks = true;
+        for (var key in this._scope) {
+          // !important otherwise throws infinite loop
+          if (this._state[key] !== this._scope[key]) {
+            this[SCOPE_TO_METHOD[key]](this._scope[key]);
+          }
+        }
+        // undo really dirty hack
+        this._bypassScopeChecks = false;
+      }
+
       if (!cmd.to) {
         cmd.to = this.actor || &#x27;root&#x27;;
       }
@@ -231,7 +381,11 @@
         cb = this.defaultCallback();
       }
 
-      this.driver.send(cmd, cb);
+      var driverSent = this.driver.send(cmd, cb);
+
+      if (this.isSync) {
+        return driverSent;
+      }
 
       return this;
     },
@@ -244,15 +398,15 @@
         callback = this.defaultCallback;
       }
 
-      &#x2F;&#x2F; handle error conversion
+      // handle error conversion
       if (args[0]) {
         args[0] = Exception.error(args[0]);
       }
 
-      callback.apply(this, args);
+      return callback.apply(this, args);
     },
 
-    &#x2F;**
+    /**
      * Sends request and formats response.
      *
      *
@@ -263,24 +417,29 @@
      * @param {String} responseKey the part of the response to pass \
      *                             unto the callback.
      * @param {Object} callback wrapped callback.
-     *&#x2F;
+     */
     _sendCommand: function(command, responseKey, callback) {
       var self = this;
+      var result;
 
-      this.send(command, function(data) {
-        var value = self._transformResultValue(data[responseKey]);
-        self._handleCallback(callback, data.error, value);
+      return this.send(command, function(data) {
+        var value;
+        try {
+          value = self._transformResultValue(data[responseKey]);
+        } catch(e) {
+          console.log(&#x27;Error: unable to transform marionette response&#x27;, data);
+        }
+        return self._handleCallback(callback, data.error, value);
       });
-      return this;
     },
 
-    &#x2F;**
+    /**
      * Finds the actor for this instance.
      *
      * @private
      * @method _getActorId
      * @param {Function} callback executed when response is sent.
-     *&#x2F;
+     */
     _getActorId: function _getActorId(callback) {
       var self = this, cmd;
 
@@ -294,85 +453,205 @@
       });
     },
 
-    &#x2F;**
+    /**
      * Starts a remote session.
      *
      * @private
      * @method _newSession
      * @param {Function} callback optional.
-     *&#x2F;
+     */
     _newSession: function _newSession(callback) {
       var self = this;
 
       function newSession(data) {
         self.session = data.value;
-        self._handleCallback(callback, data.error, data);
+        return self._handleCallback(callback, data.error, data);
       }
 
-      this.send({ type: &#x27;newSession&#x27; }, newSession);
+      return this.send({ type: &#x27;newSession&#x27; }, newSession);
     },
 
-    &#x2F;**
+    /**
+     * Creates a client which has a fixed window, frame, scriptTimeout and
+     * searchTimeout.
+     *
+     *     client.setSearchTimeout(1000).setContext(&#x27;content&#x27;);
+     *
+     *     var timeout = client.scope({ searchTimeout: 250 });
+     *     var chrome = client.scope({ context: &#x27;chrome&#x27; });
+     *
+     *     // executed with 250 timeout
+     *     timeout.findElement(&#x27;...&#x27;);
+     *
+     *     // executes in chrome context.
+     *     chrome.executeScript();
+     *
+     *     // executed in content with search timeout of 1000
+     *     client.findElement(&#x27;...&#x27;);
+     *
+     *
+     * @method scope
+     * @param {Object} options for scopped client.
+     * @return {Marionette.Client} scoped client instance.
+     */
+    scope: function(options) {
+      var scopeOptions = {};
+      for (var key in this._scope) {
+        scopeOptions[key] = this._scope[key];
+      }
+
+      // copy the given options
+      for (key in options) {
+        var value = options[key];
+        scopeOptions[key] = value;
+      }
+
+      // create child
+      var scope = Object.create(this);
+
+      // assign the new scoping
+      scope._scope = scopeOptions;
+
+      return scope;
+    },
+
+    /**
+     * Utility for waiting for a success condition to be met.
+     *
+     *     // sync style
+     *     client.waitFor(function() {
+     *       return element.displayed();
+     *     });
+     *
+     *     // async style
+     *     client.waitFor(function(done) {
+     *       element.displayed(done);
+     *     });
+     *
+     *
+     *    Options:
+     *      * (Number) interval: time between running test
+     *      * (Number) timeout: maximum wallclock time before failing test.
+     *
+     * @method waitFor
+     * @param {Function} test to execute.
+     * @param {Object} [options] for timeout see above.
+     * @param {Number} [options.interval] time between running test.
+     * @param {Number} [options.timeout]
+     *  maximum wallclock time before failing test.
+     * @param {Function} [callback] optional callback.
+     */
+    waitFor: function(test, options, callback) {
+      if (typeof(options) === &#x27;function&#x27;) {
+        callback = options;
+        options = null;
+      }
+
+      // setup options
+      options = options || {};
+
+      // must handle default callback case for sync code
+      callback = callback || this.defaultCallback;
+
+      // wallclock timer
+      var timeout = Date.now() + (options.timeout || DEFAULT_WAIT_FOR_TIMEOUT);
+
+      // interval between test being fired.
+      var interval = options.interval || DEFAULT_WAIT_FOR_INTERVAL;
+
+      // remember this runs on the host
+      function sleep(interval) {
+        setTimeout(marionetteScriptFinished, interval);
+      }
+
+      var runtest = function runtest() {
+        if (Date.now() &gt;= timeout) {
+          return callback(new Error(&#x27;waitFor timed out&#x27;));
+        }
+
+        // mocha style &quot;done&quot; argument
+        test(function(err, result) {
+          if (err || result)
+            return callback(err, result);
+
+          // test has failed retry
+          this.executeAsyncScript(sleep, [interval], runtest);
+        }.bind(this));
+      }.bind(this);
+
+      // length indicates arity we use mocha style &quot;done&quot; so if an argument
+      // is not passed this test is sync and we fire done with the result
+      // of the given &quot;test&quot; function rather then passing a &quot;done&quot; argument.
+      if (!test.length) {
+        var originalTest = test;
+        test = function(done) {
+          done(null, originalTest());
+        };
+      }
+      runtest();
+    },
+
+    /**
      * Finds actor and creates connection to marionette.
      * This is a combination of calling getMarionetteId and then newSession.
      *
      * @method startSession
      * @param {Function} callback executed when session is started.
-     *&#x2F;
+     */
     startSession: function startSession(callback) {
+      callback = callback || this.defaultCallback;
+
       var self = this;
       return this._getActorId(function() {
-        &#x2F;&#x2F;actor will not be set if we send the command then
+        //actor will not be set if we send the command then
         self._newSession(callback);
       });
     },
 
-    &#x2F;**
+    /**
      * Destroys current session.
      *
      *
      * @chainable
      * @method deleteSession
      * @param {Function} callback executed when session is destroyed.
-     *&#x2F;
+     */
     deleteSession: function destroySession(callback) {
       var cmd = { type: &#x27;deleteSession&#x27; },
           self = this;
 
-      this._sendCommand(cmd, &#x27;ok&#x27;, function(err, value) {
+      return this._sendCommand(cmd, &#x27;ok&#x27;, function(err, value) {
         self.driver.close();
         self._handleCallback(callback, err, value);
       });
-
-      return this;
     },
 
-    &#x2F;**
+    /**
      * Callback will receive the id of the current window.
      *
      * @chainable
      * @method getWindow
      * @param {Function} callback executed with id of current window.
      * @return {Object} self.
-     *&#x2F;
+     */
     getWindow: function getWindow(callback) {
       var cmd = { type: &#x27;getWindow&#x27; };
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Callback will receive an array of window ids.
      *
      * @method getWindow
      * @chainable
      * @param {Function} callback executes with an array of ids.
-     *&#x2F;
+     */
     getWindows: function getWindows(callback) {
       var cmd = { type: &#x27;getWindows&#x27; };
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Switches context of marionette to specific window.
      *
      *
@@ -380,13 +659,13 @@
      * @chainable
      * @param {String} id window id you can find these with getWindow(s).
      * @param {Function} callback called with boolean.
-     *&#x2F;
+     */
     switchToWindow: function switchToWindow(id, callback) {
       var cmd = { type: &#x27;switchToWindow&#x27;, value: id };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Imports a script into the marionette
      * context for the duration of the session.
      *
@@ -396,13 +675,13 @@
      * @chainable
      * @param {String} script javascript string blob.
      * @param {Function} callback called with boolean.
-     *&#x2F;
+     */
     importScript: function(script, callback) {
       var cmd = { type: &#x27;importScript&#x27;, script: script };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Switches context of marionette to specific iframe.
      *
      *
@@ -410,7 +689,7 @@
      * @chainable
      * @param {String|Marionette.Element} id iframe id or element.
      * @param {Function} callback called with boolean.
-     *&#x2F;
+     */
     switchToFrame: function switchToFrame(id, callback) {
       if (typeof(id) === &#x27;function&#x27;) {
         callback = id;
@@ -421,31 +700,48 @@
 
       if (id instanceof this.Element) {
         cmd.element = id.id;
+      } else if (
+        id !== null &amp;&amp;
+        typeof(id) === &#x27;object&#x27; &amp;&amp;
+        id.ELEMENT
+      ) {
+        cmd.element = id.ELEMENT;
       } else if (id) {
         cmd.value = id;
       }
-
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
-     * Switches context of window.
+    /**
+     * Switches context of window. The current context can be found with
+     * .context.
+     *
+     *    // default context
+     *    client.context === &#x27;content&#x27;;
+     *
+     *    client.setContext(&#x27;chrome&#x27;, function() {
+     *      // .. wait for switch
+     *    });
+     *
+     *    client.context === &#x27;chrome&#x27;;
+     *
      *
      * @method setContext
      * @chainable
      * @param {String} context either: &#x27;chome&#x27; or &#x27;content&#x27;.
      * @param {Function} callback receives boolean.
-     *&#x2F;
-    setContext: function setContext(content, callback) {
-      if (content !== this.CHROME &amp;&amp; content !== this.CONTENT) {
+     */
+    setContext: function setContext(context, callback) {
+      if (context !== this.CHROME &amp;&amp; context !== this.CONTENT) {
         throw new Error(&#x27;content type must be &quot;chrome&quot; or &quot;content&quot;&#x27;);
       }
 
-      var cmd = { type: &#x27;setContext&#x27;, value: content };
+      setState(this, &#x27;context&#x27;, context);
+      var cmd = { type: &#x27;setContext&#x27;, value: context };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Sets the script timeout
      *
      * @method setScriptTimeout
@@ -453,13 +749,14 @@
      * @param {Numeric} timeout max time in ms.
      * @param {Function} callback executed with boolean status.
      * @return {Object} self.
-     *&#x2F;
+     */
     setScriptTimeout: function setScriptTimeout(timeout, callback) {
       var cmd = { type: &#x27;setScriptTimeout&#x27;, value: timeout };
+      setState(this, &#x27;scriptTimeout&#x27;, timeout);
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * setSearchTimeout
      *
      * @method setSearchTimeout
@@ -467,75 +764,76 @@
      * @param {Numeric} timeout max time in ms.
      * @param {Function} callback executed with boolean status.
      * @return {Object} self.
-     *&#x2F;
+     */
     setSearchTimeout: function setSearchTimeout(timeout, callback) {
       var cmd = { type: &#x27;setSearchTimeout&#x27;, value: timeout };
+      setState(this, &#x27;searchTimeout&#x27;, timeout);
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Gets url location for device.
      *
      * @method getUrl
      * @chainable
      * @param {Function} callback receives url.
-     *&#x2F;
+     */
     getUrl: function getUrl(callback) {
       var cmd = { type: &#x27;getUrl&#x27; };
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Refreshes current window on device.
      *
      * @method refresh
      * @param {Function} callback boolean success.
      * @return {Object} self.
-     *&#x2F;
+     */
     refresh: function refresh(callback) {
       var cmd = { type: &#x27;refresh&#x27; };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Drives browser to a url.
      *
      * @method goUrl
      * @chainable
      * @param {String} url location.
      * @param {Function} callback executes when finished driving browser to url.
-     *&#x2F;
+     */
     goUrl: function goUrl(url, callback) {
       var cmd = { type: &#x27;goUrl&#x27;, value: url };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Drives window forward.
      *
      *
      * @method goForward
      * @chainable
      * @param {Function} callback receives boolean.
-     *&#x2F;
+     */
     goForward: function goForward(callback) {
       var cmd = { type: &#x27;goForward&#x27; };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Drives window back.
      *
      * @method goBack
      * @chainable
      * @param {Function} callback receives boolean.
-     *&#x2F;
+     */
     goBack: function goBack(callback) {
       var cmd = { type: &#x27;goBack&#x27; };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Logs a message on marionette server.
      *
      *
@@ -545,18 +843,18 @@
      * @param {String} level arbitrary log level.
      * @param {Function} callback receives boolean.
      * @return {Object} self.
-     *&#x2F;
+     */
     log: function log(msg, level, callback) {
       var cmd = { type: &#x27;log&#x27;, level: level, value: msg };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Retrieves all logs on the marionette server.
      * The response from marionette is an array of arrays.
      *
      *     device.getLogs(function(err, logs){
-     *       &#x2F;&#x2F;logs =&gt; [
+     *       //logs =&gt; [
      *         [
      *           &#x27;msg&#x27;,
      *           &#x27;level&#x27;,
@@ -569,13 +867,13 @@
      * @method getLogs
      * @chainable
      * @param {Function} callback receive an array of logs.
-     *&#x2F;
+     */
     getLogs: function getLogs(callback) {
       var cmd = { type: &#x27;getLogs&#x27; };
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Executes a remote script will block.
      * Script is *not* wrapped in a function.
      *
@@ -587,7 +885,7 @@
      * @param {Function} callback will receive result of the return \
      *                            call in the script if there is one.
      * @return {Object} self.
-     *&#x2F;
+     */
     executeJsScript: function executeJsScript(script, args, timeout, callback) {
       if (typeof(timeout) === &#x27;function&#x27;) {
         callback = timeout;
@@ -608,16 +906,16 @@
       }, callback || this.defaultCallback);
     },
 
-    &#x2F;**
+    /**
      * Executes a remote script will block. Script is wrapped in a function.
      *
-     *     &#x2F;&#x2F; its is very important to remember that the contents of this
-     *     &#x2F;&#x2F; method are &quot;stringified&quot; (Function#toString) and sent over the
-     *     &#x2F;&#x2F; wire to execute on the device. So things like scope will not be
-     *     &#x2F;&#x2F; the same. If you need to pass other information in arguments
-     *     &#x2F;&#x2F; option should be used.
+     *     // its is very important to remember that the contents of this
+     *     // method are &quot;stringified&quot; (Function#toString) and sent over the
+     *     // wire to execute on the device. So things like scope will not be
+     *     // the same. If you need to pass other information in arguments
+     *     // option should be used.
      *
-     *     &#x2F;&#x2F; assume that this element is the result of findElement
+     *     // assume that this element is the result of findElement
      *     var element;
      *     var config = {
      *        event: &#x27;magicCustomEvent&#x27;,
@@ -626,9 +924,9 @@
      *
      *     var remoteArgs = [element, details];
      *
-     *     &#x2F;&#x2F; unlike other callbacks this one will execute _on device_
+     *     // unlike other callbacks this one will execute _on device_
      *     function remoteFn(element, details) {
-     *        &#x2F;&#x2F; element in this context is a real dom element now.
+     *        // element in this context is a real dom element now.
      *        var event = document.createEvent(&#x27;CustomEvent&#x27;);
      *        event.initCustomEvent(config.event, true, true, event.detail);
      *        element.dispatchEvent(event);
@@ -637,7 +935,7 @@
      *     }
      *
      *     client.executeJsScript(remoteFn, remoteArgs, function(err, value) {
-     *       &#x2F;&#x2F; value =&gt; { success: true }
+     *       // value =&gt; { success: true }
      *     });
      *
      *
@@ -648,7 +946,7 @@
      * @param {Function} callback will receive result of the return \
      *                            call in the script if there is one.
      * @return {Object} self.
-     *&#x2F;
+     */
     executeScript: function executeScript(script, args, callback) {
       if (typeof(args) === &#x27;function&#x27;) {
         callback = args;
@@ -661,7 +959,7 @@
       }, callback || this.defaultCallback);
     },
 
-    &#x2F;**
+    /**
      * Script is wrapped in a function and will be executed asynchronously.
      *
      * NOTE: that setScriptTimeout _must_ be set prior to using this method
@@ -670,13 +968,13 @@
      *
      *     function remote () {
      *       window.addEventListener(&#x27;someevent&#x27;, function() {
-     *         &#x2F;&#x2F; special method to notify that async script is complete.
+     *         // special method to notify that async script is complete.
      *         marionetteScriptFinished({ fromRemote: true })
      *       });
      *     }
      *
      *     client.executeAsyncScript(remote, function(err, value) {
-     *       &#x2F;&#x2F; value === { fromRemote: true }
+     *       // value === { fromRemote: true }
      *     });
      *
      *
@@ -687,7 +985,7 @@
      * @param {Function} callback will receive result of the return \
      *                            call in the script if there is one.
      * @return {Object} self.
-     *&#x2F;
+     */
     executeAsyncScript: function executeAsyncScript(script, args, callback) {
       if (typeof(args) === &#x27;function&#x27;) {
         callback = args;
@@ -700,7 +998,7 @@
       }, callback || this.defaultCallback);
     },
 
-    &#x2F;**
+    /**
      * Finds element.
      *
      * @method _findElement
@@ -710,7 +1008,7 @@
      * @param {String} method search method.
      * @param {String} elementId id of element to search within.
      * @param {Function} callback executes with element uuid(s).
-     *&#x2F;
+     */
     _findElement: function _findElement(type, query, method, id, callback) {
       var cmd, self = this;
 
@@ -740,7 +1038,7 @@
         );
       }
 
-      &#x2F;&#x2F;proably should extract this function into a private
+      //proably should extract this function into a private
       return this._sendCommand(cmd, &#x27;value&#x27;,
                                function processElements(err, result) {
         var element;
@@ -753,23 +1051,23 @@
         } else {
           element = new this.Element(result, self);
         }
-        self._handleCallback(callback, err, element);
+        return self._handleCallback(callback, err, element);
       });
     },
 
-    &#x2F;**
+    /**
      * Attempts to find a dom element (via css selector, xpath, etc...)
      * &quot;elements&quot; returned are instances of
-     * {{#crossLink &quot;Marionette.Element&quot;}}{{&#x2F;crossLink}}
+     * {{#crossLink &quot;Marionette.Element&quot;}}{{/crossLink}}
      *
      *
-     *     &#x2F;&#x2F; with default options
+     *     // with default options
      *     client.findElement(&#x27;#css-selector&#x27;, function(err, element) {
      *        if (err) {
-     *          &#x2F;&#x2F; handle case where element was not found
+     *          // handle case where element was not found
      *        }
      *
-     *        &#x2F;&#x2F; see element interface for all methods, etc..
+     *        // see element interface for all methods, etc..
      *        element.click(function() {
      *
      *        });
@@ -783,21 +1081,21 @@
      * @param {String} method search method.
      * @param {String} elementId id of element to search within.
      * @param {Function} callback executes with element uuid.
-     *&#x2F;
+     */
     findElement: function findElement() {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(&#x27;findElement&#x27;);
       return this._findElement.apply(this, args);
     },
 
-    &#x2F;**
+    /**
      * Finds multiple elements in the dom. This method has the same
-     * api signature as {{#crossLink &quot;findElement&quot;}}{{&#x2F;crossLink}} the
+     * api signature as {{#crossLink &quot;findElement&quot;}}{{/crossLink}} the
      * only difference is where findElement returns a single element
      * this method will return an array of elements in the callback.
      *
      *
-     *     &#x2F;&#x2F; find all links in the document
+     *     // find all links in the document
      *     client.findElements(&#x27;a[href]&#x27;, function(err, element) {
      *     });
      *
@@ -808,7 +1106,7 @@
      * @param {String} method search method.
      * @param {String} elementId id of element to search within.
      * @param {Function} callback executes with an array of element uuids.
-     *&#x2F;
+     */
     findElements: function findElements() {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(&#x27;findElements&#x27;);
@@ -816,7 +1114,7 @@
     },
 
 
-    &#x2F;**
+    /**
      * Converts an function into a string
      * that can be sent to marionette.
      *
@@ -824,7 +1122,7 @@
      * @method _convertFunction
      * @param {Function|String} fn function to call on the server.
      * @return {String} function string.
-     *&#x2F;
+     */
     _convertFunction: function _convertFunction(fn) {
       if (typeof(fn) === &#x27;function&#x27;) {
         var str = fn.toString();
@@ -833,7 +1131,7 @@
       return fn;
     },
 
-    &#x2F;**
+    /**
      * Processes result of command
      * if an {&#x27;ELEMENT&#x27;: &#x27;uuid&#x27;} combination
      * is returned a Marionette.Element
@@ -844,7 +1142,7 @@
      * @method _transformResultValue
      * @param {Object} value original result from server.
      * @return {Object|Marionette.Element} processed result.
-     *&#x2F;
+     */
     _transformResultValue: function _transformResultValue(value) {
       if (value &amp;&amp; typeof(value.ELEMENT) === &#x27;string&#x27;) {
         return new this.Element(value.ELEMENT, this);
@@ -852,7 +1150,7 @@
       return value;
     },
 
-    &#x2F;**
+    /**
      * Prepares arguments for script commands.
      * Formats Marionette.Element&#x27;s sod
      * marionette can use them in script commands.
@@ -862,7 +1160,7 @@
      * @method _prepareArguments
      * @param {Array} arguments list of args for wrapped function.
      * @return {Array} processed arguments.
-     *&#x2F;
+     */
     _prepareArguments: function _prepareArguments(args) {
       if (args.map) {
         return args.map(function(item) {
@@ -876,7 +1174,7 @@
       }
     },
 
-    &#x2F;**
+    /**
      * Executes a remote string of javascript.
      * the javascript string will be wrapped in a function
      * by marionette.
@@ -891,7 +1189,7 @@
      * @param {Boolean} options.timeout timeout only used in &#x27;executeJSScript&#x27;.
      * @param {Function} callback executes when script finishes.
      * @return {Object} self.
-     *&#x2F;
+     */
     _executeScript: function _executeScript(options, callback) {
       var timeout = options.timeout,
           self = this,
@@ -911,7 +1209,7 @@
   };
 
 
-  &#x2F;&#x2F;gjslint: ignore
+  //gjslint: ignore
   var proto = Client.prototype;
   proto.searchMethods = [];
 
@@ -928,7 +1226,7 @@
   this,
   (this.Marionette) ?
     [Marionette(&#x27;client&#x27;), Marionette] :
-    [module, require(&#x27;.&#x2F;marionette&#x27;)]
+    [module, require(&#x27;./marionette&#x27;)]
 ));
 
     </pre>
@@ -940,13 +1238,13 @@
         </div>
     </div>
 </div>
-<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="..&#x2F;assets/js/yui-prettify.js"></script>
-<script src="..&#x2F;assets/../api.js"></script>
-<script src="..&#x2F;assets/js/api-filter.js"></script>
-<script src="..&#x2F;assets/js/api-list.js"></script>
-<script src="..&#x2F;assets/js/api-search.js"></script>
-<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
 </body>
 </html>

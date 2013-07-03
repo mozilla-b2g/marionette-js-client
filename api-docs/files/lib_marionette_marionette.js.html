@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>lib&#x2F;marionette&#x2F;marionette.js - Marionette JS Client</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
-    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <title>lib/marionette/marionette.js - Marionette JS Client</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.7.0/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -41,23 +41,21 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="..&#x2F;classes/Marionette.Client.html">Marionette.Client</a></li>
+                <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
+                <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
+                <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
+                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Websocket.html">Marionette.Drivers.Websocket</a></li>
+                <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Element.html">Marionette.Element</a></li>
-            
-                <li><a href="..&#x2F;classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
             
             </ul>
 
@@ -98,42 +96,42 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: lib&#x2F;marionette&#x2F;marionette.js</h1>
+                        <h1 class="file-heading">File: lib/marionette/marionette.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
 (function(global, module) {
 
-  &#x2F;**
+  /**
    * Define a list of paths
    * this will only be used in the browser.
-   *&#x2F;
+   */
   var paths = {};
 
 
-  &#x2F;**
+  /**
    * Exports object is a shim
    * we use in the browser to
    * create an object that will behave much
    * like module.exports
-   *&#x2F;
+   */
   function Exports(path) {
     this.path = path;
   }
 
   Exports.prototype = {
 
-    &#x2F;**
-     * Unified require between browser&#x2F;node.
+    /**
+     * Unified require between browser/node.
      * Path is relative to this file so you
      * will want to use it like this from any depth.
      *
      *
-     *   var Leaf = ns.require(&#x27;sub&#x2F;leaf&#x27;);
+     *   var Leaf = ns.require(&#x27;sub/leaf&#x27;);
      *
      *
      * @param {String} path path lookup relative to this file.
-     *&#x2F;
+     */
     require: function exportRequire(path) {
       if (typeof(window) === &#x27;undefined&#x27;) {
         return require(require(&#x27;path&#x27;).join(__dirname, path));
@@ -142,9 +140,9 @@
       }
     },
 
-    &#x2F;**
+    /**
      * Maps exports to a file path.
-     *&#x2F;
+     */
     set exports(val) {
       return paths[this.path] = val;
     },
@@ -154,17 +152,17 @@
     }
   };
 
-  &#x2F;**
+  /**
    * Module object constructor.
    *
    *
-   *    var module = Module(&#x27;sub&#x2F;leaf&#x27;);
+   *    var module = Module(&#x27;sub/leaf&#x27;);
    *    module.exports = function Leaf(){}
    *
    *
    * @constructor
    * @param {String} path file path.
-   *&#x2F;
+   */
   function Module(path) {
     return new Exports(path);
   }
@@ -174,25 +172,25 @@
   Module._paths = paths;
 
 
-  &#x2F;**
+  /**
    * Reference self as exports
    * which also happens to be the constructor
    * so you can assign items to the namespace:
    *
-   *    &#x2F;&#x2F;assign to Module.X
-   *    &#x2F;&#x2F;assume module.exports is Module
-   *    module.exports.X = Foo; &#x2F;&#x2F;Module.X === Foo;
-   *    Module.exports(&#x27;foo&#x27;); &#x2F;&#x2F;creates module.exports object.
+   *    //assign to Module.X
+   *    //assume module.exports is Module
+   *    module.exports.X = Foo; //Module.X === Foo;
+   *    Module.exports(&#x27;foo&#x27;); //creates module.exports object.
    *
-   *&#x2F;
+   */
   module.exports = Module;
 
-  &#x2F;**
+  /**
    * In the browser assign
    * to a global namespace
    * obviously &#x27;Module&#x27; would
    * be whatever your global namespace is.
-   *&#x2F;
+   */
   if (this.window)
     window.Marionette = Module;
 
@@ -212,13 +210,13 @@
         </div>
     </div>
 </div>
-<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="..&#x2F;assets/js/yui-prettify.js"></script>
-<script src="..&#x2F;assets/../api.js"></script>
-<script src="..&#x2F;assets/js/api-filter.js"></script>
-<script src="..&#x2F;assets/js/api-list.js"></script>
-<script src="..&#x2F;assets/js/api-search.js"></script>
-<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
 </body>
 </html>

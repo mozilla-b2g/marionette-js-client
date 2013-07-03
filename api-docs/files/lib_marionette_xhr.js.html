@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>lib&#x2F;marionette&#x2F;xhr.js - Marionette JS Client</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
-    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <title>lib/marionette/xhr.js - Marionette JS Client</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.7.0/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -41,23 +41,21 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="..&#x2F;classes/Marionette.Client.html">Marionette.Client</a></li>
+                <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
+                <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
+                <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
+                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Websocket.html">Marionette.Drivers.Websocket</a></li>
+                <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Element.html">Marionette.Element</a></li>
-            
-                <li><a href="..&#x2F;classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
             
             </ul>
 
@@ -98,23 +96,23 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: lib&#x2F;marionette&#x2F;xhr.js</h1>
+                        <h1 class="file-heading">File: lib/marionette/xhr.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-&#x2F;**
+/**
 @namespace
-*&#x2F;
+*/
 (function(module, ns) {
   var Native;
 
   if (typeof(window) === &#x27;undefined&#x27;) {
-    Native = require(&#x27;..&#x2F;XMLHttpRequest&#x27;).XMLHttpRequest;
+    Native = require(&#x27;../XMLHttpRequest&#x27;).XMLHttpRequest;
   } else {
     Native = window.XMLHttpRequest;
   }
 
-  &#x2F;**
+  /**
    * Creates a XHR wrapper.
    * Depending on the platform this is loaded
    * from the correct wrapper type will be used.
@@ -130,7 +128,7 @@
    *                   a synchronous request.
    * @param {Object} [options.headers] full of http headers.
    * @param {Object} [options.data] post data.
-   *&#x2F;
+   */
   function Xhr(options) {
     var key;
     if (typeof(options) === &#x27;undefined&#x27;) {
@@ -145,7 +143,7 @@
   }
 
   Xhr.prototype = {
-    &#x2F;** @scope Marionette.Xhr.prototype *&#x2F;
+    /** @scope Marionette.Xhr.prototype */
 
     xhrClass: Native,
     method: &#x27;GET&#x27;,
@@ -153,31 +151,31 @@
     waiting: false,
 
     headers: {
-      &#x27;Content-Type&#x27;: &#x27;application&#x2F;json&#x27;
+      &#x27;Content-Type&#x27;: &#x27;application/json&#x27;
     },
     data: {},
 
     _seralize: function _seralize() {
-      if (this.headers[&#x27;Content-Type&#x27;] === &#x27;application&#x2F;json&#x27;) {
+      if (this.headers[&#x27;Content-Type&#x27;] === &#x27;application/json&#x27;) {
         return JSON.stringify(this.data);
       }
       return this.data;
     },
 
-    &#x2F;**
+    /**
      * Aborts request if its in progress.
-     *&#x2F;
+     */
     abort: function abort() {
       if (this.xhr) {
         this.xhr.abort();
       }
     },
 
-    &#x2F;**
+    /**
      * Sends request to server.
      *
-     * @param {Function} callback success&#x2F;failure handler.
-     *&#x2F;
+     * @param {Function} callback success/failure handler.
+     */
     send: function send(callback) {
       var header, xhr;
 
@@ -200,7 +198,7 @@
           data = xhr.responseText;
           type = xhr.getResponseHeader(&#x27;content-type&#x27;);
           type = type || xhr.getResponseHeader(&#x27;Content-Type&#x27;);
-          if (type === &#x27;application&#x2F;json&#x27;) {
+          if (type === &#x27;application/json&#x27;) {
             data = JSON.parse(data);
           }
           this.waiting = false;
@@ -209,7 +207,7 @@
       }.bind(this);
 
       this.waiting = true;
-      xhr.send(this._seralize());
+      return xhr.send(this._seralize());
     }
   };
 
@@ -219,7 +217,7 @@
   this,
   (this.Marionette) ?
     [Marionette(&#x27;xhr&#x27;), Marionette] :
-    [module, require(&#x27;.&#x2F;marionette&#x27;)]
+    [module, require(&#x27;./marionette&#x27;)]
 ));
 
     </pre>
@@ -231,13 +229,13 @@
         </div>
     </div>
 </div>
-<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="..&#x2F;assets/js/yui-prettify.js"></script>
-<script src="..&#x2F;assets/../api.js"></script>
-<script src="..&#x2F;assets/js/api-filter.js"></script>
-<script src="..&#x2F;assets/js/api-list.js"></script>
-<script src="..&#x2F;assets/js/api-search.js"></script>
-<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
 </body>
 </html>

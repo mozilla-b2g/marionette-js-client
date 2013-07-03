@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>lib&#x2F;marionette&#x2F;element.js - Marionette JS Client</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
-    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <title>lib/marionette/element.js - Marionette JS Client</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.7.0/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -41,23 +41,21 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="..&#x2F;classes/Marionette.Client.html">Marionette.Client</a></li>
+                <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
+                <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
+                <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
+                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Websocket.html">Marionette.Drivers.Websocket</a></li>
+                <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Element.html">Marionette.Element</a></li>
-            
-                <li><a href="..&#x2F;classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
             
             </ul>
 
@@ -98,36 +96,36 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: lib&#x2F;marionette&#x2F;element.js</h1>
+                        <h1 class="file-heading">File: lib/marionette/element.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-&#x2F;**
+/**
 @namespace
-*&#x2F;
+*/
 (function(module, ns) {
 
-  &#x2F;**
+  /**
    * Creates an element reference
    * based on an id and a client instance.
    * You should never need to manually create
    * an instance of element.
    *
-   * Use {{#crossLink &quot;Marionette.Client&#x2F;findElement&quot;}}{{&#x2F;crossLink}} or
-   * {{#crossLink &quot;Marionette.Client&#x2F;findElements&quot;}}{{&#x2F;crossLink}} to create
+   * Use {{#crossLink &quot;Marionette.Client/findElement&quot;}}{{/crossLink}} or
+   * {{#crossLink &quot;Marionette.Client/findElements&quot;}}{{/crossLink}} to create
    * instance(s) of this class.
    *
    * @class Marionette.Element
    * @param {String} id id of element.
    * @param {Marionette.Client} client client instance.
-   *&#x2F;
+   */
   function Element(id, client) {
     this.id = id;
     this.client = client;
   }
 
   Element.prototype = {
-    &#x2F;**
+    /**
      * Sends remote command processes the result.
      * Appends element id to each command.
      *
@@ -140,7 +138,7 @@
      *                            response[responseKey] as its first argument.
      *
      * @return {Object} self.
-     *&#x2F;
+     */
     _sendCommand: function(command, responseKey, callback) {
       if (!command.element) {
         command.element = this.id;
@@ -150,7 +148,7 @@
       return this;
     },
 
-    &#x2F;**
+    /**
      * Finds a single child of this element.
      *
      * @method findElement
@@ -158,13 +156,13 @@
      * @param {String} method search method.
      * @param {Function} callback element callback.
      * @return {Object} self.
-     *&#x2F;
+     */
     findElement: function findElement(query, method, callback) {
       this.client.findElement(query, method, this.id, callback);
       return this;
     },
 
-    &#x2F;**
+    /**
      * Finds a all children of this element that match a pattern.
      *
      * @method findElements
@@ -172,13 +170,13 @@
      * @param {String} method search method.
      * @param {Function} callback element callback.
      * @return {Object} self.
-     *&#x2F;
+     */
     findElements: function findElement(query, method, callback) {
       this.client.findElements(query, method, this.id, callback);
       return this;
     },
 
-    &#x2F;**
+    /**
      * Shortcut method to execute
      * a function with this element as first argument.
      *
@@ -186,19 +184,19 @@
      * @method scriptWith
      * @param {Function|String} script remote script.
      * @param {Function} callback callback when script completes.
-     *&#x2F;
+     */
     scriptWith: function scriptWith(script, callback) {
       this.client.executeScript(script, [this], callback);
     },
 
-    &#x2F;**
+    /**
      * Checks to see if two elements are equal
      *
      * @method equals
      * @param {String|Marionette.Element} element element to test.
      * @param {Function} callback called with boolean.
      * @return {Object} self.
-     *&#x2F;
+     */
     equals: function equals(element, callback) {
 
       if (element instanceof this.constructor) {
@@ -213,14 +211,14 @@
       return this;
     },
 
-    &#x2F;**
+    /**
      * Gets attribute value for element.
      *
      * @method getAttribute
      * @param {String} attr attribtue name.
      * @param {Function} callback gets called with attribute&#x27;s value.
      * @return {Object} self.
-     *&#x2F;
+     */
     getAttribute: function getAttribute(attr, callback) {
       var cmd = {
         type: &#x27;getElementAttribute&#x27;,
@@ -230,7 +228,7 @@
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Sends typing event keys to element.
      *
      *
@@ -238,7 +236,7 @@
      * @param {String} string message to type.
      * @param {Function} callback boolean success.
      * @return {Object} self.
-     *&#x2F;
+     */
     sendKeys: function sendKeys(string, callback) {
       var cmd = {
         type: &#x27;sendKeysToElement&#x27;,
@@ -247,13 +245,13 @@
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Clicks element.
      *
      * @method click
      * @param {Function} callback boolean result.
      * @return {Object} self.
-     *&#x2F;
+     */
     click: function click(callback) {
       var cmd = {
         type: &#x27;clickElement&#x27;
@@ -261,13 +259,13 @@
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Gets text of element
      *
      * @method text
      * @param {Function} callback text of element.
      * @return {Object} self.
-     *&#x2F;
+     */
     text: function text(callback) {
       var cmd = {
         type: &#x27;getElementText&#x27;
@@ -275,12 +273,12 @@
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Returns tag name of element.
      *
      * @method tagName
      * @param {Function} callback node style [err, tagName].
-     *&#x2F;
+     */
     tagName: function tagName(callback) {
       var cmd = {
         type: &#x27;getElementTagName&#x27;,
@@ -288,13 +286,13 @@
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Clears element.
      *
      * @method clear
      * @param {Function} callback value of element.
      * @return {Object} self.
-     *&#x2F;
+     */
     clear: function clear(callback) {
       var cmd = {
         type: &#x27;clearElement&#x27;
@@ -302,14 +300,14 @@
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Checks if element is selected.
      *
      *
      * @method selected
      * @param {Function} callback boolean argument.
      * @return {Object} self.
-     *&#x2F;
+     */
     selected: function selected(callback) {
       var cmd = {
         type: &#x27;isElementSelected&#x27;
@@ -317,13 +315,13 @@
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Checks if element is enabled.
      *
      * @method enabled
      * @param {Function} callback boolean argument.
      * @return {Object} self.
-     *&#x2F;
+     */
     enabled: function enabled(callback) {
       var cmd = {
         type: &#x27;isElementEnabled&#x27;
@@ -331,14 +329,14 @@
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
-    &#x2F;**
+    /**
      * Checks if element is displayed.
      *
      *
      * @method displayed
      * @param {Function} callback boolean argument.
      * @return {Object} self.
-     *&#x2F;
+     */
     displayed: function displayed(callback) {
       var cmd = {
         type: &#x27;isElementDisplayed&#x27;
@@ -354,7 +352,7 @@
   this,
   (this.Marionette) ?
     [Marionette(&#x27;element&#x27;), Marionette] :
-    [module, require(&#x27;..&#x2F;..&#x2F;lib&#x2F;marionette&#x2F;marionette&#x27;)]
+    [module, require(&#x27;../../lib/marionette/marionette&#x27;)]
 ));
 
     </pre>
@@ -366,13 +364,13 @@
         </div>
     </div>
 </div>
-<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="..&#x2F;assets/js/yui-prettify.js"></script>
-<script src="..&#x2F;assets/../api.js"></script>
-<script src="..&#x2F;assets/js/api-filter.js"></script>
-<script src="..&#x2F;assets/js/api-list.js"></script>
-<script src="..&#x2F;assets/js/api-search.js"></script>
-<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
 </body>
 </html>

@@ -7,7 +7,6 @@ YUI.add("yuidoc-meta", function(Y) {
         "Marionette.Drivers.Httpd",
         "Marionette.Drivers.MozTcp",
         "Marionette.Drivers.Tcp",
-        "Marionette.Drivers.Websocket",
         "Marionette.Element",
         "Marionette.Xhr"
     ],

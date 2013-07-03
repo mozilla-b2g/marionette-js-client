@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>Marionette.Client - Marionette JS Client</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
-    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
-    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.7.0/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -41,23 +41,21 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="..&#x2F;classes/Marionette.Client.html">Marionette.Client</a></li>
+                <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
+                <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
+                <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
+                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
+                <li><a href="../classes/Marionette.Drivers.Tcp.html">Marionette.Drivers.Tcp</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Drivers.Websocket.html">Marionette.Drivers.Websocket</a></li>
+                <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="..&#x2F;classes/Marionette.Element.html">Marionette.Element</a></li>
-            
-                <li><a href="..&#x2F;classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
             
             </ul>
 
@@ -106,7 +104,7 @@
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l22"><code>lib&#x2F;marionette&#x2F;client.js:22</code></a>
+            Defined in: <a href="../files/lib_marionette_client.js.html#l58"><code>lib&#x2F;marionette&#x2F;client.js:58</code></a>
         </div>
     
 
@@ -123,9 +121,10 @@ You must create and initialize
 a driver and pass it into the client before
 using the client itself.</p>
 
-<pre class="code"><code class="prettyprint">// all drivers conform to this api
+<pre class="code prettyprint"><code>// all drivers conform to this api
 
-var driver = new Marionette.Dirver.MozTcp({});
+// var Marionette = require('marionette-client');
+var driver = new Marionette.Drivers.Tcp({});
 var client;
 
 driver.connect(function(err) {
@@ -144,12 +143,13 @@ driver.connect(function(err) {
   // by default commands run in a queue.
   // assuming there is not a fatal error each command
   // will execute sequentially.
-  client.startSession().
-         goUrl('http://google.com').
-         executeScript(function() {
-           alert(document.title);
-         });
-  }
+  client.startSession(function () {
+    client.goUrl('http://google.com')
+      .executeScript(function() {
+        alert(document.title);
+      })
+      .deleteSession();
+  });
 });
 </code></pre>
 </div>
@@ -205,7 +205,7 @@ driver.connect(function(err) {
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l22"><code>lib&#x2F;marionette&#x2F;client.js:22</code></a>
+        <a href="../files/lib_marionette_client.js.html#l58"><code>lib&#x2F;marionette&#x2F;client.js:58</code></a>
         
         </p>
 
@@ -460,6 +460,13 @@ driver.connect(function(err) {
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_scope">scope</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_send">send</a>
 
                                 
@@ -503,6 +510,13 @@ driver.connect(function(err) {
                         
                             <li class="index-item method">
                                 <a href="#method_switchToWindow">switchToWindow</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_waitFor">waitFor</a>
 
                                 
                                 
@@ -608,7 +622,7 @@ driver.connect(function(err) {
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l715"><code>lib&#x2F;marionette&#x2F;client.js:715</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1015"><code>lib&#x2F;marionette&#x2F;client.js:1015</code></a>
         
         </p>
 
@@ -721,7 +735,7 @@ that can be sent to marionette.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l775"><code>lib&#x2F;marionette&#x2F;client.js:775</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1075"><code>lib&#x2F;marionette&#x2F;client.js:1075</code></a>
         
         </p>
 
@@ -920,7 +934,7 @@ by marionette.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l599"><code>lib&#x2F;marionette&#x2F;client.js:599</code></a>
+        <a href="../files/lib_marionette_client.js.html#l899"><code>lib&#x2F;marionette&#x2F;client.js:899</code></a>
         
         </p>
 
@@ -1069,7 +1083,7 @@ by marionette.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l173"><code>lib&#x2F;marionette&#x2F;client.js:173</code></a>
+        <a href="../files/lib_marionette_client.js.html#l334"><code>lib&#x2F;marionette&#x2F;client.js:334</code></a>
         
         </p>
 
@@ -1158,7 +1172,7 @@ by marionette.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l193"><code>lib&#x2F;marionette&#x2F;client.js:193</code></a>
+        <a href="../files/lib_marionette_client.js.html#l354"><code>lib&#x2F;marionette&#x2F;client.js:354</code></a>
         
         </p>
 
@@ -1251,7 +1265,7 @@ by marionette.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l751"><code>lib&#x2F;marionette&#x2F;client.js:751</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1051"><code>lib&#x2F;marionette&#x2F;client.js:1051</code></a>
         
         </p>
 
@@ -1369,7 +1383,7 @@ marionette can use them in script commands.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l151"><code>lib&#x2F;marionette&#x2F;client.js:151</code></a>
+        <a href="../files/lib_marionette_client.js.html#l307"><code>lib&#x2F;marionette&#x2F;client.js:307</code></a>
         
         </p>
 
@@ -1493,7 +1507,7 @@ marionette can use them in script commands.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l732"><code>lib&#x2F;marionette&#x2F;client.js:732</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1032"><code>lib&#x2F;marionette&#x2F;client.js:1032</code></a>
         
         </p>
 
@@ -1598,7 +1612,7 @@ instance will be created and returned.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l226"><code>lib&#x2F;marionette&#x2F;client.js:226</code></a>
+        <a href="../files/lib_marionette_client.js.html#l509"><code>lib&#x2F;marionette&#x2F;client.js:509</code></a>
         
         </p>
 
@@ -1703,7 +1717,7 @@ instance will be created and returned.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l560"><code>lib&#x2F;marionette&#x2F;client.js:560</code></a>
+        <a href="../files/lib_marionette_client.js.html#l860"><code>lib&#x2F;marionette&#x2F;client.js:860</code></a>
         
         </p>
 
@@ -1719,7 +1733,7 @@ instance will be created and returned.</p>
 <p>NOTE: that setScriptTimeout <em>must</em> be set prior to using this method
       as the timeout defaults to zero.</p>
 
-<pre class="code"><code class="prettyprint">function remote () {
+<pre class="code prettyprint"><code>function remote () {
   window.addEventListener('someevent', function() {
     // special method to notify that async script is complete.
     marionetteScriptFinished({ fromRemote: true })
@@ -1874,7 +1888,7 @@ client.executeAsyncScript(remote, function(err, value) {
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l474"><code>lib&#x2F;marionette&#x2F;client.js:474</code></a>
+        <a href="../files/lib_marionette_client.js.html#l774"><code>lib&#x2F;marionette&#x2F;client.js:774</code></a>
         
         </p>
 
@@ -2041,7 +2055,7 @@ Script is <em>not</em> wrapped in a function.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l507"><code>lib&#x2F;marionette&#x2F;client.js:507</code></a>
+        <a href="../files/lib_marionette_client.js.html#l807"><code>lib&#x2F;marionette&#x2F;client.js:807</code></a>
         
         </p>
 
@@ -2054,7 +2068,7 @@ Script is <em>not</em> wrapped in a function.</p>
     <div class="description">
         <p>Executes a remote script will block. Script is wrapped in a function.</p>
 
-<pre class="code"><code class="prettyprint">// its is very important to remember that the contents of this
+<pre class="code prettyprint"><code>// its is very important to remember that the contents of this
 // method are "stringified" (Function#toString) and sent over the
 // wire to execute on the device. So things like scope will not be
 // the same. If you need to pass other information in arguments
@@ -2223,7 +2237,7 @@ client.executeJsScript(remoteFn, remoteArgs, function(err, value) {
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l656"><code>lib&#x2F;marionette&#x2F;client.js:656</code></a>
+        <a href="../files/lib_marionette_client.js.html#l956"><code>lib&#x2F;marionette&#x2F;client.js:956</code></a>
         
         </p>
 
@@ -2238,7 +2252,7 @@ client.executeJsScript(remoteFn, remoteArgs, function(err, value) {
 "elements" returned are instances of
 <a href="../classes/Marionette.Element.html" class="crosslink">Marionette.Element</a></p>
 
-<pre class="code"><code class="prettyprint">// with default options
+<pre class="code prettyprint"><code>// with default options
 client.findElement('#css-selector', function(err, element) {
    if (err) {
      // handle case where element was not found
@@ -2390,7 +2404,7 @@ client.findElement('#css-selector', function(err, element) {
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l689"><code>lib&#x2F;marionette&#x2F;client.js:689</code></a>
+        <a href="../files/lib_marionette_client.js.html#l989"><code>lib&#x2F;marionette&#x2F;client.js:989</code></a>
         
         </p>
 
@@ -2406,7 +2420,7 @@ api signature as FindElement the
 only difference is where findElement returns a single element
 this method will return an array of elements in the callback.</p>
 
-<pre class="code"><code class="prettyprint">// find all links in the document
+<pre class="code prettyprint"><code>// find all links in the document
 client.findElements('a[href]', function(err, element) {
 });
 </code></pre>
@@ -2532,7 +2546,7 @@ client.findElements('a[href]', function(err, element) {
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l450"><code>lib&#x2F;marionette&#x2F;client.js:450</code></a>
+        <a href="../files/lib_marionette_client.js.html#l750"><code>lib&#x2F;marionette&#x2F;client.js:750</code></a>
         
         </p>
 
@@ -2546,7 +2560,7 @@ client.findElements('a[href]', function(err, element) {
         <p>Retrieves all logs on the marionette server.
 The response from marionette is an array of arrays.</p>
 
-<pre class="code"><code class="prettyprint">device.getLogs(function(err, logs){
+<pre class="code prettyprint"><code>device.getLogs(function(err, logs){
   //logs =&gt; [
     [
       'msg',
@@ -2633,7 +2647,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l372"><code>lib&#x2F;marionette&#x2F;client.js:372</code></a>
+        <a href="../files/lib_marionette_client.js.html#l672"><code>lib&#x2F;marionette&#x2F;client.js:672</code></a>
         
         </p>
 
@@ -2726,7 +2740,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l246"><code>lib&#x2F;marionette&#x2F;client.js:246</code></a>
+        <a href="../files/lib_marionette_client.js.html#l527"><code>lib&#x2F;marionette&#x2F;client.js:527</code></a>
         
         </p>
 
@@ -2828,7 +2842,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l259"><code>lib&#x2F;marionette&#x2F;client.js:259</code></a>
+        <a href="../files/lib_marionette_client.js.html#l540"><code>lib&#x2F;marionette&#x2F;client.js:540</code></a>
         
         </p>
 
@@ -2917,7 +2931,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l422"><code>lib&#x2F;marionette&#x2F;client.js:422</code></a>
+        <a href="../files/lib_marionette_client.js.html#l722"><code>lib&#x2F;marionette&#x2F;client.js:722</code></a>
         
         </p>
 
@@ -3006,7 +3020,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l409"><code>lib&#x2F;marionette&#x2F;client.js:409</code></a>
+        <a href="../files/lib_marionette_client.js.html#l709"><code>lib&#x2F;marionette&#x2F;client.js:709</code></a>
         
         </p>
 
@@ -3101,7 +3115,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l396"><code>lib&#x2F;marionette&#x2F;client.js:396</code></a>
+        <a href="../files/lib_marionette_client.js.html#l696"><code>lib&#x2F;marionette&#x2F;client.js:696</code></a>
         
         </p>
 
@@ -3211,7 +3225,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l285"><code>lib&#x2F;marionette&#x2F;client.js:285</code></a>
+        <a href="../files/lib_marionette_client.js.html#l566"><code>lib&#x2F;marionette&#x2F;client.js:566</code></a>
         
         </p>
 
@@ -3334,7 +3348,7 @@ context for the duration of the session.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l434"><code>lib&#x2F;marionette&#x2F;client.js:434</code></a>
+        <a href="../files/lib_marionette_client.js.html#l734"><code>lib&#x2F;marionette&#x2F;client.js:734</code></a>
         
         </p>
 
@@ -3468,7 +3482,7 @@ context for the duration of the session.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l384"><code>lib&#x2F;marionette&#x2F;client.js:384</code></a>
+        <a href="../files/lib_marionette_client.js.html#l684"><code>lib&#x2F;marionette&#x2F;client.js:684</code></a>
         
         </p>
 
@@ -3526,12 +3540,138 @@ context for the duration of the session.</p>
 </div>
 
                 
+                    <div id="method_scope" class="method item">
+    <h3 class="name"><code>scope</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>options</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Marionette.Client.html" class="crosslink">Marionette.Client</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_client.js.html#l372"><code>lib&#x2F;marionette&#x2F;client.js:372</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Creates a client which has a fixed window, frame, scriptTimeout and
+searchTimeout.</p>
+
+<pre class="code prettyprint"><code>client.setSearchTimeout(1000).setContext('content');
+
+var timeout = client.scope({ searchTimeout: 250 });
+var chrome = client.scope({ context: 'chrome' });
+
+// executed with 250 timeout
+timeout.findElement('...');
+
+// executes in chrome context.
+chrome.executeScript();
+
+// executed in content with search timeout of 1000
+client.findElement('...');
+</code></pre>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">options</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>for scopped client.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/Marionette.Client.html" class="crosslink">Marionette.Client</a></span>:
+                    
+                    scoped client instance.
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
                     <div id="method_send" class="method item">
     <h3 class="name"><code>send</code></h3>
 
     
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>cmd</code>
+                    
+                </li>
             
                 <li class="arg">
                     
@@ -3570,7 +3710,7 @@ context for the duration of the session.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l107"><code>lib&#x2F;marionette&#x2F;client.js:107</code></a>
+        <a href="../files/lib_marionette_client.js.html#l243"><code>lib&#x2F;marionette&#x2F;client.js:243</code></a>
         
         </p>
 
@@ -3591,6 +3731,21 @@ to command if not present.</p>
             <h4>Parameters:</h4>
 
             <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">cmd</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>to be sent over the wire.</p>
+                    </div>
+
+                    
+                </li>
             
                 <li class="param">
                     
@@ -3667,7 +3822,7 @@ to command if not present.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l327"><code>lib&#x2F;marionette&#x2F;client.js:327</code></a>
+        <a href="../files/lib_marionette_client.js.html#l613"><code>lib&#x2F;marionette&#x2F;client.js:613</code></a>
         
         </p>
 
@@ -3678,7 +3833,17 @@ to command if not present.</p>
     </div>
 
     <div class="description">
-        <p>Switches context of window.</p>
+        <p>Switches context of window. The current context can be found with
+.context.</p>
+
+<p>// default context
+   client.context === 'content';</p>
+
+<p>client.setContext('chrome', function() {
+     // .. wait for switch
+   });</p>
+
+<p>client.context === 'chrome';</p>
     </div>
 
     
@@ -3781,7 +3946,7 @@ to command if not present.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l344"><code>lib&#x2F;marionette&#x2F;client.js:344</code></a>
+        <a href="../files/lib_marionette_client.js.html#l642"><code>lib&#x2F;marionette&#x2F;client.js:642</code></a>
         
         </p>
 
@@ -3908,7 +4073,7 @@ to command if not present.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l358"><code>lib&#x2F;marionette&#x2F;client.js:358</code></a>
+        <a href="../files/lib_marionette_client.js.html#l657"><code>lib&#x2F;marionette&#x2F;client.js:657</code></a>
         
         </p>
 
@@ -4023,7 +4188,7 @@ to command if not present.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l211"><code>lib&#x2F;marionette&#x2F;client.js:211</code></a>
+        <a href="../files/lib_marionette_client.js.html#l492"><code>lib&#x2F;marionette&#x2F;client.js:492</code></a>
         
         </p>
 
@@ -4119,7 +4284,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l301"><code>lib&#x2F;marionette&#x2F;client.js:301</code></a>
+        <a href="../files/lib_marionette_client.js.html#l582"><code>lib&#x2F;marionette&#x2F;client.js:582</code></a>
         
         </p>
 
@@ -4229,7 +4394,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l271"><code>lib&#x2F;marionette&#x2F;client.js:271</code></a>
+        <a href="../files/lib_marionette_client.js.html#l552"><code>lib&#x2F;marionette&#x2F;client.js:552</code></a>
         
         </p>
 
@@ -4289,6 +4454,184 @@ This is a combination of calling getMarionetteId and then newSession.</p>
 </div>
 
                 
+                    <div id="method_waitFor" class="method item">
+    <h3 class="name"><code>waitFor</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>test</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[callback]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_client.js.html#l416"><code>lib&#x2F;marionette&#x2F;client.js:416</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Utility for waiting for a success condition to be met.</p>
+
+<pre class="code prettyprint"><code>// sync style
+client.waitFor(function() {
+  return element.displayed();
+});
+
+// async style
+client.waitFor(function(done) {
+  element.displayed(done);
+});
+</code></pre>
+
+<p>Options:
+     * (Number) interval: time between running test
+     * (Number) timeout: maximum wallclock time before failing test.</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">test</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>to execute.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>for timeout see above.</p>
+                    </div>
+
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[interval]</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>time between running test.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[timeout]</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>maximum wallclock time before failing test.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[callback]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>optional callback.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
             </div>
         
 
@@ -4320,7 +4663,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l91"><code>lib&#x2F;marionette&#x2F;client.js:91</code></a>
+        <a href="../files/lib_marionette_client.js.html#l190"><code>lib&#x2F;marionette&#x2F;client.js:190</code></a>
         
         </p>
 
@@ -4364,7 +4707,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l75"><code>lib&#x2F;marionette&#x2F;client.js:75</code></a>
+        <a href="../files/lib_marionette_client.js.html#l141"><code>lib&#x2F;marionette&#x2F;client.js:141</code></a>
         
         </p>
 
@@ -4408,7 +4751,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l83"><code>lib&#x2F;marionette&#x2F;client.js:83</code></a>
+        <a href="../files/lib_marionette_client.js.html#l149"><code>lib&#x2F;marionette&#x2F;client.js:149</code></a>
         
         </p>
 
@@ -4452,7 +4795,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;lib_marionette_client.js.html#l99"><code>lib&#x2F;marionette&#x2F;client.js:99</code></a>
+        <a href="../files/lib_marionette_client.js.html#l198"><code>lib&#x2F;marionette&#x2F;client.js:198</code></a>
         
         </p>
 
@@ -4488,13 +4831,13 @@ This is a combination of calling getMarionetteId and then newSession.</p>
         </div>
     </div>
 </div>
-<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="..&#x2F;assets/js/yui-prettify.js"></script>
-<script src="..&#x2F;assets/../api.js"></script>
-<script src="..&#x2F;assets/js/api-filter.js"></script>
-<script src="..&#x2F;assets/js/api-list.js"></script>
-<script src="..&#x2F;assets/js/api-search.js"></script>
-<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
 </body>
 </html>
