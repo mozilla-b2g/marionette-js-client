@@ -48,6 +48,7 @@ function host() {
     marionetteHost.spawn(B2G_PATH, function(err, port, child) {
       if (err) throw err;
       ctx.process = child;
+
       var driver = new Driver({ marionettePort: port });
       driver.connect(function(err) {
         if (err) throw err;
