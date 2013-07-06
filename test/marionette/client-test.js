@@ -38,6 +38,147 @@ describe('marionette/client', function() {
     });
   });
 
+  describe('hooks', function() {
+
+    it('should not fail running missing hooks', function(done) {
+      subject.runHook('fakemissingyey', done);
+    });
+
+    it('should handle errors in hooks', function(done) {
+      var myErr = new Error('err');
+      // success
+      subject.addHook('test', function(complete) {
+        complete();
+      });
+
+      // failure
+      subject.addHook('test', function(complete) {
+        complete(myErr);
+      });
+
+      // after failure should not run
+      subject.addHook('test', function(complete) {
+        done(new Error('should not run hooks after error'));
+      });
+
+      subject.runHook('test', function(err) {
+        expect(err).to.be(myErr);
+        done();
+      });
+    });
+
+
+    describe('success', function() {
+      var called = [];
+
+      function logSuccess(name) {
+        return function(done) {
+          process.nextTick(function() {
+            called.push(name);
+            done();
+          });
+        }
+      }
+
+      beforeEach(function() {
+        called.length = 0;
+      });
+
+      it('should handle adding a hook in a hook', function(done) {
+        var calledHook = false;
+        subject.addHook('test', function(hookOne) {
+          hookOne();
+          subject.addHook('test', function(hookTwo) {
+            calledHook = true;
+            hookTwo();
+          });
+        });
+
+        subject.runHook('test', function() {
+          expect(calledHook).to.be.ok();
+          done();
+        });
+      });
+
+      it('should run in context of client', function(done) {
+        subject.addHook('test', function(completeHook) {
+          expect(subject).to.be(this);
+          completeHook();
+        });
+
+        subject.runHook('test', done);
+      });
+
+      it('should run all hooks', function(done) {
+        subject.addHook('test', logSuccess('one'))
+               .addHook('test', logSuccess('two'))
+               .addHook('test', logSuccess('three'));
+
+        subject.runHook('test', function() {
+          expect(called).to.eql(['one', 'two', 'three']);
+          done();
+        });
+      });
+
+    });
+  });
+
+  describe('.plugin', function() {
+    it('should allow chaining', function() {
+      var one = {},
+          two = {};
+
+      function pluginOne() {
+        return one;
+      }
+
+      function pluginTwo() {
+        return two;
+      }
+
+      subject.plugin('one', pluginOne).
+              plugin('two', pluginTwo);
+
+      expect(subject.one).to.be(one);
+      expect(subject.two).to.be(two);
+    });
+
+    it('should invoke plugin without name', function() {
+      var calledPlugin;
+      var options = {};
+
+      function plugin(client, opts) {
+        expect(client).to.be(subject);
+        expect(opts).to.be(options);
+        calledPlugin = true;
+      }
+
+      subject.plugin(null, plugin, options);
+      expect(calledPlugin).to.be.ok();
+    });
+
+    it('should assign result to the given name', function() {
+      var myObj = {};
+      function plugin() {
+        return myObj;
+      }
+
+      subject.plugin('yey', plugin);
+      expect(subject.yey).to.be(myObj);
+    });
+
+    it('should work with .setup', function() {
+      var myObj = {};
+      function plugin() {}
+      plugin.setup = function() {
+        return myObj;
+      };
+
+      subject.plugin('woot', plugin);
+      expect(subject.woot).to.be(myObj);
+    });
+  });
+
   describe('._handleCallback', function() {
     var calledWith;
 
@@ -78,7 +219,7 @@ describe('marionette/client', function() {
         calledWith = null;
         subject.defaultCallback = function() {
           calledWith = arguments;
-        }
+        };
       });
 
       it('should use default when no callback is provided', function() {
@@ -200,8 +341,15 @@ describe('marionette/client', function() {
     var result;
 
     beforeEach(function(done) {
+      var firesHook = false;
+
+      subject.addHook('startSession', function(complete) {
+        firesHook = true;
+        complete();
+      });
 
       result = subject.startSession(function() {
+        expect(firesHook).to.be.ok();
         done();
       });
 
@@ -255,7 +403,7 @@ describe('marionette/client', function() {
           calledTransform = true;
           expect(value).to.be(response.value);
           return 'foo';
-        }
+        };
 
         result = subject._sendCommand(cmd, 'value', function() {
           calledWith = arguments;
@@ -302,22 +450,32 @@ describe('marionette/client', function() {
 
 
   describe('.deleteSession', function() {
+    var result;
     var callsClose;
 
-    beforeEach(function() {
+    beforeEach(function(done) {
       callsClose = false;
+      var callsHook = false;
+
       subject.driver.close = function() {
+        expect(callsHook).to.be(true);
         callsClose = true;
       };
+
+      subject.addHook('deleteSession', function(complete) {
+        callsHook = true;
+        complete();
+        process.nextTick(function() {
+          driver.respond(exampleCmds.ok());
+        });
+      });
+
+      result = subject.deleteSession(done);
     });
 
-    device.
-      issues('deleteSession').
-      shouldSend({
-        type: 'deleteSession'
-      }).
-      serverResponds('ok').
-      callbackReceives('ok');
+    it('should be chainable', function() {
+      expect(result).to.be(subject);
+    });
 
     it('should close the connection', function() {
       expect(callsClose).to.be(true);
@@ -446,7 +604,7 @@ describe('marionette/client', function() {
       issues('importScript', 'foo').
       shouldSend({
         type: 'importScript',
-        script: 'foo',
+        script: 'foo'
       }).
       serverResponds('ok').
       callbackReceives('ok');
@@ -621,9 +779,9 @@ describe('marionette/client', function() {
       var MyElement;
 
       beforeEach(function() {
-        MyElement = function () {
+        MyElement = function() {
           Element.apply(this, arguments);
-        }
+        };
 
         MyElement.prototype = { __proto__: Element.prototype };
         subject.Element = MyElement;
