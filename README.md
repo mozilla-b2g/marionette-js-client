@@ -51,6 +51,6 @@ The `make doc-server` / `make doc-publish` are used to preview and publish conte
 
 Find us on irc.mozilla.org in the #gaia channel.
 
-irc: gaye - Gareth Aye
-irc: mhenretty - Michael Henretty - mikehenrty (github)
-irc: lightsofapollo - James Lal
+  - irc: gaye - Gareth Aye
+  - irc: mhenretty - Michael Henretty - mikehenrty (github)
+  - irc: lightsofapollo - James Lal
