@@ -47,7 +47,7 @@ API documentation is made using yuidocjs.
 
 The `make doc-server` / `make doc-publish` are used to preview and publish content.
 
-### Reviwers
+### Reviewers
 
 Find us on irc.mozilla.org in the #gaia channel.
 
