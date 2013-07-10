@@ -1,7 +1,6 @@
 describe('scope', function() {
   // create test resources
   var host = integration.host();
-  var serverURL = integration.server();
 
   var client,
       timeoutA,
@@ -9,8 +8,6 @@ describe('scope', function() {
 
   beforeEach(function() {
     client = host.client;
-    client.goUrl(serverURL);
-
     timeoutA = client.scope({ scriptTimeout: 1000 });
     timeoutB = client.scope({ scriptTimeout: 250 });
   });
