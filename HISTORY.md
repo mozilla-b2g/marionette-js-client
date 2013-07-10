@@ -1,3 +1,6 @@
+# 0.9
+  - new plugin interface.
+
 # 0.8
   - .scope method for making context/timeout transitions/restorations
     trivial
