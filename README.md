@@ -43,6 +43,7 @@ make test-browser
 ### Plugins
 
 - [marionette-apps](https://github.com/mozilla-b2g/marionette-apps)
+- [marionette-js-logger](https://github.com/mozilla-b2g/marionette-js-logger)
 
 ### Documentation
 
