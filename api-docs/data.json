@@ -725,7 +725,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 141,
+            "line": 144,
             "description": "Constant for chrome context.",
             "type": "{String}",
             "itemtype": "property",
@@ -734,7 +734,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 149,
+            "line": 152,
             "description": "Constant for content context.",
             "type": "{String}",
             "itemtype": "property",
@@ -743,14 +743,25 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 157,
+            "line": 160,
+            "description": "Object of hoooks.\n\n   {\n     hookName: [hook1, hook2]\n   }",
+            "type": "{Object}",
+            "itemtype": "property",
+            "name": "_hooks",
+            "access": "private",
+            "tagname": "",
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 173,
             "description": "The current scope of this client instance. Used with _state.\n\n  // Example\n  {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n  }",
             "type": "{Object}",
             "class": "Marionette.Client"
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 173,
+            "line": 189,
             "description": "The current state of the client.\n\n   // Example\n   {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n   }",
             "access": "private",
             "tagname": "",
@@ -759,7 +770,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 190,
+            "line": 206,
             "description": "Actor id for instance",
             "itemtype": "property",
             "name": "actor",
@@ -768,7 +779,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 198,
+            "line": 214,
             "description": "Session id for instance.",
             "itemtype": "property",
             "name": "session",
@@ -777,7 +788,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 208,
+            "line": 224,
             "return": {
                 "description": "the current context.",
                 "type": "String"
@@ -786,7 +797,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 215,
+            "line": 231,
             "return": {
                 "description": "frame currently focused.",
                 "type": "String|Marionette.Element"
@@ -795,7 +806,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 222,
+            "line": 238,
             "return": {
                 "description": "",
                 "type": "String|Marionette.Element"
@@ -804,7 +815,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 229,
+            "line": 245,
             "return": {
                 "description": "current scriptTimeout.",
                 "type": "Number"
@@ -813,7 +824,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 236,
+            "line": 252,
             "return": {
                 "description": "current search timeout.",
                 "type": "Number"
@@ -822,7 +833,76 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 243,
+            "line": 259,
+            "description": "Adds a plugin to the client instance.\n\n    // add imaginary forms plugin\n    client.plugin('forms', moduleForForms, { options: true });\n    client.forms.fill();\n\n    // tie into common plugin interface without exposing a new api.\n    client.plugin(null, module, {});\n\n    // chaining\n    client\n      .plugin('forms', require('form-module'))\n      .plguin('apps', require('apps-module'))\n      .plugin('other', require('...'));\n\n    client.forms.fill(...);\n    client.apps.launch(...);",
+            "itemtype": "method",
+            "name": "plugin",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "to expose plugin on in the client.",
+                    "type": "String|Null"
+                },
+                {
+                    "name": "plugin",
+                    "description": "function/module.",
+                    "type": "Function|Object"
+                },
+                {
+                    "name": "optional",
+                    "description": "options to pass to plugin.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 309,
+            "description": "Run all hooks of a given type. Hooks may be added as the result of\nrunning other hooks which could potentially result in an infinite loop\nwithout stack overflow...\n\n\n    this.runHook('startSession', function(err) {\n      // do something with error if there is one.\n    });",
+            "access": "protected",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "runHook",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "of hook to run.",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "to run once hooks are done.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 363,
+            "description": "Adds a hook to the stack. Hooks run in serial order until all hooks\ncomplete. Execution of hooks halts on first error.\n\n\n   client.addHook('sessionStart', function(done) {\n     // this is the client\n     this.executeScript(function() {}, done);\n   });",
+            "itemtype": "method",
+            "name": "addHook",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "name of hook.",
+                    "type": "String"
+                },
+                {
+                    "name": "handler",
+                    "description": "for hook must take a single argument\n (see above).",
+                    "type": "Function"
+                }
+            ],
+            "class": "Marionette.Client"
+        },
+        {
+            "file": "lib/marionette/client.js",
+            "line": 389,
             "description": "Sends a command to the server.\nAdds additional information like actor and session\nto command if not present.",
             "itemtype": "method",
             "name": "send",
@@ -843,7 +923,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 307,
+            "line": 453,
             "description": "Sends request and formats response.",
             "access": "private",
             "tagname": "",
@@ -871,7 +951,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 334,
+            "line": 480,
             "description": "Finds the actor for this instance.",
             "access": "private",
             "tagname": "",
@@ -888,7 +968,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 354,
+            "line": 500,
             "description": "Starts a remote session.",
             "access": "private",
             "tagname": "",
@@ -905,7 +985,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 372,
+            "line": 518,
             "description": "Creates a client which has a fixed window, frame, scriptTimeout and\nsearchTimeout.\n\n    client.setSearchTimeout(1000).setContext('content');\n\n    var timeout = client.scope({ searchTimeout: 250 });\n    var chrome = client.scope({ context: 'chrome' });\n\n    // executed with 250 timeout\n    timeout.findElement('...');\n\n    // executes in chrome context.\n    chrome.executeScript();\n\n    // executed in content with search timeout of 1000\n    client.findElement('...');",
             "itemtype": "method",
             "name": "scope",
@@ -924,7 +1004,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 416,
+            "line": 562,
             "description": "Utility for waiting for a success condition to be met.\n\n    // sync style\n    client.waitFor(function() {\n      return element.displayed();\n    });\n\n    // async style\n    client.waitFor(function(done) {\n      element.displayed(done);\n    });\n\n\n   Options:\n     * (Number) interval: time between running test\n     * (Number) timeout: maximum wallclock time before failing test.",
             "itemtype": "method",
             "name": "waitFor",
@@ -965,7 +1045,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 492,
+            "line": 638,
             "description": "Finds actor and creates connection to marionette.\nThis is a combination of calling getMarionetteId and then newSession.",
             "itemtype": "method",
             "name": "startSession",
@@ -980,7 +1060,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 509,
+            "line": 660,
             "description": "Destroys current session.",
             "chainable": 1,
             "itemtype": "method",
@@ -996,7 +1076,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 527,
+            "line": 683,
             "description": "Callback will receive the id of the current window.",
             "chainable": 1,
             "itemtype": "method",
@@ -1016,7 +1096,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 540,
+            "line": 696,
             "description": "Callback will receive an array of window ids.",
             "itemtype": "method",
             "name": "getWindow",
@@ -1032,7 +1112,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 552,
+            "line": 708,
             "description": "Switches context of marionette to specific window.",
             "itemtype": "method",
             "name": "switchToWindow",
@@ -1053,7 +1133,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 566,
+            "line": 722,
             "description": "Imports a script into the marionette\ncontext for the duration of the session.\n\nGood for prototyping new marionette commands.",
             "itemtype": "method",
             "name": "importScript",
@@ -1074,7 +1154,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 582,
+            "line": 738,
             "description": "Switches context of marionette to specific iframe.",
             "itemtype": "method",
             "name": "switchToFrame",
@@ -1095,7 +1175,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 613,
+            "line": 769,
             "description": "Switches context of window. The current context can be found with\n.context.\n\n   // default context\n   client.context === 'content';\n\n   client.setContext('chrome', function() {\n     // .. wait for switch\n   });\n\n   client.context === 'chrome';",
             "itemtype": "method",
             "name": "setContext",
@@ -1116,7 +1196,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 642,
+            "line": 798,
             "description": "Sets the script timeout",
             "itemtype": "method",
             "name": "setScriptTimeout",
@@ -1141,7 +1221,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 657,
+            "line": 813,
             "description": "setSearchTimeout",
             "itemtype": "method",
             "name": "setSearchTimeout",
@@ -1166,7 +1246,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 672,
+            "line": 828,
             "description": "Gets url location for device.",
             "itemtype": "method",
             "name": "getUrl",
@@ -1182,7 +1262,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 684,
+            "line": 840,
             "description": "Refreshes current window on device.",
             "itemtype": "method",
             "name": "refresh",
@@ -1201,7 +1281,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 696,
+            "line": 852,
             "description": "Drives browser to a url.",
             "itemtype": "method",
             "name": "goUrl",
@@ -1222,7 +1302,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 709,
+            "line": 865,
             "description": "Drives window forward.",
             "itemtype": "method",
             "name": "goForward",
@@ -1238,7 +1318,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 722,
+            "line": 878,
             "description": "Drives window back.",
             "itemtype": "method",
             "name": "goBack",
@@ -1254,7 +1334,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 734,
+            "line": 890,
             "description": "Logs a message on marionette server.",
             "itemtype": "method",
             "name": "log",
@@ -1284,7 +1364,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 750,
+            "line": 906,
             "description": "Retrieves all logs on the marionette server.\nThe response from marionette is an array of arrays.\n\n    device.getLogs(function(err, logs){\n      //logs => [\n        [\n          'msg',\n          'level',\n          'Fri Apr 27 2012 11:00:32 GMT-0700 (PDT)'\n        ]\n      ]\n    });",
             "itemtype": "method",
             "name": "getLogs",
@@ -1300,7 +1380,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 774,
+            "line": 930,
             "description": "Executes a remote script will block.\nScript is *not* wrapped in a function.",
             "itemtype": "method",
             "name": "executeJsScript",
@@ -1337,7 +1417,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 807,
+            "line": 963,
             "description": "Executes a remote script will block. Script is wrapped in a function.\n\n    // its is very important to remember that the contents of this\n    // method are \"stringified\" (Function#toString) and sent over the\n    // wire to execute on the device. So things like scope will not be\n    // the same. If you need to pass other information in arguments\n    // option should be used.\n\n    // assume that this element is the result of findElement\n    var element;\n    var config = {\n       event: 'magicCustomEvent',\n       detail: { foo: true  }\n    };\n\n    var remoteArgs = [element, details];\n\n    // unlike other callbacks this one will execute _on device_\n    function remoteFn(element, details) {\n       // element in this context is a real dom element now.\n       var event = document.createEvent('CustomEvent');\n       event.initCustomEvent(config.event, true, true, event.detail);\n       element.dispatchEvent(event);\n\n       return { success: true };\n    }\n\n    client.executeJsScript(remoteFn, remoteArgs, function(err, value) {\n      // value => { success: true }\n    });",
             "itemtype": "method",
             "name": "executeScript",
@@ -1368,7 +1448,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 860,
+            "line": 1016,
             "description": "Script is wrapped in a function and will be executed asynchronously.\n\nNOTE: that setScriptTimeout _must_ be set prior to using this method\n      as the timeout defaults to zero.\n\n\n    function remote () {\n      window.addEventListener('someevent', function() {\n        // special method to notify that async script is complete.\n        marionetteScriptFinished({ fromRemote: true })\n      });\n    }\n\n    client.executeAsyncScript(remote, function(err, value) {\n      // value === { fromRemote: true }\n    });",
             "itemtype": "method",
             "name": "executeAsyncScript",
@@ -1399,7 +1479,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 899,
+            "line": 1055,
             "description": "Finds element.",
             "itemtype": "method",
             "name": "_findElement",
@@ -1436,7 +1516,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 956,
+            "line": 1112,
             "description": "Attempts to find a dom element (via css selector, xpath, etc...)\n\"elements\" returned are instances of\n{{#crossLink \"Marionette.Element\"}}{{/crossLink}}\n\n\n    // with default options\n    client.findElement('#css-selector', function(err, element) {\n       if (err) {\n         // handle case where element was not found\n       }\n\n       // see element interface for all methods, etc..\n       element.click(function() {\n\n       });\n    });",
             "itemtype": "method",
             "name": "findElement",
@@ -1467,7 +1547,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 989,
+            "line": 1145,
             "description": "Finds multiple elements in the dom. This method has the same\napi signature as {{#crossLink \"findElement\"}}{{/crossLink}} the\nonly difference is where findElement returns a single element\nthis method will return an array of elements in the callback.\n\n\n    // find all links in the document\n    client.findElements('a[href]', function(err, element) {\n    });",
             "itemtype": "method",
             "name": "findElements",
@@ -1498,7 +1578,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 1015,
+            "line": 1171,
             "description": "Converts an function into a string\nthat can be sent to marionette.",
             "access": "private",
             "tagname": "",
@@ -1519,7 +1599,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 1032,
+            "line": 1188,
             "description": "Processes result of command\nif an {'ELEMENT': 'uuid'} combination\nis returned a Marionette.Element\ninstance will be created and returned.",
             "access": "private",
             "tagname": "",
@@ -1540,7 +1620,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 1051,
+            "line": 1207,
             "description": "Prepares arguments for script commands.\nFormats Marionette.Element's sod\nmarionette can use them in script commands.",
             "access": "private",
             "tagname": "",
@@ -1561,7 +1641,7 @@
         },
         {
             "file": "lib/marionette/client.js",
-            "line": 1075,
+            "line": 1231,
             "description": "Executes a remote string of javascript.\nthe javascript string will be wrapped in a function\nby marionette.",
             "itemtype": "method",
             "name": "_executeScript",
@@ -2439,31 +2519,31 @@
         },
         {
             "message": "Missing item type\nThe current scope of this client instance. Used with _state.\n\n  // Example\n  {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n  }",
-            "line": " lib/marionette/client.js:157"
-        },
-        {
-            "message": "Missing item type\nThe current state of the client.\n\n   // Example\n   {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n   }",
             "line": " lib/marionette/client.js:173"
         },
         {
-            "message": "Missing item type",
-            "line": " lib/marionette/client.js:208"
+            "message": "Missing item type\nThe current state of the client.\n\n   // Example\n   {\n     scriptTimeout: 500,\n     searchTimeout: 6000,\n     context: 'content',\n     window: 'window_id',\n     frame: 'frameId'\n   }",
+            "line": " lib/marionette/client.js:189"
         },
         {
             "message": "Missing item type",
-            "line": " lib/marionette/client.js:215"
+            "line": " lib/marionette/client.js:224"
         },
         {
             "message": "Missing item type",
-            "line": " lib/marionette/client.js:222"
+            "line": " lib/marionette/client.js:231"
         },
         {
             "message": "Missing item type",
-            "line": " lib/marionette/client.js:229"
+            "line": " lib/marionette/client.js:238"
         },
         {
             "message": "Missing item type",
-            "line": " lib/marionette/client.js:236"
+            "line": " lib/marionette/client.js:245"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/marionette/client.js:252"
         },
         {
             "message": "Missing item type\nAdds a chunk (string or buffer) to the\ntotal buffer of this instance.",

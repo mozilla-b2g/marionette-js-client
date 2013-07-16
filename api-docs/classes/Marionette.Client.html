@@ -348,6 +348,13 @@ driver.connect(function(err) {
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_addHook">addHook</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_deleteSession">deleteSession</a>
 
                                 
@@ -453,7 +460,21 @@ driver.connect(function(err) {
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_plugin">plugin</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_refresh">refresh</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method protected">
+                                <a href="#method_runHook">runHook</a>
 
                                 
                                 
@@ -531,6 +552,13 @@ driver.connect(function(err) {
                     <h3>Properties</h3>
 
                     <ul class="index-list properties">
+                        
+                            <li class="index-item property private">
+                                <a href="#property__hooks">_hooks</a>
+
+                                
+                                
+                            </li>
                         
                             <li class="index-item property">
                                 <a href="#property_actor">actor</a>
@@ -622,7 +650,7 @@ driver.connect(function(err) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l1015"><code>lib&#x2F;marionette&#x2F;client.js:1015</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1171"><code>lib&#x2F;marionette&#x2F;client.js:1171</code></a>
         
         </p>
 
@@ -735,7 +763,7 @@ that can be sent to marionette.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l1075"><code>lib&#x2F;marionette&#x2F;client.js:1075</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1231"><code>lib&#x2F;marionette&#x2F;client.js:1231</code></a>
         
         </p>
 
@@ -934,7 +962,7 @@ by marionette.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l899"><code>lib&#x2F;marionette&#x2F;client.js:899</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1055"><code>lib&#x2F;marionette&#x2F;client.js:1055</code></a>
         
         </p>
 
@@ -1083,7 +1111,7 @@ by marionette.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l334"><code>lib&#x2F;marionette&#x2F;client.js:334</code></a>
+        <a href="../files/lib_marionette_client.js.html#l480"><code>lib&#x2F;marionette&#x2F;client.js:480</code></a>
         
         </p>
 
@@ -1172,7 +1200,7 @@ by marionette.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l354"><code>lib&#x2F;marionette&#x2F;client.js:354</code></a>
+        <a href="../files/lib_marionette_client.js.html#l500"><code>lib&#x2F;marionette&#x2F;client.js:500</code></a>
         
         </p>
 
@@ -1265,7 +1293,7 @@ by marionette.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l1051"><code>lib&#x2F;marionette&#x2F;client.js:1051</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1207"><code>lib&#x2F;marionette&#x2F;client.js:1207</code></a>
         
         </p>
 
@@ -1383,7 +1411,7 @@ marionette can use them in script commands.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l307"><code>lib&#x2F;marionette&#x2F;client.js:307</code></a>
+        <a href="../files/lib_marionette_client.js.html#l453"><code>lib&#x2F;marionette&#x2F;client.js:453</code></a>
         
         </p>
 
@@ -1507,7 +1535,7 @@ marionette can use them in script commands.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l1032"><code>lib&#x2F;marionette&#x2F;client.js:1032</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1188"><code>lib&#x2F;marionette&#x2F;client.js:1188</code></a>
         
         </p>
 
@@ -1568,6 +1596,123 @@ instance will be created and returned.</p>
 </div>
 
                 
+                    <div id="method_addHook" class="method item">
+    <h3 class="name"><code>addHook</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>type</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>handler</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_client.js.html#l363"><code>lib&#x2F;marionette&#x2F;client.js:363</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Adds a hook to the stack. Hooks run in serial order until all hooks
+complete. Execution of hooks halts on first error.</p>
+
+<p>client.addHook('sessionStart', function(done) {
+     // this is the client
+     this.executeScript(function() {}, done);
+   });</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">type</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>name of hook.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">handler</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>for hook must take a single argument
+ (see above).</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_deleteSession" class="method item">
     <h3 class="name"><code>deleteSession</code></h3>
 
@@ -1612,7 +1757,7 @@ instance will be created and returned.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l509"><code>lib&#x2F;marionette&#x2F;client.js:509</code></a>
+        <a href="../files/lib_marionette_client.js.html#l660"><code>lib&#x2F;marionette&#x2F;client.js:660</code></a>
         
         </p>
 
@@ -1717,7 +1862,7 @@ instance will be created and returned.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l860"><code>lib&#x2F;marionette&#x2F;client.js:860</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1016"><code>lib&#x2F;marionette&#x2F;client.js:1016</code></a>
         
         </p>
 
@@ -1888,7 +2033,7 @@ client.executeAsyncScript(remote, function(err, value) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l774"><code>lib&#x2F;marionette&#x2F;client.js:774</code></a>
+        <a href="../files/lib_marionette_client.js.html#l930"><code>lib&#x2F;marionette&#x2F;client.js:930</code></a>
         
         </p>
 
@@ -2055,7 +2200,7 @@ Script is <em>not</em> wrapped in a function.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l807"><code>lib&#x2F;marionette&#x2F;client.js:807</code></a>
+        <a href="../files/lib_marionette_client.js.html#l963"><code>lib&#x2F;marionette&#x2F;client.js:963</code></a>
         
         </p>
 
@@ -2237,7 +2382,7 @@ client.executeJsScript(remoteFn, remoteArgs, function(err, value) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l956"><code>lib&#x2F;marionette&#x2F;client.js:956</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1112"><code>lib&#x2F;marionette&#x2F;client.js:1112</code></a>
         
         </p>
 
@@ -2404,7 +2549,7 @@ client.findElement('#css-selector', function(err, element) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l989"><code>lib&#x2F;marionette&#x2F;client.js:989</code></a>
+        <a href="../files/lib_marionette_client.js.html#l1145"><code>lib&#x2F;marionette&#x2F;client.js:1145</code></a>
         
         </p>
 
@@ -2546,7 +2691,7 @@ client.findElements('a[href]', function(err, element) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l750"><code>lib&#x2F;marionette&#x2F;client.js:750</code></a>
+        <a href="../files/lib_marionette_client.js.html#l906"><code>lib&#x2F;marionette&#x2F;client.js:906</code></a>
         
         </p>
 
@@ -2647,7 +2792,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l672"><code>lib&#x2F;marionette&#x2F;client.js:672</code></a>
+        <a href="../files/lib_marionette_client.js.html#l828"><code>lib&#x2F;marionette&#x2F;client.js:828</code></a>
         
         </p>
 
@@ -2677,6 +2822,95 @@ The response from marionette is an array of arrays.</p>
 
                     <div class="param-description">
                         <p>receives url.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_getWindow" class="method item">
+    <h3 class="name"><code>getWindow</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>callback</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_client.js.html#l696"><code>lib&#x2F;marionette&#x2F;client.js:696</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Callback will receive an array of window ids.</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">callback</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>executes with an array of ids.</p>
                     </div>
 
                     
@@ -2740,7 +2974,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l527"><code>lib&#x2F;marionette&#x2F;client.js:527</code></a>
+        <a href="../files/lib_marionette_client.js.html#l683"><code>lib&#x2F;marionette&#x2F;client.js:683</code></a>
         
         </p>
 
@@ -2798,95 +3032,6 @@ The response from marionette is an array of arrays.</p>
 </div>
 
                 
-                    <div id="method_getWindow" class="method item">
-    <h3 class="name"><code>getWindow</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <span class="flag chainable">chainable</span>
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/lib_marionette_client.js.html#l540"><code>lib&#x2F;marionette&#x2F;client.js:540</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Callback will receive an array of window ids.</p>
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>executes with an array of ids.</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
                     <div id="method_goBack" class="method item">
     <h3 class="name"><code>goBack</code></h3>
 
@@ -2931,7 +3076,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l722"><code>lib&#x2F;marionette&#x2F;client.js:722</code></a>
+        <a href="../files/lib_marionette_client.js.html#l878"><code>lib&#x2F;marionette&#x2F;client.js:878</code></a>
         
         </p>
 
@@ -3020,7 +3165,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l709"><code>lib&#x2F;marionette&#x2F;client.js:709</code></a>
+        <a href="../files/lib_marionette_client.js.html#l865"><code>lib&#x2F;marionette&#x2F;client.js:865</code></a>
         
         </p>
 
@@ -3115,7 +3260,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l696"><code>lib&#x2F;marionette&#x2F;client.js:696</code></a>
+        <a href="../files/lib_marionette_client.js.html#l852"><code>lib&#x2F;marionette&#x2F;client.js:852</code></a>
         
         </p>
 
@@ -3225,7 +3370,7 @@ The response from marionette is an array of arrays.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l566"><code>lib&#x2F;marionette&#x2F;client.js:566</code></a>
+        <a href="../files/lib_marionette_client.js.html#l722"><code>lib&#x2F;marionette&#x2F;client.js:722</code></a>
         
         </p>
 
@@ -3348,7 +3493,7 @@ context for the duration of the session.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l734"><code>lib&#x2F;marionette&#x2F;client.js:734</code></a>
+        <a href="../files/lib_marionette_client.js.html#l890"><code>lib&#x2F;marionette&#x2F;client.js:890</code></a>
         
         </p>
 
@@ -3436,6 +3581,153 @@ context for the duration of the session.</p>
 </div>
 
                 
+                    <div id="method_plugin" class="method item">
+    <h3 class="name"><code>plugin</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>name</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>plugin</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[optional]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_client.js.html#l259"><code>lib&#x2F;marionette&#x2F;client.js:259</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Adds a plugin to the client instance.</p>
+
+<pre class="code prettyprint"><code>// add imaginary forms plugin
+client.plugin('forms', moduleForForms, { options: true });
+client.forms.fill();
+
+// tie into common plugin interface without exposing a new api.
+client.plugin(null, module, {});
+
+// chaining
+client
+  .plugin('forms', require('form-module'))
+  .plguin('apps', require('apps-module'))
+  .plugin('other', require('...'));
+
+client.forms.fill(...);
+client.apps.launch(...);
+</code></pre>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">name</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Null</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>to expose plugin on in the client.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">plugin</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>function/module.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[optional]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>options to pass to plugin.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_refresh" class="method item">
     <h3 class="name"><code>refresh</code></h3>
 
@@ -3482,7 +3774,7 @@ context for the duration of the session.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l684"><code>lib&#x2F;marionette&#x2F;client.js:684</code></a>
+        <a href="../files/lib_marionette_client.js.html#l840"><code>lib&#x2F;marionette&#x2F;client.js:840</code></a>
         
         </p>
 
@@ -3540,6 +3832,123 @@ context for the duration of the session.</p>
 </div>
 
                 
+                    <div id="method_runHook" class="method item protected">
+    <h3 class="name"><code>runHook</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>type</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>callback</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_client.js.html#l309"><code>lib&#x2F;marionette&#x2F;client.js:309</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Run all hooks of a given type. Hooks may be added as the result of
+running other hooks which could potentially result in an infinite loop
+without stack overflow...</p>
+
+<pre class="code prettyprint"><code>this.runHook('startSession', function(err) {
+  // do something with error if there is one.
+});
+</code></pre>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">type</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>of hook to run.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">callback</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>to run once hooks are done.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_scope" class="method item">
     <h3 class="name"><code>scope</code></h3>
 
@@ -3586,7 +3995,7 @@ context for the duration of the session.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l372"><code>lib&#x2F;marionette&#x2F;client.js:372</code></a>
+        <a href="../files/lib_marionette_client.js.html#l518"><code>lib&#x2F;marionette&#x2F;client.js:518</code></a>
         
         </p>
 
@@ -3710,7 +4119,7 @@ client.findElement('...');
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l243"><code>lib&#x2F;marionette&#x2F;client.js:243</code></a>
+        <a href="../files/lib_marionette_client.js.html#l389"><code>lib&#x2F;marionette&#x2F;client.js:389</code></a>
         
         </p>
 
@@ -3822,7 +4231,7 @@ to command if not present.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l613"><code>lib&#x2F;marionette&#x2F;client.js:613</code></a>
+        <a href="../files/lib_marionette_client.js.html#l769"><code>lib&#x2F;marionette&#x2F;client.js:769</code></a>
         
         </p>
 
@@ -3946,7 +4355,7 @@ to command if not present.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l642"><code>lib&#x2F;marionette&#x2F;client.js:642</code></a>
+        <a href="../files/lib_marionette_client.js.html#l798"><code>lib&#x2F;marionette&#x2F;client.js:798</code></a>
         
         </p>
 
@@ -4073,7 +4482,7 @@ to command if not present.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l657"><code>lib&#x2F;marionette&#x2F;client.js:657</code></a>
+        <a href="../files/lib_marionette_client.js.html#l813"><code>lib&#x2F;marionette&#x2F;client.js:813</code></a>
         
         </p>
 
@@ -4188,7 +4597,7 @@ to command if not present.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l492"><code>lib&#x2F;marionette&#x2F;client.js:492</code></a>
+        <a href="../files/lib_marionette_client.js.html#l638"><code>lib&#x2F;marionette&#x2F;client.js:638</code></a>
         
         </p>
 
@@ -4284,7 +4693,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l582"><code>lib&#x2F;marionette&#x2F;client.js:582</code></a>
+        <a href="../files/lib_marionette_client.js.html#l738"><code>lib&#x2F;marionette&#x2F;client.js:738</code></a>
         
         </p>
 
@@ -4394,7 +4803,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l552"><code>lib&#x2F;marionette&#x2F;client.js:552</code></a>
+        <a href="../files/lib_marionette_client.js.html#l708"><code>lib&#x2F;marionette&#x2F;client.js:708</code></a>
         
         </p>
 
@@ -4508,7 +4917,7 @@ This is a combination of calling getMarionetteId and then newSession.</p>
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l416"><code>lib&#x2F;marionette&#x2F;client.js:416</code></a>
+        <a href="../files/lib_marionette_client.js.html#l562"><code>lib&#x2F;marionette&#x2F;client.js:562</code></a>
         
         </p>
 
@@ -4640,6 +5049,56 @@ client.waitFor(function(done) {
                 <h2 class="off-left">Properties</h2>
 
                 
+                    <div id="property__hooks" class="property item private">
+    <h3 class="name"><code>_hooks</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_client.js.html#l160"><code>lib&#x2F;marionette&#x2F;client.js:160</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Object of hoooks.</p>
+
+<p>{
+     hookName: [hook1, hook2]
+   }</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="property_actor" class="property item">
     <h3 class="name"><code>actor</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
@@ -4663,7 +5122,7 @@ client.waitFor(function(done) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l190"><code>lib&#x2F;marionette&#x2F;client.js:190</code></a>
+        <a href="../files/lib_marionette_client.js.html#l206"><code>lib&#x2F;marionette&#x2F;client.js:206</code></a>
         
         </p>
 
@@ -4707,7 +5166,7 @@ client.waitFor(function(done) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l141"><code>lib&#x2F;marionette&#x2F;client.js:141</code></a>
+        <a href="../files/lib_marionette_client.js.html#l144"><code>lib&#x2F;marionette&#x2F;client.js:144</code></a>
         
         </p>
 
@@ -4751,7 +5210,7 @@ client.waitFor(function(done) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l149"><code>lib&#x2F;marionette&#x2F;client.js:149</code></a>
+        <a href="../files/lib_marionette_client.js.html#l152"><code>lib&#x2F;marionette&#x2F;client.js:152</code></a>
         
         </p>
 
@@ -4795,7 +5254,7 @@ client.waitFor(function(done) {
             
         
         
-        <a href="../files/lib_marionette_client.js.html#l198"><code>lib&#x2F;marionette&#x2F;client.js:198</code></a>
+        <a href="../files/lib_marionette_client.js.html#l214"><code>lib&#x2F;marionette&#x2F;client.js:214</code></a>
         
         </p>
 

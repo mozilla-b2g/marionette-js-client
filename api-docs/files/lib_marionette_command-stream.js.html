@@ -137,9 +137,9 @@
     Responder.apply(this);
 
     socket.on(&#x27;data&#x27;, this._handler.write.bind(this._handler));
-    socket.on(&#x27;error&#x27;, function() {
-      console.log(arguments);
-    });
+    socket.on(&#x27;error&#x27;, function(err) {
+      this.emit(&#x27;error&#x27;, err);
+    }.bind(this));
   }
 
   var proto = CommandStream.prototype = Object.create(

@@ -222,6 +222,9 @@
                              function() {};
     }
 
+    // create hooks
+    this._hooks = {};
+
     // create the initial state for this client
     this._state = {
       context: &#x27;content&#x27;,
@@ -255,6 +258,19 @@
      * @property CONTENT
      */
     CONTENT: &#x27;content&#x27;,
+
+    /**
+     * Object of hoooks.
+     *
+     *    {
+     *      hookName: [hook1, hook2]
+     *    }
+     *
+     * @type {Object}
+     * @property _hooks
+     * @private
+     */
+    _hooks: null,
 
     /**
      * The current scope of this client instance. Used with _state.
@@ -340,6 +356,136 @@
      */
     get searchTimeout() {
       return getState(this, &#x27;searchTimeout&#x27;);
+    },
+
+    /**
+     * Adds a plugin to the client instance.
+     *
+     *     // add imaginary forms plugin
+     *     client.plugin(&#x27;forms&#x27;, moduleForForms, { options: true });
+     *     client.forms.fill();
+     *
+     *     // tie into common plugin interface without exposing a new api.
+     *     client.plugin(null, module, {});
+     *
+     *     // chaining
+     *     client
+     *       .plugin(&#x27;forms&#x27;, require(&#x27;form-module&#x27;))
+     *       .plguin(&#x27;apps&#x27;, require(&#x27;apps-module&#x27;))
+     *       .plugin(&#x27;other&#x27;, require(&#x27;...&#x27;));
+     *
+     *     client.forms.fill(...);
+     *     client.apps.launch(...);
+     *
+     *
+     * @method plugin
+     * @param {String|Null} name to expose plugin on in the client.
+     * @param {Function|Object} plugin function/module.
+     * @param {Object} [optional] options to pass to plugin.
+     */
+    plugin: function(name, plugin, options) {
+      var invokedMethod;
+
+      // don&#x27;t allow overriding existing names
+      if (this[name])
+        throw new Error(name + &#x27; - is already reserved on client&#x27;);
+
+      // allow both plugin.setup and plugin to be the invoked method.
+      invokedMethod =
+        typeof plugin.setup === &#x27;function&#x27; ? plugin.setup : plugin;
+
+      if (typeof invokedMethod !== &#x27;function&#x27;)
+        throw new Error(&#x27;plugin must be a method or have a .setup method&#x27;);
+
+      var result = invokedMethod(this, options);
+
+      // assign the plugin to a property if there is a result of invoking the
+      // plugin.
+      if (name &amp;&amp; result)
+        this[name] = result;
+
+
+      return this;
+    },
+
+    /**
+     * Run all hooks of a given type. Hooks may be added as the result of
+     * running other hooks which could potentially result in an infinite loop
+     * without stack overflow...
+     *
+     *
+     *     this.runHook(&#x27;startSession&#x27;, function(err) {
+     *       // do something with error if there is one.
+     *     });
+     *
+     *
+     * @protected
+     * @method runHook
+     * @param {String} type of hook to run.
+     * @param {Function} callback to run once hooks are done.
+     */
+    runHook: function(type, callback) {
+      // call into execute hook to prevent stack overflow
+      function handleHookResponse(err) {
+        if (err) return callback(err);
+
+        // next hook
+        process.nextTick(executeHook);
+      }
+
+      var executeHook = function executeHook() {
+        // find the next hook
+        var hooks = this._hooks[type];
+
+        // no hooks of this type- continue
+        if (!hooks) {
+          // breaks sync driver without this invocation
+          if (this.isSync) {
+            return callback();
+          }
+          return process.nextTick(callback);
+        }
+
+        var hook = hooks.shift();
+
+        // last hook of this type fire callback sync so we can better test
+        // interactions after (more deterministic).
+        if (!hook)
+          return callback();
+
+        // pass handleHookResponse which the hook must call to continue the hook
+        // chain.
+        hook.call(this, handleHookResponse);
+      }.bind(this);
+
+      // start going through all hooks
+      executeHook();
+    },
+
+    /**
+     * Adds a hook to the stack. Hooks run in serial order until all hooks
+     * complete. Execution of hooks halts on first error.
+     *
+     *
+     *    client.addHook(&#x27;sessionStart&#x27;, function(done) {
+     *      // this is the client
+     *      this.executeScript(function() {}, done);
+     *    });
+     *
+     *
+     * @method addHook
+     * @chainable
+     * @param {String} type name of hook.
+     * @param {Function} handler for hook must take a single argument
+     *  (see above).
+     */
+    addHook: function(type, handler) {
+      if (!this._hooks[type])
+        this._hooks[type] = [];
+
+      this._hooks[type].push(handler);
+
+      return this;
     },
 
     /**
@@ -599,12 +745,17 @@
      * @param {Function} callback executed when session is started.
      */
     startSession: function startSession(callback) {
+      var self = this;
       callback = callback || this.defaultCallback;
 
-      var self = this;
+      function runHook(err) {
+        if (err) return callback(err);
+        self.runHook(&#x27;startSession&#x27;, callback);
+      }
+
       return this._getActorId(function() {
         //actor will not be set if we send the command then
-        self._newSession(callback);
+        self._newSession(runHook);
       });
     },
 
@@ -617,13 +768,18 @@
      * @param {Function} callback executed when session is destroyed.
      */
     deleteSession: function destroySession(callback) {
-      var cmd = { type: &#x27;deleteSession&#x27; },
-          self = this;
+      var cmd = { type: &#x27;deleteSession&#x27; };
 
-      return this._sendCommand(cmd, &#x27;ok&#x27;, function(err, value) {
-        self.driver.close();
-        self._handleCallback(callback, err, value);
-      });
+      var closeDriver = function closeDriver() {
+        this._sendCommand(cmd, &#x27;ok&#x27;, function(err, value) {
+          this.driver.close();
+          this._handleCallback(callback, err, value);
+        }.bind(this));
+      }.bind(this);
+
+      this.runHook(&#x27;deleteSession&#x27;, closeDriver);
+
+      return this;
     },
 
     /**
