@@ -81,7 +81,7 @@ test-xpc:
 	./node_modules/xpcwindow/bin/xpcwindow-mocha test/xpc-helper.js $(XPC_TEST_FILES)
 
 .PHONY: test-node
-test-node:
+test-node: test/b2g
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
 	  ./test/node/*-test.js \
 	  ./test/integration/*-test.js \
