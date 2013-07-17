@@ -82,7 +82,7 @@ test-xpc:
 
 .PHONY: test-node
 test-node: test/b2g
-	./node_modules/mocha/bin/mocha --reporter $(REPORTER) ./test/helper.js \
+	./node_modules/mocha/bin/mocha --reporter $(REPORTER) \
 	  ./test/node/*-test.js \
 	  ./test/integration/*-test.js \
 	  ./test/marionette/index-test.js \
