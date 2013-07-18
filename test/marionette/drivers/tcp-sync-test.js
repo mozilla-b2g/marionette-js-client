@@ -1,4 +1,4 @@
-describe('drivers/http-proxy', function() {
+describe('drivers/tcp-sync', function() {
   if (!cross.isNode)
     return test('only works on node');
 
