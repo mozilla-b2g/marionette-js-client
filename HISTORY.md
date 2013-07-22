@@ -1,3 +1,6 @@
+# 0.9.1
+  - allow setting max tries to connect in Drivers.Tcp
+
 # 0.9
   - new plugin interface.
 
