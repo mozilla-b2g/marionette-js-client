@@ -91,6 +91,8 @@ test-node:
 	  ./test/marionette/client-test.js \
 	  ./test/marionette/error-test.js \
 	  ./test/marionette/element-test.js \
+	  ./test/marionette/actions-test.js \
+	  ./test/marionette/multi-actions-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
 	  ./test/marionette/drivers/tcp-test.js \
 	  ./test/marionette/drivers/httpd-polling-test.js \
