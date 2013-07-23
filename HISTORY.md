@@ -1,3 +1,7 @@
+# 0.10
+  - removed http related drivers (Proxy & Polling)
+  - new sockit-to-me based sync driver Drivers.TcpSync [jugglinmike]
+
 # 0.9.1
   - allow setting max tries to connect in Drivers.Tcp
 
