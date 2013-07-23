@@ -43,13 +43,20 @@ function host() {
 
   beforeEach(function(done) {
     var Client = require('../lib/marionette/client');
-    var Driver = require('../lib/marionette/drivers/http-proxy');
+    var Driver = require('../lib/marionette/drivers/tcp-sync');
+    var timeout = 10000;
+    this.timeout(timeout);
 
     marionetteHost.spawn(B2G_PATH, function(err, port, child) {
       if (err) throw err;
       ctx.process = child;
 
-      var driver = new Driver({ marionettePort: port });
+      var driver = new Driver({
+        port: port,
+        // Specify a longer timeout in order to support running tests on
+        // under-powered machines
+        connectionTimeout: timeout
+      });
       driver.connect(function(err) {
         if (err) throw err;
         ctx.client = new Client(driver, { sync: true });

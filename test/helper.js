@@ -107,10 +107,6 @@
     context.DeviceInteraction = obj;
   });
 
-  cross.require('support/fake-xhr', function(obj) {
-    context.FakeXhr = obj;
-  });
-
   cross.require('support/socket', function(obj) {
     context.FakeSocket = obj;
   });

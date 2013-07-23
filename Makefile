@@ -25,14 +25,11 @@ package :
 	cat ./lib/marionette/marionette.js >> $(DEV_FILE)
 	cat ./lib/marionette/responder.js >> $(DEV_FILE)
 	cat ./lib/marionette/error.js >> $(DEV_FILE)
-	cat ./lib/marionette/xhr.js >> $(DEV_FILE)
 	cat ./lib/marionette/command-stream.js >> $(DEV_FILE)
 	cat ./lib/marionette/element.js >> $(DEV_FILE)
 	cat ./lib/marionette/client.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/abstract.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/moz-tcp.js >> $(DEV_FILE)
-	cat ./lib/marionette/drivers/httpd-polling.js >> $(DEV_FILE)
-	cat ./lib/marionette/drivers/http-proxy.js >> $(DEV_FILE)
 	cat ./lib/marionette/drivers/index.js >> $(DEV_FILE)
 	cat ./lib/marionette/index.js >> $(DEV_FILE)
 
@@ -87,11 +84,9 @@ test-node: test/b2g
 	  ./test/integration/*-test.js \
 	  ./test/marionette/index-test.js \
 	  ./test/marionette/command-stream-test.js \
-	  ./test/marionette/xhr-test.js \
 	  ./test/marionette/client-test.js \
 	  ./test/marionette/error-test.js \
 	  ./test/marionette/element-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
 	  ./test/marionette/drivers/tcp-test.js \
-	  ./test/marionette/drivers/httpd-polling-test.js \
-	  ./test/marionette/drivers/http-proxy-test.js -t 5s
+	  ./test/marionette/drivers/tcp-sync-test.js -t 5s

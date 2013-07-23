@@ -18,12 +18,10 @@ describe('marionette/index', function() {
   it('should have paths', function() {
     expect(Index.Element).to.be.an(Object);
     expect(Index.Client).to.be.an(Object);
-    expect(Index.Xhr).to.be.an(Object);
     expect(Index.Drivers).to.be.an(Object);
     expect(Index.CommandStream).to.be.an(Object);
 
     expect(Index.Drivers.Abstract).to.be.an(Object);
-    expect(Index.Drivers.HttpdPolling).to.be.an(Object);
 
 
     if (typeof(window) === 'undefined') {
