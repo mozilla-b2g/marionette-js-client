@@ -1,6 +1,6 @@
 {
   "name": "marionette-client",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "main": "lib/marionette/index",
   "description": "Marionette Javascript Client",
   "author": "James Lal",
@@ -9,7 +9,7 @@
     "debug": "~0.6",
     "json-wire-protocol": "~0.2.1",
     "socket-retry-connect": "~0.0.1",
-    "Sockit-to-me": "git+https://github.com/mozilla-b2g/sockit-to-me.git#6c2a77935780c97ab3acecf4f2819a1c30477132"
+    "sockit-to-me": "~0.1"
   },
 
   "scripts": {
