@@ -1,3 +1,6 @@
+# 0.11
+  - Awesome new Marionette.Actions and Marionette.MultiActions apis [evanxd]
+
 # 0.10
   - removed http related drivers (Proxy & Polling)
   - new sockit-to-me based sync driver Drivers.TcpSync [jugglinmike]
