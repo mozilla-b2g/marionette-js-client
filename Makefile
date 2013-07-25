@@ -87,6 +87,8 @@ test-node: test/b2g
 	  ./test/marionette/client-test.js \
 	  ./test/marionette/error-test.js \
 	  ./test/marionette/element-test.js \
+	  ./test/marionette/actions-test.js \
+	  ./test/marionette/multi-actions-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
 	  ./test/marionette/drivers/tcp-test.js \
 	  ./test/marionette/drivers/tcp-sync-test.js -t 5s
