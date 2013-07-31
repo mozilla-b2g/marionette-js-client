@@ -208,7 +208,7 @@ describe('marionette/client', function() {
         }, err, null);
 
         expect(calledWith[0]).to.be.a(
-          Exception.GenericError
+          Exception
         );
 
         expect(calledWith[0].message).to.contain('foo');
@@ -216,10 +216,10 @@ describe('marionette/client', function() {
 
       it('should use callback when provided', function(done) {
         subject._handleCallback(function(err, val) {
-          expect(err).to.be(1);
+          expect(err).to.be.a(Exception);
           expect(val).to.be(2);
           done();
-        }, 1, 2);
+        }, {}, 2);
       });
     }
 
@@ -234,7 +234,8 @@ describe('marionette/client', function() {
 
       it('should use default when no callback is provided', function() {
         subject._handleCallback(null, 1, 2);
-        expect(calledWith).to.eql([1, 2]);
+        expect(calledWith[0]).to.be.a(Exception);
+        expect(calledWith[1]).to.eql(2);
       });
 
       usesCallback();

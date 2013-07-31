@@ -561,8 +561,8 @@
 (function(global, exports) {
   var HAS_BUFFER = typeof Buffer !== 'undefined';
 
-  var SEPERATOR_CODE = 58; // UTF8 / ASCII value for :
-  var SEPERATOR = ':';
+  var SEPARATOR = ':';
+  var SEPARATOR_CODE = SEPARATOR.charCodeAt(0);
   var EventEmitter =
     global.EventEmitter2 ||
     require('eventemitter2').EventEmitter2;
@@ -588,802 +588,7 @@
     var length = buffer.length;
 
     do {
-      if (buffer[index] === SEPERATOR_CODE)
-        return index;
-
-    } while(
-      ++index && index + 1 < length
-    );
-
-    return -1;
-  }
-
-  /**
-   * Wrapper for creating either a buffer or ArrayBuffer.
-   */
-  function createByteContainer() {
-    if (HAS_BUFFER)
-      return new Buffer(0);
-
-    return new Uint8Array();
-  }
-
-  /**
-   * Join the contents of byte container a and b returning c.
-   */
-  function concatByteContainers(a, b) {
-    if (HAS_BUFFER)
-      return Buffer.concat([a, b]);
-
-    // make sure everything is unit8
-    if (a instanceof ArrayBuffer)
-      a = new Uint8Array(a);
-
-    if (b instanceof ArrayBuffer)
-      b = new Uint8Array(b);
-
-    // sizes of originals
-    var aLen = a.length;
-    var bLen = b.length;
-
-    var array = new Uint8Array(aLen + bLen);
-    array.set(a);
-    array.set(b, aLen);
-
-    // return new byte container
-    return array;
-  }
-
-  function sliceByteContainers(container, start, end) {
-    start = start || 0;
-    end = end || byteLength(container);
-
-    if (HAS_BUFFER)
-      return container.slice(start, end);
-
-    return container.subarray(start, end);
-  }
-
-  /**
-   * Like Buffer.byteLength but works on ArrayBuffers too.
-   */
-  function byteLength(input) {
-    if (typeof input === 'string') {
-      if (HAS_BUFFER) {
-        return Buffer.byteLength(input);
-      }
-      var encoder = new TextEncoder();
-      var out = encoder.encode(input);
-      return out.length;
-    }
-
-    return input.length;
-  }
-
-  function bytesToUtf8(container, start, end) {
-    if (!start)
-      start = 0;
-
-    if (!end)
-      end = byteLength(container);
-
-    if (HAS_BUFFER)
-      return container.toString('utf8', start, end);
-
-    var decoder = new TextDecoder();
-    var array = container.subarray(start, end);
-
-    return decoder.decode(array);
-  }
-
-  /**
-   * converts an object to a string representation suitable for storage on disk.
-   * Its very important to note that the length in the string refers to the utf8
-   * size of the json content in bytes (as utf8) not the JS string length.
-   *
-   * @param {Object} object to stringify.
-   * @return {String} serialized object.
-   */
-  function stringify(object) {
-    var json = JSON.stringify(object);
-    var len = byteLength(json);
-
-    return len + SEPERATOR + json;
-  }
-
-  /**
-   * attempts to parse a given buffer or string.
-   *
-   * @param {Uint8Array|Buffer} input in byteLength:{json..} format
-   * @return {Objec} JS object.
-   */
-  function parse(input) {
-    var stream = new Stream();
-    var result;
-
-    stream.once('data', function(data) {
-      result = data;
-    });
-
-    stream.write(input);
-
-    if (!result) {
-      throw new Error(
-        'no command available from parsing:' + input
-      );
-    }
-
-    return result;
-  }
-
-  function Stream() {
-    EventEmitter.call(this);
-
-    this._pendingLength = null;
-
-    // zero length buffer so we can concat later
-    // this is always a unit8 array or a buffer.
-    this._buffer = createByteContainer();
-  }
-
-  Stream.prototype = {
-    __proto__: EventEmitter.prototype,
-
-    _findLength: function() {
-      if (this._pendingLength === null) {
-        var idx = indexInBuffer(this._buffer, SEPERATOR);
-        if (idx === -1)
-          return;
-
-        // mark the length to read out of the rolling buffer.
-        this._pendingLength = parseInt(
-          bytesToUtf8(this._buffer, 0, idx),
-          10
-        );
-
-
-        this._buffer = sliceByteContainers(this._buffer, idx + 1);
-      }
-    },
-
-    _readBuffer: function() {
-      // if the buffer.length is < then we pendingLength need to buffer
-      // more data.
-      if (!this._pendingLength || this._buffer.length < this._pendingLength)
-        return false;
-
-      // extract remainder and parse json
-      var message = sliceByteContainers(this._buffer, 0, this._pendingLength);
-      this._buffer = sliceByteContainers(this._buffer, this._pendingLength);
-      this._pendingLength = null;
-
-      var result;
-      try {
-        message = bytesToUtf8(message);
-        result = JSON.parse(message);
-      } catch (e) {
-        this.emit('error', e);
-        return false;
-      }
-
-      this.emit('data', result);
-      return true;
-    },
-
-    write: function (buffer) {
-      // append new buffer to whatever we have.
-      this._buffer = concatByteContainers(this._buffer, buffer);
-
-      do {
-        // attempt to find length of next message.
-        this._findLength();
-      } while (
-        // keep repeating while there are messages
-        this._readBuffer()
-      );
-    }
-  };
-
-  exports.parse = parse;
-  exports.stringify = stringify;
-  exports.Stream = Stream;
-}).apply(
-  null,
-  typeof window === 'undefined' ?
-    [global, module.exports] :
-    [window, window.jsonWireProtocol = {}]
-)
-;!function(exports, undefined) {
-
-  var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
-    return Object.prototype.toString.call(obj) === "[object Array]";
-  };
-  var defaultMaxListeners = 10;
-
-  function init() {
-    this._events = {};
-    if (this._conf) {
-      configure.call(this, this._conf);
-    }
-  }
-
-  function configure(conf) {
-    if (conf) {
-      
-      this._conf = conf;
-      
-      conf.delimiter && (this.delimiter = conf.delimiter);
-      conf.maxListeners && (this._events.maxListeners = conf.maxListeners);
-      conf.wildcard && (this.wildcard = conf.wildcard);
-      conf.newListener && (this.newListener = conf.newListener);
-
-      if (this.wildcard) {
-        this.listenerTree = {};
-      }
-    }
-  }
-
-  function EventEmitter(conf) {
-    this._events = {};
-    this.newListener = false;
-    configure.call(this, conf);
-  }
-
-  //
-  // Attention, function return type now is array, always !
-  // It has zero elements if no any matches found and one or more
-  // elements (leafs) if there are matches
-  //
-  function searchListenerTree(handlers, type, tree, i) {
-    if (!tree) {
-      return [];
-    }
-    var listeners=[], leaf, len, branch, xTree, xxTree, isolatedBranch, endReached,
-        typeLength = type.length, currentType = type[i], nextType = type[i+1];
-    if (i === typeLength && tree._listeners) {
-      //
-      // If at the end of the event(s) list and the tree has listeners
-      // invoke those listeners.
-      //
-      if (typeof tree._listeners === 'function') {
-        handlers && handlers.push(tree._listeners);
-        return [tree];
-      } else {
-        for (leaf = 0, len = tree._listeners.length; leaf < len; leaf++) {
-          handlers && handlers.push(tree._listeners[leaf]);
-        }
-        return [tree];
-      }
-    }
-
-    if ((currentType === '*' || currentType === '**') || tree[currentType]) {
-      //
-      // If the event emitted is '*' at this part
-      // or there is a concrete match at this patch
-      //
-      if (currentType === '*') {
-        for (branch in tree) {
-          if (branch !== '_listeners' && tree.hasOwnProperty(branch)) {
-            listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i+1));
-          }
-        }
-        return listeners;
-      } else if(currentType === '**') {
-        endReached = (i+1 === typeLength || (i+2 === typeLength && nextType === '*'));
-        if(endReached && tree._listeners) {
-          // The next element has a _listeners, add it to the handlers.
-          listeners = listeners.concat(searchListenerTree(handlers, type, tree, typeLength));
-        }
-
-        for (branch in tree) {
-          if (branch !== '_listeners' && tree.hasOwnProperty(branch)) {
-            if(branch === '*' || branch === '**') {
-              if(tree[branch]._listeners && !endReached) {
-                listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], typeLength));
-              }
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i));
-            } else if(branch === nextType) {
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i+2));
-            } else {
-              // No match on this one, shift into the tree but not in the type array.
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i));
-            }
-          }
-        }
-        return listeners;
-      }
-
-      listeners = listeners.concat(searchListenerTree(handlers, type, tree[currentType], i+1));
-    }
-
-    xTree = tree['*'];
-    if (xTree) {
-      //
-      // If the listener tree will allow any match for this part,
-      // then recursively explore all branches of the tree
-      //
-      searchListenerTree(handlers, type, xTree, i+1);
-    }
-    
-    xxTree = tree['**'];
-    if(xxTree) {
-      if(i < typeLength) {
-        if(xxTree._listeners) {
-          // If we have a listener on a '**', it will catch all, so add its handler.
-          searchListenerTree(handlers, type, xxTree, typeLength);
-        }
-        
-        // Build arrays of matching next branches and others.
-        for(branch in xxTree) {
-          if(branch !== '_listeners' && xxTree.hasOwnProperty(branch)) {
-            if(branch === nextType) {
-              // We know the next element will match, so jump twice.
-              searchListenerTree(handlers, type, xxTree[branch], i+2);
-            } else if(branch === currentType) {
-              // Current node matches, move into the tree.
-              searchListenerTree(handlers, type, xxTree[branch], i+1);
-            } else {
-              isolatedBranch = {};
-              isolatedBranch[branch] = xxTree[branch];
-              searchListenerTree(handlers, type, { '**': isolatedBranch }, i+1);
-            }
-          }
-        }
-      } else if(xxTree._listeners) {
-        // We have reached the end and still on a '**'
-        searchListenerTree(handlers, type, xxTree, typeLength);
-      } else if(xxTree['*'] && xxTree['*']._listeners) {
-        searchListenerTree(handlers, type, xxTree['*'], typeLength);
-      }
-    }
-
-    return listeners;
-  }
-
-  function growListenerTree(type, listener) {
-
-    type = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-    
-    //
-    // Looks for two consecutive '**', if so, don't add the event at all.
-    //
-    for(var i = 0, len = type.length; i+1 < len; i++) {
-      if(type[i] === '**' && type[i+1] === '**') {
-        return;
-      }
-    }
-
-    var tree = this.listenerTree;
-    var name = type.shift();
-
-    while (name) {
-
-      if (!tree[name]) {
-        tree[name] = {};
-      }
-
-      tree = tree[name];
-
-      if (type.length === 0) {
-
-        if (!tree._listeners) {
-          tree._listeners = listener;
-        }
-        else if(typeof tree._listeners === 'function') {
-          tree._listeners = [tree._listeners, listener];
-        }
-        else if (isArray(tree._listeners)) {
-
-          tree._listeners.push(listener);
-
-          if (!tree._listeners.warned) {
-
-            var m = defaultMaxListeners;
-            
-            if (typeof this._events.maxListeners !== 'undefined') {
-              m = this._events.maxListeners;
-            }
-
-            if (m > 0 && tree._listeners.length > m) {
-
-              tree._listeners.warned = true;
-              console.error('(node) warning: possible EventEmitter memory ' +
-                            'leak detected. %d listeners added. ' +
-                            'Use emitter.setMaxListeners() to increase limit.',
-                            tree._listeners.length);
-              console.trace();
-            }
-          }
-        }
-        return true;
-      }
-      name = type.shift();
-    }
-    return true;
-  };
-
-  // By default EventEmitters will print a warning if more than
-  // 10 listeners are added to it. This is a useful default which
-  // helps finding memory leaks.
-  //
-  // Obviously not all Emitters should be limited to 10. This function allows
-  // that to be increased. Set to zero for unlimited.
-
-  EventEmitter.prototype.delimiter = '.';
-
-  EventEmitter.prototype.setMaxListeners = function(n) {
-    this._events || init.call(this);
-    this._events.maxListeners = n;
-    if (!this._conf) this._conf = {};
-    this._conf.maxListeners = n;
-  };
-
-  EventEmitter.prototype.event = '';
-
-  EventEmitter.prototype.once = function(event, fn) {
-    this.many(event, 1, fn);
-    return this;
-  };
-
-  EventEmitter.prototype.many = function(event, ttl, fn) {
-    var self = this;
-
-    if (typeof fn !== 'function') {
-      throw new Error('many only accepts instances of Function');
-    }
-
-    function listener() {
-      if (--ttl === 0) {
-        self.off(event, listener);
-      }
-      fn.apply(this, arguments);
-    };
-
-    listener._origin = fn;
-
-    this.on(event, listener);
-
-    return self;
-  };
-
-  EventEmitter.prototype.emit = function() {
-    
-    this._events || init.call(this);
-
-    var type = arguments[0];
-
-    if (type === 'newListener' && !this.newListener) {
-      if (!this._events.newListener) { return false; }
-    }
-
-    // Loop through the *_all* functions and invoke them.
-    if (this._all) {
-      var l = arguments.length;
-      var args = new Array(l - 1);
-      for (var i = 1; i < l; i++) args[i - 1] = arguments[i];
-      for (i = 0, l = this._all.length; i < l; i++) {
-        this.event = type;
-        this._all[i].apply(this, args);
-      }
-    }
-
-    // If there is no 'error' event listener then throw.
-    if (type === 'error') {
-      
-      if (!this._all && 
-        !this._events.error && 
-        !(this.wildcard && this.listenerTree.error)) {
-
-        if (arguments[1] instanceof Error) {
-          throw arguments[1]; // Unhandled 'error' event
-        } else {
-          throw new Error("Uncaught, unspecified 'error' event.");
-        }
-        return false;
-      }
-    }
-
-    var handler;
-
-    if(this.wildcard) {
-      handler = [];
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      searchListenerTree.call(this, handler, ns, this.listenerTree, 0);
-    }
-    else {
-      handler = this._events[type];
-    }
-
-    if (typeof handler === 'function') {
-      this.event = type;
-      if (arguments.length === 1) {
-        handler.call(this);
-      }
-      else if (arguments.length > 1)
-        switch (arguments.length) {
-          case 2:
-            handler.call(this, arguments[1]);
-            break;
-          case 3:
-            handler.call(this, arguments[1], arguments[2]);
-            break;
-          // slower
-          default:
-            var l = arguments.length;
-            var args = new Array(l - 1);
-            for (var i = 1; i < l; i++) args[i - 1] = arguments[i];
-            handler.apply(this, args);
-        }
-      return true;
-    }
-    else if (handler) {
-      var l = arguments.length;
-      var args = new Array(l - 1);
-      for (var i = 1; i < l; i++) args[i - 1] = arguments[i];
-
-      var listeners = handler.slice();
-      for (var i = 0, l = listeners.length; i < l; i++) {
-        this.event = type;
-        listeners[i].apply(this, args);
-      }
-      return (listeners.length > 0) || this._all;
-    }
-    else {
-      return this._all;
-    }
-
-  };
-
-  EventEmitter.prototype.on = function(type, listener) {
-    
-    if (typeof type === 'function') {
-      this.onAny(type);
-      return this;
-    }
-
-    if (typeof listener !== 'function') {
-      throw new Error('on only accepts instances of Function');
-    }
-    this._events || init.call(this);
-
-    // To avoid recursion in the case that type == "newListeners"! Before
-    // adding it to the listeners, first emit "newListeners".
-    this.emit('newListener', type, listener);
-
-    if(this.wildcard) {
-      growListenerTree.call(this, type, listener);
-      return this;
-    }
-
-    if (!this._events[type]) {
-      // Optimize the case of one listener. Don't need the extra array object.
-      this._events[type] = listener;
-    }
-    else if(typeof this._events[type] === 'function') {
-      // Adding the second element, need to change to array.
-      this._events[type] = [this._events[type], listener];
-    }
-    else if (isArray(this._events[type])) {
-      // If we've already got an array, just append.
-      this._events[type].push(listener);
-
-      // Check for listener leak
-      if (!this._events[type].warned) {
-
-        var m = defaultMaxListeners;
-        
-        if (typeof this._events.maxListeners !== 'undefined') {
-          m = this._events.maxListeners;
-        }
-
-        if (m > 0 && this._events[type].length > m) {
-
-          this._events[type].warned = true;
-          console.error('(node) warning: possible EventEmitter memory ' +
-                        'leak detected. %d listeners added. ' +
-                        'Use emitter.setMaxListeners() to increase limit.',
-                        this._events[type].length);
-          console.trace();
-        }
-      }
-    }
-    return this;
-  };
-
-  EventEmitter.prototype.onAny = function(fn) {
-
-    if(!this._all) {
-      this._all = [];
-    }
-
-    if (typeof fn !== 'function') {
-      throw new Error('onAny only accepts instances of Function');
-    }
-
-    // Add the function to the event listener collection.
-    this._all.push(fn);
-    return this;
-  };
-
-  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-  EventEmitter.prototype.off = function(type, listener) {
-    if (typeof listener !== 'function') {
-      throw new Error('removeListener only takes instances of Function');
-    }
-
-    var handlers,leafs=[];
-
-    if(this.wildcard) {
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
-    }
-    else {
-      // does not use listeners(), so no side effect of creating _events[type]
-      if (!this._events[type]) return this;
-      handlers = this._events[type];
-      leafs.push({_listeners:handlers});
-    }
-
-    for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
-      var leaf = leafs[iLeaf];
-      handlers = leaf._listeners;
-      if (isArray(handlers)) {
-
-        var position = -1;
-
-        for (var i = 0, length = handlers.length; i < length; i++) {
-          if (handlers[i] === listener ||
-            (handlers[i].listener && handlers[i].listener === listener) ||
-            (handlers[i]._origin && handlers[i]._origin === listener)) {
-            position = i;
-            break;
-          }
-        }
-
-        if (position < 0) {
-          return this;
-        }
-
-        if(this.wildcard) {
-          leaf._listeners.splice(position, 1)
-        }
-        else {
-          this._events[type].splice(position, 1);
-        }
-
-        if (handlers.length === 0) {
-          if(this.wildcard) {
-            delete leaf._listeners;
-          }
-          else {
-            delete this._events[type];
-          }
-        }
-      }
-      else if (handlers === listener ||
-        (handlers.listener && handlers.listener === listener) ||
-        (handlers._origin && handlers._origin === listener)) {
-        if(this.wildcard) {
-          delete leaf._listeners;
-        }
-        else {
-          delete this._events[type];
-        }
-      }
-    }
-
-    return this;
-  };
-
-  EventEmitter.prototype.offAny = function(fn) {
-    var i = 0, l = 0, fns;
-    if (fn && this._all && this._all.length > 0) {
-      fns = this._all;
-      for(i = 0, l = fns.length; i < l; i++) {
-        if(fn === fns[i]) {
-          fns.splice(i, 1);
-          return this;
-        }
-      }
-    } else {
-      this._all = [];
-    }
-    return this;
-  };
-
-  EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
-
-  EventEmitter.prototype.removeAllListeners = function(type) {
-    if (arguments.length === 0) {
-      !this._events || init.call(this);
-      return this;
-    }
-
-    if(this.wildcard) {
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      var leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
-
-      for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
-        var leaf = leafs[iLeaf];
-        leaf._listeners = null;
-      }
-    }
-    else {
-      if (!this._events[type]) return this;
-      this._events[type] = null;
-    }
-    return this;
-  };
-
-  EventEmitter.prototype.listeners = function(type) {
-    if(this.wildcard) {
-      var handlers = [];
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      searchListenerTree.call(this, handlers, ns, this.listenerTree, 0);
-      return handlers;
-    }
-
-    this._events || init.call(this);
-
-    if (!this._events[type]) this._events[type] = [];
-    if (!isArray(this._events[type])) {
-      this._events[type] = [this._events[type]];
-    }
-    return this._events[type];
-  };
-
-  EventEmitter.prototype.listenersAny = function() {
-
-    if(this._all) {
-      return this._all;
-    }
-    else {
-      return [];
-    }
-
-  };
-
-  if (typeof define === 'function' && define.amd) {
-    define(function() {
-      return EventEmitter;
-    });
-  } else {
-    exports.EventEmitter2 = EventEmitter; 
-  }
-
-}(typeof process !== 'undefined' && typeof process.title !== 'undefined' && typeof exports !== 'undefined' ? exports : window);
-(function(global, exports) {
-  var HAS_BUFFER = typeof Buffer !== 'undefined';
-
-  var SEPERATOR_CODE = 58; // UTF8 / ASCII value for :
-  var SEPERATOR = ':';
-  var EventEmitter =
-    global.EventEmitter2 ||
-    require('eventemitter2').EventEmitter2;
-
-  /**
-   * First ocurrence of where string occurs in a buffer.
-   *
-   * NOTE: this is not UTF8 safe generally we expect to find the correct
-   * char fairly quickly unless the buffer is incorrectly formatted.
-   *
-   * @param {Buffer} buffer haystack.
-   * @param {String} string needle.
-   * @return {Numeric} -1 if not found index otherwise.
-   */
-  function indexInBuffer(buffer, string) {
-    if (typeof buffer === 'string')
-      return buffer.indexOf(string);
-
-    if (buffer.length === 0)
-      return -1;
-
-    var index = 0;
-    var length = buffer.length;
-
-    do {
-      if (buffer[index] === SEPERATOR_CODE)
+      if (buffer[index] === SEPARATOR_CODE)
         return index;
 
     } while (
@@ -1483,7 +688,7 @@
     var json = JSON.stringify(object);
     var len = byteLength(json);
 
-    return len + SEPERATOR + json;
+    return len + SEPARATOR + json;
   }
 
   /**
@@ -1526,7 +731,7 @@
 
     _findLength: function() {
       if (this._pendingLength === null) {
-        var idx = indexInBuffer(this._buffer, SEPERATOR);
+        var idx = indexInBuffer(this._buffer, SEPARATOR);
         if (idx === -1)
           return;
 
@@ -1582,6 +787,7 @@
   exports.parse = parse;
   exports.stringify = stringify;
   exports.Stream = Stream;
+  exports.separator = SEPARATOR;
 }).apply(
   null,
   typeof window === 'undefined' ?
@@ -1902,9 +1108,8 @@
 
 (function(module, ns) {
 
-  var code, errorCodes, Err = {};
-
-  Err.codes = errorCodes = {
+  var DEFAULT_CODE = 500;
+  var CODES = Object.freeze({
    7: 'NoSuchElement',
    8: 'NoSuchFrame',
    9: 'UnknownCommand',
@@ -1927,49 +1132,7 @@
    31: 'IMEEngineActivationFailed',
    32: 'InvalidSelector',
    500: 'GenericError'
-  };
-
-  Err.Exception = Error;
-  //used over Object.create intentionally
-  Err.Exception.prototype = new Error();
-
-  for (code in errorCodes) {
-    (function(code) {
-      Err[errorCodes[code]] = function(obj) {
-        var message = '',
-            err = new Error();
-
-        if (obj.status) {
-          message += '(' + obj.status + ') ';
-        }
-
-        message += (obj.message || '');
-        message += '\nRemote Stack:\n';
-        message += obj.stacktrace || '<none>';
-
-        this.message = message;
-        this.type = errorCodes[code];
-        this.name = this.type;
-        this.fileName = err.fileName;
-        this.lineNumber = err.lineNumber;
-
-        if (err.stack) {
-          // remove one stack level:
-          if (typeof(Components) != 'undefined') {
-            // Mozilla:
-            this.stack = err.stack.substring(err.stack.indexOf('\n') + 1);
-          } else if ((typeof(chrome) != 'undefined') ||
-                     (typeof(process) != 'undefined')) {
-            // Google Chrome/Node.js:
-            this.stack = err.stack.replace(/\n[^\n]*/, '');
-          } else {
-            this.stack = err.stack;
-          }
-        }
-      }
-      Err[errorCodes[code]].prototype = new Err.Exception();
-    }(code));
-  }
+  });
 
   /**
    * Returns an error object given
@@ -1985,148 +1148,51 @@
    *      status: 17
    *    }
    *
-   * @param {Object} obj remote error object.
+   * @param {Object} options for error (see above).
    */
-  Err.error = function exception(obj) {
-    if (obj instanceof Err.Exception) {
-      return obj;
+  function MarionetteError(options) {
+    // default to unknown error
+    var code = options.status || DEFAULT_CODE;
+
+    if (!(code in CODES))
+      code = DEFAULT_CODE;
+
+    this.type = this.name = CODES[code];
+    this.message = '';
+
+    if (code) {
+      this.message += '(' + code + ') ';
     }
 
-    if (obj.status in errorCodes) {
-      return new Err[errorCodes[obj.status]](obj);
+    this.message += (options.message || '');
+    this.message += '\nRemote Stack:\n';
+    this.message += options.stacktrace || '<none>';
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this);
     } else {
-      if (obj.message || obj.stacktrace) {
-        return new Err.GenericError(obj);
+      // elsewhere we do horrible try/catch
+      try {
+        throw new Error();
+      } catch (e) {
+        this.stack = e.stack;
       }
-      return obj;
     }
   }
 
-  module.exports = Err;
+  MarionetteError.prototype = Object.create(Error.prototype, {
+    constructor: {
+      value: Error
+    }
+  });
+
+  MarionetteError.CODES = CODES;
+  module.exports = MarionetteError;
 
 }.apply(
   this,
   (this.Marionette) ?
     [Marionette('error'), Marionette] :
-    [module, require('./marionette')]
-));
-/**
-@namespace
-*/
-(function(module, ns) {
-  var Native;
-
-  if (typeof(window) === 'undefined') {
-    Native = require('../XMLHttpRequest').XMLHttpRequest;
-  } else {
-    Native = window.XMLHttpRequest;
-  }
-
-  /**
-   * Creates a XHR wrapper.
-   * Depending on the platform this is loaded
-   * from the correct wrapper type will be used.
-   *
-   * Options are derived from properties on the prototype.
-   * See each property for its default value.
-   *
-   * @class
-   * @name Marionette.Xhr
-   * @param {Object} options options for xhr.
-   * @param {String} [options.method="GET"] any HTTP verb like 'GET' or 'POST'.
-   * @param {Boolean} [options.async] false will indicate
-   *                   a synchronous request.
-   * @param {Object} [options.headers] full of http headers.
-   * @param {Object} [options.data] post data.
-   */
-  function Xhr(options) {
-    var key;
-    if (typeof(options) === 'undefined') {
-      options = {};
-    }
-
-    for (key in options) {
-      if (options.hasOwnProperty(key)) {
-        this[key] = options[key];
-      }
-    }
-  }
-
-  Xhr.prototype = {
-    /** @scope Marionette.Xhr.prototype */
-
-    xhrClass: Native,
-    method: 'GET',
-    async: true,
-    waiting: false,
-
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: {},
-
-    _seralize: function _seralize() {
-      if (this.headers['Content-Type'] === 'application/json') {
-        return JSON.stringify(this.data);
-      }
-      return this.data;
-    },
-
-    /**
-     * Aborts request if its in progress.
-     */
-    abort: function abort() {
-      if (this.xhr) {
-        this.xhr.abort();
-      }
-    },
-
-    /**
-     * Sends request to server.
-     *
-     * @param {Function} callback success/failure handler.
-     */
-    send: function send(callback) {
-      var header, xhr;
-
-      if (typeof(callback) === 'undefined') {
-        callback = this.callback;
-      }
-
-      xhr = this.xhr = new this.xhrClass();
-      xhr.open(this.method, this.url, this.async);
-
-      for (header in this.headers) {
-        if (this.headers.hasOwnProperty(header)) {
-          xhr.setRequestHeader(header, this.headers[header]);
-        }
-      }
-
-      xhr.onreadystatechange = function onReadyStateChange() {
-        var data, type;
-        if (xhr.readyState === 4) {
-          data = xhr.responseText;
-          type = xhr.getResponseHeader('content-type');
-          type = type || xhr.getResponseHeader('Content-Type');
-          if (type === 'application/json') {
-            data = JSON.parse(data);
-          }
-          this.waiting = false;
-          callback(data, xhr);
-        }
-      }.bind(this);
-
-      this.waiting = true;
-      return xhr.send(this._seralize());
-    }
-  };
-
-  module.exports = Xhr;
-
-}.apply(
-  this,
-  (this.Marionette) ?
-    [Marionette('xhr'), Marionette] :
     [module, require('./marionette')]
 ));
 (function(module, ns) {
@@ -2166,9 +1232,9 @@
     Responder.apply(this);
 
     socket.on('data', this._handler.write.bind(this._handler));
-    socket.on('error', function() {
-      console.log(arguments);
-    });
+    socket.on('error', function(err) {
+      this.emit('error', err);
+    }.bind(this));
   }
 
   var proto = CommandStream.prototype = Object.create(
@@ -2495,11 +1561,14 @@
       Exception = ns.require('error');
 
 
-  var SCOPE_TO_METHOD = {
+  var DEFAULT_WAIT_FOR_INTERVAL = 100;
+  var DEFAULT_WAIT_FOR_TIMEOUT = 10000;
+
+  var SCOPE_TO_METHOD = Object.freeze({
     scriptTimeout: 'setScriptTimeout',
     searchTimeout: 'setSearchTimeout',
     context: 'setContext'
-  };
+  });
 
   var key;
   var searchMethods = {
@@ -2517,11 +1586,28 @@
     return typeof(value) === 'function';
   }
 
+
+  /**
+   * Helper to set scope and state on a given client.
+   *
+   * @private
+   * @param {Marionette.Client} context of a client.
+   * @param {String} type property of client.
+   * @param {Object|String|Number|Null} value of type.
+   */
   function setState(context, type, value) {
     context._scope[type] = value;
     context._state[type] = value;
   }
 
+  /**
+   * Helper to get state of given client.
+   *
+   * @private
+   * @param {Marionette.Client} context of a client.
+   * @param {String} type property of client.
+   * @return {Object|String|Number|Null} value of type.
+   */
   function getState(context, type) {
     return context._state[type];
   }
@@ -2591,6 +1677,9 @@
                              function() {};
     }
 
+    // create hooks
+    this._hooks = {};
+
     // create the initial state for this client
     this._state = {
       context: 'content',
@@ -2624,6 +1713,19 @@
      * @property CONTENT
      */
     CONTENT: 'content',
+
+    /**
+     * Object of hoooks.
+     *
+     *    {
+     *      hookName: [hook1, hook2]
+     *    }
+     *
+     * @type {Object}
+     * @property _hooks
+     * @private
+     */
+    _hooks: null,
 
     /**
      * The current scope of this client instance. Used with _state.
@@ -2712,6 +1814,136 @@
     },
 
     /**
+     * Adds a plugin to the client instance.
+     *
+     *     // add imaginary forms plugin
+     *     client.plugin('forms', moduleForForms, { options: true });
+     *     client.forms.fill();
+     *
+     *     // tie into common plugin interface without exposing a new api.
+     *     client.plugin(null, module, {});
+     *
+     *     // chaining
+     *     client
+     *       .plugin('forms', require('form-module'))
+     *       .plguin('apps', require('apps-module'))
+     *       .plugin('other', require('...'));
+     *
+     *     client.forms.fill(...);
+     *     client.apps.launch(...);
+     *
+     *
+     * @method plugin
+     * @param {String|Null} name to expose plugin on in the client.
+     * @param {Function|Object} plugin function/module.
+     * @param {Object} [optional] options to pass to plugin.
+     */
+    plugin: function(name, plugin, options) {
+      var invokedMethod;
+
+      // don't allow overriding existing names
+      if (this[name])
+        throw new Error(name + ' - is already reserved on client');
+
+      // allow both plugin.setup and plugin to be the invoked method.
+      invokedMethod =
+        typeof plugin.setup === 'function' ? plugin.setup : plugin;
+
+      if (typeof invokedMethod !== 'function')
+        throw new Error('plugin must be a method or have a .setup method');
+
+      var result = invokedMethod(this, options);
+
+      // assign the plugin to a property if there is a result of invoking the
+      // plugin.
+      if (name && result)
+        this[name] = result;
+
+
+      return this;
+    },
+
+    /**
+     * Run all hooks of a given type. Hooks may be added as the result of
+     * running other hooks which could potentially result in an infinite loop
+     * without stack overflow...
+     *
+     *
+     *     this.runHook('startSession', function(err) {
+     *       // do something with error if there is one.
+     *     });
+     *
+     *
+     * @protected
+     * @method runHook
+     * @param {String} type of hook to run.
+     * @param {Function} callback to run once hooks are done.
+     */
+    runHook: function(type, callback) {
+      // call into execute hook to prevent stack overflow
+      function handleHookResponse(err) {
+        if (err) return callback(err);
+
+        // next hook
+        process.nextTick(executeHook);
+      }
+
+      var executeHook = function executeHook() {
+        // find the next hook
+        var hooks = this._hooks[type];
+
+        // no hooks of this type- continue
+        if (!hooks) {
+          // breaks sync driver without this invocation
+          if (this.isSync) {
+            return callback();
+          }
+          return process.nextTick(callback);
+        }
+
+        var hook = hooks.shift();
+
+        // last hook of this type fire callback sync so we can better test
+        // interactions after (more deterministic).
+        if (!hook)
+          return callback();
+
+        // pass handleHookResponse which the hook must call to continue the hook
+        // chain.
+        hook.call(this, handleHookResponse);
+      }.bind(this);
+
+      // start going through all hooks
+      executeHook();
+    },
+
+    /**
+     * Adds a hook to the stack. Hooks run in serial order until all hooks
+     * complete. Execution of hooks halts on first error.
+     *
+     *
+     *    client.addHook('sessionStart', function(done) {
+     *      // this is the client
+     *      this.executeScript(function() {}, done);
+     *    });
+     *
+     *
+     * @method addHook
+     * @chainable
+     * @param {String} type name of hook.
+     * @param {Function} handler for hook must take a single argument
+     *  (see above).
+     */
+    addHook: function(type, handler) {
+      if (!this._hooks[type])
+        this._hooks[type] = [];
+
+      this._hooks[type].push(handler);
+
+      return this;
+    },
+
+    /**
      * Sends a command to the server.
      * Adds additional information like actor and session
      * to command if not present.
@@ -2725,7 +1957,8 @@
     send: function send(cmd, cb) {
       // first do scoping updates
       if (this._scope && this._bypassScopeChecks !== true) {
-        // really dirty hack
+        // calling the methods may cause an infinite loop so make sure
+        // we don't hit this code path again inside of the loop.
         this._bypassScopeChecks = true;
         for (var key in this._scope) {
           // !important otherwise throws infinite loop
@@ -2768,7 +2001,7 @@
 
       // handle error conversion
       if (args[0]) {
-        args[0] = Exception.error(args[0]);
+        args[0] = new Exception(args[0]);
       }
 
       return callback.apply(this, args);
@@ -2843,17 +2076,22 @@
      * Creates a client which has a fixed window, frame, scriptTimeout and
      * searchTimeout.
      *
-     *    var child = client.scope({ frame: myiframe });
-     *    var chrome = client.scope({ context: 'chrome' });
+     *     client.setSearchTimeout(1000).setContext('content');
      *
-     *    // executed in the given iframe in content
-     *    child.setContext('content');
-     *    child.findElement('...')
+     *     var timeout = client.scope({ searchTimeout: 250 });
+     *     var chrome = client.scope({ context: 'chrome' });
      *
-     *    // executed in the root frame in chrome context.
-     *    chrome.executeScript();
+     *     // executed with 250 timeout
+     *     timeout.findElement('...');
+     *
+     *     // executes in chrome context.
+     *     chrome.executeScript();
+     *
+     *     // executed in content with search timeout of 1000
+     *     client.findElement('...');
      *
      *
+     * @method scope
      * @param {Object} options for scopped client.
      * @return {Marionette.Client} scoped client instance.
      */
@@ -2879,6 +2117,82 @@
     },
 
     /**
+     * Utility for waiting for a success condition to be met.
+     *
+     *     // sync style
+     *     client.waitFor(function() {
+     *       return element.displayed();
+     *     });
+     *
+     *     // async style
+     *     client.waitFor(function(done) {
+     *       element.displayed(done);
+     *     });
+     *
+     *
+     *    Options:
+     *      * (Number) interval: time between running test
+     *      * (Number) timeout: maximum wallclock time before failing test.
+     *
+     * @method waitFor
+     * @param {Function} test to execute.
+     * @param {Object} [options] for timeout see above.
+     * @param {Number} [options.interval] time between running test.
+     * @param {Number} [options.timeout]
+     *  maximum wallclock time before failing test.
+     * @param {Function} [callback] optional callback.
+     */
+    waitFor: function(test, options, callback) {
+      if (typeof(options) === 'function') {
+        callback = options;
+        options = null;
+      }
+
+      // setup options
+      options = options || {};
+
+      // must handle default callback case for sync code
+      callback = callback || this.defaultCallback;
+
+      // wallclock timer
+      var timeout = Date.now() + (options.timeout || DEFAULT_WAIT_FOR_TIMEOUT);
+
+      // interval between test being fired.
+      var interval = options.interval || DEFAULT_WAIT_FOR_INTERVAL;
+
+      // remember this runs on the host
+      function sleep(interval) {
+        setTimeout(marionetteScriptFinished, interval);
+      }
+
+      var runtest = function runtest() {
+        if (Date.now() >= timeout) {
+          return callback(new Error('waitFor timed out'));
+        }
+
+        // mocha style "done" argument
+        test(function(err, result) {
+          if (err || result)
+            return callback(err, result);
+
+          // test has failed retry
+          this.executeAsyncScript(sleep, [interval], runtest);
+        }.bind(this));
+      }.bind(this);
+
+      // length indicates arity we use mocha style "done" so if an argument
+      // is not passed this test is sync and we fire done with the result
+      // of the given "test" function rather then passing a "done" argument.
+      if (!test.length) {
+        var originalTest = test;
+        test = function(done) {
+          done(null, originalTest());
+        };
+      }
+      runtest();
+    },
+
+    /**
      * Finds actor and creates connection to marionette.
      * This is a combination of calling getMarionetteId and then newSession.
      *
@@ -2886,12 +2200,17 @@
      * @param {Function} callback executed when session is started.
      */
     startSession: function startSession(callback) {
+      var self = this;
       callback = callback || this.defaultCallback;
 
-      var self = this;
+      function runHook(err) {
+        if (err) return callback(err);
+        self.runHook('startSession', callback);
+      }
+
       return this._getActorId(function() {
         //actor will not be set if we send the command then
-        self._newSession(callback);
+        self._newSession(runHook);
       });
     },
 
@@ -2904,13 +2223,18 @@
      * @param {Function} callback executed when session is destroyed.
      */
     deleteSession: function destroySession(callback) {
-      var cmd = { type: 'deleteSession' },
-          self = this;
+      var cmd = { type: 'deleteSession' };
 
-      return this._sendCommand(cmd, 'ok', function(err, value) {
-        self.driver.close();
-        self._handleCallback(callback, err, value);
-      });
+      var closeDriver = function closeDriver() {
+        this._sendCommand(cmd, 'ok', function(err, value) {
+          this.driver.close();
+          this._handleCallback(callback, err, value);
+        }.bind(this));
+      }.bind(this);
+
+      this.runHook('deleteSession', closeDriver);
+
+      return this;
     },
 
     /**
@@ -3837,334 +3161,15 @@
     [Marionette('drivers/moz-tcp'), Marionette] :
     [module, require('../../lib/marionette/marionette')]
 ));
-/** @namespace */
-(function(module, ns) {
-
-  var Abstract = ns.require('drivers/abstract'),
-      Xhr = ns.require('xhr');
-
-  Httpd.Xhr = Xhr;
-
-  /**
-   * Creates instance of http proxy backend.
-   *
-   * @deprecated
-   * @class Marionette.Drivers.Httpd
-   * @extends Marionette.Drivers.Abstract
-   * @param {Object} options key/value pairs to add to prototype.
-   */
-  function Httpd(options) {
-    var key;
-    if (typeof(options) === 'undefined') {
-      options = options;
-    }
-
-    Abstract.call(this);
-
-    for (key in options) {
-      if (options.hasOwnProperty(key)) {
-        this[key] = options[key];
-      }
-    }
-  }
-
-  var proto = Httpd.prototype = Object.create(Abstract.prototype);
-
-  /** @scope Marionette.Drivers.Httpd.prototype */
-
-  /**
-   * Location of the http server that will proxy to marionette
-   * @memberOf Marionette.Drivers.Httpd#
-   * @name proxyUrl
-   * @type String
-   */
-  proto.proxyUrl = '/marionette';
-
-  /**
-   * Port that proxy should connect to.
-   *
-   * @name port
-   * @memberOf Marionette.Drivers.Httpd#
-   * @type Numeric
-   */
-  proto.port = 2828;
-
-  /**
-   * Server proxy should connect to.
-   *
-   *
-   * @name server
-   * @memberOf Marionette.Drivers.Httpd#
-   * @type String
-   */
-  proto.server = 'localhost';
-
-  /**
-   * Sends command to server for this connection
-   *
-   * @name _sendCommand
-   * @memberOf Marionette.Drivers.Httpd#
-   * @param {Object} command remote marionette command.
-   */
-  proto._sendCommand = function _sendCommand(command) {
-    this._request('PUT', command, function() {
-      //error handling?
-    });
-  };
-
-
-  /**
-   * Sends DELETE message to server to close marionette connection.
-   * Aborts all polling operations.
-   *
-   * @name _close
-   * @memberOf Marionette.Drivers.Httpd#
-   */
-  proto._close = function _close() {
-
-    if (this._pollingRequest) {
-      this._pollingRequest.abort();
-      this._pollingRequest = null;
-    }
-
-    this._request('DELETE', null, function() {
-      //handle close errors?
-    });
-  };
-
-  /**
-   * Opens connection for device.
-   *
-   * @name _connect
-   * @memberOf Marionette.Drivers.Httpd#
-   */
-  proto._connect = function _connect() {
-    var auth = {
-      server: this.server,
-      port: this.port
-    };
-
-    this._request('POST', auth, function(data, xhr) {
-      var deviceResponse = this._onQueueResponse.bind(this);
-      if (xhr.status === 200) {
-        this.connectionId = data.id;
-        this._pollingRequest = this._request('GET', deviceResponse);
-      } else {
-        //throw error
-      }
-    }.bind(this));
-  };
-
-  /**
-   * Creates xhr request
-   *
-   * @memberOf Marionette.Drivers.Httpd#
-   * @name _request
-   * @param {String} method http method like 'POST' or 'GET'.
-   * @param {Object} data optional.
-   * @param {Object} callback after xhr completes \
-   * receives parsed data as first argument and xhr object as second.
-   * @return {Marionette.Xhr} xhr wrapper.
-   */
-  proto._request = function _request(method, data, callback) {
-    var request, url;
-
-    if (typeof(callback) === 'undefined' && typeof(data) === 'function') {
-      callback = data;
-      data = null;
-    }
-
-    url = this.proxyUrl;
-
-    if (this.connectionId !== null) {
-      url += '?' + String(this.connectionId) + '=' + String(Date.now());
-    }
-
-    request = new Xhr({
-      url: url,
-      method: method,
-      data: data || null,
-      callback: callback
-    });
-
-    request.send();
-
-    return request;
-  };
-
-  /**
-   * Handles response to multiple messages.
-   * Requeues the _pollingRequest on success
-   *
-   *    {
-   *      messages: [
-   *        { id: 1, response: {} },
-   *        ....
-   *      ]
-   *    }
-   *
-   * @this
-   * @name _onQueueResponse
-   * @memberOf Marionette.Drivers.Httpd#
-   * @param {Object} queue list of messages.
-   * @param {Marionette.Xhr} xhr xhr instance.
-   */
-  proto._onQueueResponse = function _onQueueResponse(queue, xhr) {
-    var self = this;
-
-    if (xhr.status !== 200) {
-      throw new Error('XHR responded with code other then 200');
-    }
-
-    //TODO: handle errors
-    if (queue && queue.messages) {
-      queue.messages.forEach(function(response) {
-        self._onDeviceResponse(response);
-      });
-    }
-
-    //when we close the object _pollingRequest is destroyed.
-    if (this._pollingRequest) {
-      this._pollingRequest.send();
-    }
-  };
-
-
-  module.exports = Httpd;
-
-}.apply(
-  this,
-  (this.Marionette) ?
-    [Marionette('drivers/httpd-polling'), Marionette] :
-    [module, require('../marionette')]
-));
-(function(module, ns) {
-
-  var DEFAULT_PORT = 60023;
-  var DEFAULT_MARIONETTE_PORT = 2828;
-  var DEFAULT_HOST = 'localhost';
-
-  var fork, proxyRunnerPath,
-      isNode = typeof(window) === 'undefined',
-      XHR = ns.require('xhr');
-
-  if (isNode) {
-    proxyRunnerPath = __dirname + '/../../http-proxy-runner';
-    fork = require('child_process').fork;
-  } else {
-    fork = function() {
-      throw new Error('Cannot fork Http Proxy from Browser');
-    };
-  }
-
-  function request(url, options) {
-    options.url = url;
-    options.async = false;
-    options.headers = { 'Content-Type': 'application/json' };
-
-    var xhr = new XHR(options);
-    var response;
-    xhr.send(function(json) {
-      if (typeof(json) === 'string') {
-        // for node
-        json = JSON.parse(json);
-      }
-      response = json;
-    });
-    return response;
-  }
-
-  function HttpProxy(options) {
-    if (options && options.hostname) {
-      this.hostname = options.hostname;
-    }
-
-    if (options && options.port) {
-      this.port = options.port;
-    }
-
-    if (options && options.marionettePort) {
-      this.marionettePort = options.marionettePort;
-    }
-
-    this.url = 'http://' + this.hostname + ':' + this.port;
-  }
-
-  HttpProxy.prototype = {
-    hostname: DEFAULT_HOST,
-    port: DEFAULT_PORT,
-    marionettePort: DEFAULT_MARIONETTE_PORT,
-    isSync: true,
-    defaultCallback: function(err, result) {
-      if (err) {
-        console.log(err, '<<< THROW!')
-        throw err;
-      }
-      return result;
-    },
-
-    _connectToMarionette: function(callback) {
-      var data = request(this.url, {
-        method: 'POST',
-        data: { port: this.marionettePort }
-      });
-      this._id = data.id;
-      callback();
-    },
-
-    connect: function(callback) {
-      this.serverProcess = fork(
-        proxyRunnerPath,
-        [
-          this.port,
-          this.hostname
-        ],
-        { stdio: 'inherit' }
-      );
-
-      this.serverProcess.on('message', function(data) {
-        if (data === 'ready') {
-          this._connectToMarionette(callback);
-        }
-      }.bind(this));
-    },
-
-    send: function(command, callback) {
-      var wrapper = { id: this._id, payload: command };
-      var result = request(this.url, { method: 'PUT', data: wrapper });
-      return callback(result);
-    },
-
-    close: function() {
-      var response = request(this.url, {
-        method: 'DELETE', data: { id: this._id }
-      });
-      if (this.serverProcess) {
-        this.serverProcess.kill();
-      }
-      return response;
-    }
-  };
-
-  module.exports = HttpProxy;
-
-}.apply(
-  this,
-  (this.Marionette) ?
-    [Marionette('drivers/http-proxy'), Marionette] :
-    [module, require('../marionette')]
-));
-
 (function(module, ns) {
 
   module.exports = {
-    Abstract: ns.require('drivers/abstract'),
-    HttpdPolling: ns.require('drivers/httpd-polling'),
-    HttpProxy: ns.require('drivers/http-proxy')
+    Abstract: ns.require('drivers/abstract')
   };
 
   if (typeof(window) === 'undefined') {
     module.exports.Tcp = require('./tcp');
+    module.exports.TcpSync = require('./tcp-sync');
   } else {
     if (typeof(window.TCPSocket) !== 'undefined') {
       module.exports.MozTcp = ns.require('drivers/moz-tcp');
@@ -4184,9 +3189,10 @@
   exports.Element = ns.require('element');
   exports.Error = ns.require('error');
   exports.Client = ns.require('client');
-  exports.Xhr = ns.require('xhr');
   exports.Drivers = ns.require('drivers');
   exports.CommandStream = ns.require('command-stream');
+  exports.Actions = ns.require('actions');
+  exports.MultiActions = ns.require('multi-actions');
 
 }.apply(
   this,
