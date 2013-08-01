@@ -36,6 +36,16 @@ describe('marionette/client', function() {
     it('should save .driver', function() {
       expect(subject.driver).to.be(driver);
     });
+
+    describe('without driver', function() {
+      beforeEach(function() {
+        subject = new Client(null, { lazy: true });
+      });
+
+      it('should not explode', function() {
+        expect(subject.driver).not.to.be.ok();
+      });
+    });
   });
 
   describe('hooks', function() {
@@ -457,6 +467,9 @@ describe('marionette/client', function() {
       callsClose = false;
       var callsHook = false;
 
+      subject.actor = '1';
+      subject.session = 'sess';
+
       subject.driver.close = function() {
         expect(callsHook).to.be(true);
         callsClose = true;
@@ -471,6 +484,14 @@ describe('marionette/client', function() {
       });
 
       result = subject.deleteSession(done);
+    });
+
+    it('should clear session', function() {
+      expect(subject.session).not.to.be.ok();
+    });
+
+    it('should set actor to null', function() {
+      expect(subject.actor).not.to.be.ok();
     });
 
     it('should be chainable', function() {
