@@ -41,13 +41,13 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/Marionette.Actions.html">Marionette.Actions</a></li>
+            
                 <li><a href="../classes/Marionette.Client.html">Marionette.Client</a></li>
             
                 <li><a href="../classes/Marionette.CommandStream.html">Marionette.CommandStream</a></li>
             
                 <li><a href="../classes/Marionette.Drivers.Abstract.html">Marionette.Drivers.Abstract</a></li>
-            
-                <li><a href="../classes/Marionette.Drivers.Httpd.html">Marionette.Drivers.Httpd</a></li>
             
                 <li><a href="../classes/Marionette.Drivers.MozTcp.html">Marionette.Drivers.MozTcp</a></li>
             
@@ -55,7 +55,7 @@
             
                 <li><a href="../classes/Marionette.Element.html">Marionette.Element</a></li>
             
-                <li><a href="../classes/Marionette.Xhr.html">Marionette.Xhr</a></li>
+                <li><a href="../classes/Marionette.MultiActions.html">Marionette.MultiActions</a></li>
             
             </ul>
 
@@ -121,15 +121,14 @@
 
 <div class="box intro">
     <p>Connects to gecko marionette server using mozTCP api.</p>
-
 <pre class="code prettyprint"><code>// default options are fine for b2g-desktop
 // or a device device /w port forwarding.
 var tcp = new Marionette.Drivers.MozTcp();
 
 tcp.connect(function() {
   // ready to use with client
-});
-</code></pre>
+});</code></pre>
+
 </div>
 
 
@@ -207,6 +206,7 @@ tcp.connect(function() {
 
                     <div class="param-description">
                         <p>connection options.</p>
+
                     </div>
 
                     
@@ -221,6 +221,7 @@ tcp.connect(function() {
 
                                 <div class="param-description">
                                     <p>ip/host.</p>
+
                                 </div>
 
                                 
@@ -235,6 +236,7 @@ tcp.connect(function() {
 
                                 <div class="param-description">
                                     <p>marionette server port.</p>
+
                                 </div>
 
                                 
@@ -411,6 +413,7 @@ tcp.connect(function() {
     <div class="description">
         <p>Checks queue if not waiting for a response
 Sends command to websocket server</p>
+
     </div>
 
     
@@ -476,6 +479,7 @@ Sends command to websocket server</p>
         <p>Handles responses from devices.
 Will only respond to the event if the connectionId
 is equal to the event id and the client is ready.</p>
+
     </div>
 
     
@@ -494,6 +498,7 @@ is equal to the event id and the client is ready.</p>
 
                     <div class="param-description">
                         <p>response from server.</p>
+
                     </div>
 
                     
@@ -550,9 +555,9 @@ is equal to the event id and the client is ready.</p>
 
     <div class="description">
         <p>Destroys connection to server</p>
-
 <p>Will immediately close connection to server
 closing any pending responses.</p>
+
     </div>
 
     
@@ -613,17 +618,16 @@ closing any pending responses.</p>
     </div>
 
     <div class="description">
-        <p>Connects to a remote server.
-Requires a _connect function to be defined.</p>
-
+        <p><p>Connects to a remote server.
+Requires a _connect function to be defined.</p></p>
 <pre class="code prettyprint"><code>MyClass.prototype._connect = function _connect(){
   //open a socket to marrionete accept response
   //you *must* call _onDeviceResponse with the first
   //response from marionette it looks like this:
-  //{ from: 'root', applicationType: 'gecko', traits: [] }
+  //{ from: &#39;root&#39;, applicationType: &#39;gecko&#39;, traits: [] }
   this.connectionId = result.id;
-}
-</code></pre>
+}</code></pre>
+
     </div>
 
     
@@ -643,6 +647,7 @@ Requires a _connect function to be defined.</p>
                     <div class="param-description">
                         <p>executes
   after successfully connecting to the server.</p>
+
                     </div>
 
                     
@@ -718,6 +723,7 @@ Requires a _connect function to be defined.</p>
 Each command will be queued while waiting for
 any pending commands. This ensures order of
 response is correct.</p>
+
     </div>
 
     
@@ -736,6 +742,7 @@ response is correct.</p>
 
                     <div class="param-description">
                         <p>remote command to send to marionette.</p>
+
                     </div>
 
                     
@@ -751,6 +758,7 @@ response is correct.</p>
 
                     <div class="param-description">
                         <p>executed when response comes back.</p>
+
                     </div>
 
                     
@@ -807,6 +815,7 @@ response is correct.</p>
 
     <div class="description">
         <p>Waiting for a command to finish?</p>
+
     </div>
 
     
@@ -848,6 +857,7 @@ response is correct.</p>
 
     <div class="description">
         <p>Connection id for the server.</p>
+
     </div>
 
     
@@ -889,6 +899,7 @@ response is correct.</p>
 
     <div class="description">
         <p>Is system ready for commands?</p>
+
     </div>
 
     
@@ -930,6 +941,7 @@ response is correct.</p>
 
     <div class="description">
         <p>Timeout for commands</p>
+
     </div>
 
     

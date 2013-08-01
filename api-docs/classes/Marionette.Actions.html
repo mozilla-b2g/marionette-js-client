@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Marionette.Element - Marionette JS Client</title>
+    <title>Marionette.Actions - Marionette JS Client</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.7.0/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -96,7 +96,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Marionette.Element Class</h1>
+                        <h1>Marionette.Actions Class</h1>
 <div class="box meta">
     
 
@@ -104,7 +104,7 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/lib_marionette_element.js.html#l6"><code>lib&#x2F;marionette&#x2F;element.js:6</code></a>
+            Defined in: <a href="../files/lib_marionette_actions.js.html#l3"><code>lib&#x2F;marionette&#x2F;actions.js:3</code></a>
         </div>
     
 
@@ -116,13 +116,8 @@
 
 
 <div class="box intro">
-    <p>Creates an element reference
-based on an id and a client instance.
-You should never need to manually create
-an instance of element.</p>
-<p>Use <a href="../classes/Marionette.Client.html#method_findElement" class="crosslink">findElement</a> or
-<a href="../classes/Marionette.Client.html#method_findElements" class="crosslink">findElements</a> to create
-instance(s) of this class.</p>
+    <p>Actions is used to denote a set of actions that
+have to be executed in particular order.</p>
 
 </div>
 
@@ -150,99 +145,78 @@ instance(s) of this class.</p>
 
                     <ul class="index-list methods">
                         
-                            <li class="index-item method private">
-                                <a href="#method__sendCommand">_sendCommand</a>
+                            <li class="index-item method">
+                                <a href="#method_cancel">cancel</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_clear">clear</a>
+                                <a href="#method_doubleTap">doubleTap</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_click">click</a>
+                                <a href="#method_flick">flick</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_displayed">displayed</a>
+                                <a href="#method_longPress">longPress</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_enabled">enabled</a>
+                                <a href="#method_move">move</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_equals">equals</a>
+                                <a href="#method_moveByOffset">moveByOffset</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_findElement">findElement</a>
+                                <a href="#method_perform">perform</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_findElements">findElements</a>
+                                <a href="#method_press">press</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_getAttribute">getAttribute</a>
+                                <a href="#method_release">release</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_scriptWith">scriptWith</a>
+                                <a href="#method_tap">tap</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_selected">selected</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_sendKeys">sendKeys</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_tagName">tagName</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_text">text</a>
+                                <a href="#method_wait">wait</a>
 
                                 
                                 
@@ -264,178 +238,11 @@ instance(s) of this class.</p>
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method__sendCommand" class="method item private">
-    <h3 class="name"><code>_sendCommand</code></h3>
+                    <div id="method_cancel" class="method item">
+    <h3 class="name"><code>cancel</code></h3>
 
     
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>command</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>responseKey</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    
-        <span class="flag chainable">chainable</span>
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/lib_marionette_element.js.html#l26"><code>lib&#x2F;marionette&#x2F;element.js:26</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Sends remote command processes the result.
-Appends element id to each command.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">command</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>marionette request.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">responseKey</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>key in the response to pass to callback.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>callback function receives the result of
-                           response[responseKey] as its first argument.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
-                    
-                    <p>self.</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_clear" class="method item">
-    <h3 class="name"><code>clear</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
+        <span class="paren">()</span>
     
 
     
@@ -467,7 +274,7 @@ Appends element id to each command.</p>
             
         
         
-        <a href="../files/lib_marionette_element.js.html#l187"><code>lib&#x2F;marionette&#x2F;element.js:187</code></a>
+        <a href="../files/lib_marionette_actions.js.html#l101"><code>lib&#x2F;marionette&#x2F;actions.js:101</code></a>
         
         </p>
 
@@ -478,34 +285,12 @@ Appends element id to each command.</p>
     </div>
 
     <div class="description">
-        <p>Clears element.</p>
+        <p>cancel() can only be called
+if press() has already be called on this element.
+cancel() send &#39;touchcancel&#39; event to whenever the finger is.</p>
 
     </div>
 
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>value of element.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
     
@@ -528,329 +313,8 @@ Appends element id to each command.</p>
 </div>
 
                 
-                    <div id="method_click" class="method item">
-    <h3 class="name"><code>click</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/lib_marionette_element.js.html#l146"><code>lib&#x2F;marionette&#x2F;element.js:146</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Clicks element.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>boolean result.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
-                    
-                    <p>self.</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_displayed" class="method item">
-    <h3 class="name"><code>displayed</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/lib_marionette_element.js.html#l230"><code>lib&#x2F;marionette&#x2F;element.js:230</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Checks if element is displayed.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>boolean argument.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
-                    
-                    <p>self.</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_enabled" class="method item">
-    <h3 class="name"><code>enabled</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/lib_marionette_element.js.html#l216"><code>lib&#x2F;marionette&#x2F;element.js:216</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Checks if element is enabled.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>boolean argument.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
-                    
-                    <p>self.</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_equals" class="method item">
-    <h3 class="name"><code>equals</code></h3>
+                    <div id="method_doubleTap" class="method item">
+    <h3 class="name"><code>doubleTap</code></h3>
 
     
         <div class="args">
@@ -864,7 +328,13 @@ Appends element id to each command.</p>
             
                 <li class="arg">
                     
-                        <code>callback</code>
+                        <code>x</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>y</code>
                     
                 </li>
             
@@ -901,7 +371,7 @@ Appends element id to each command.</p>
             
         
         
-        <a href="../files/lib_marionette_element.js.html#l90"><code>lib&#x2F;marionette&#x2F;element.js:90</code></a>
+        <a href="../files/lib_marionette_actions.js.html#l137"><code>lib&#x2F;marionette&#x2F;actions.js:137</code></a>
         
         </p>
 
@@ -912,7 +382,8 @@ Appends element id to each command.</p>
     </div>
 
     <div class="description">
-        <p>Checks to see if two elements are equal</p>
+        <p>doubleTap() performs a double
+<a href="../classes/Marionette.Actions.html#method_tap" class="crosslink">tap</a> on the element.</p>
 
     </div>
 
@@ -925,13 +396,14 @@ Appends element id to each command.</p>
                 <li class="param">
                     
                         <code class="param-name">element</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | <a href="../classes/Marionette.Element.html" class="crosslink">Marionette.Element</a></span>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>element to test.</p>
+                        <p><a href="../classes/Marionette.Element.html" class="crosslink">Marionette.Element</a>
+                        to double tap on.</p>
 
                     </div>
 
@@ -940,14 +412,32 @@ Appends element id to each command.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
+                        <code class="param-name">x</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>called with boolean.</p>
+                        <p>optional, x-coordinate relative to
+the top-left corner of the element of the last touch.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">y</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>optional, y-coordinate relative to
+the top-left corner of the element of the last touch.</p>
 
                     </div>
 
@@ -978,8 +468,8 @@ Appends element id to each command.</p>
 </div>
 
                 
-                    <div id="method_findElement" class="method item">
-    <h3 class="name"><code>findElement</code></h3>
+                    <div id="method_flick" class="method item">
+    <h3 class="name"><code>flick</code></h3>
 
     
         <div class="args">
@@ -987,19 +477,37 @@ Appends element id to each command.</p>
             
                 <li class="arg">
                     
-                        <code>query</code>
+                        <code>element</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code>method</code>
+                        <code>x1</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code>callback</code>
+                        <code>y1</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>x2</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>y2</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>duration</code>
                     
                 </li>
             
@@ -1036,7 +544,7 @@ Appends element id to each command.</p>
             
         
         
-        <a href="../files/lib_marionette_element.js.html#l49"><code>lib&#x2F;marionette&#x2F;element.js:49</code></a>
+        <a href="../files/lib_marionette_actions.js.html#l161"><code>lib&#x2F;marionette&#x2F;actions.js:161</code></a>
         
         </p>
 
@@ -1047,7 +555,10 @@ Appends element id to each command.</p>
     </div>
 
     <div class="description">
-        <p>Finds a single child of this element.</p>
+        <p>flick() sends a sequence of touch events:
+touchstart, touchmove, touchend.
+It scrolls the page in any direction
+within period of time provided(duration).</p>
 
     </div>
 
@@ -1059,14 +570,15 @@ Appends element id to each command.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">query</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <code class="param-name">element</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>search string.</p>
+                        <p><a href="../classes/Marionette.Element.html" class="crosslink">Marionette.Element</a>
+                        to double tap on.</p>
 
                     </div>
 
@@ -1075,14 +587,15 @@ Appends element id to each command.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">method</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <code class="param-name">x1</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>search method.</p>
+                        <p>starting x-coordinates of
+                   the finger relative to the element.</p>
 
                     </div>
 
@@ -1091,14 +604,66 @@ Appends element id to each command.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
+                        <code class="param-name">y1</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>element callback.</p>
+                        <p>starting y-coordinates of
+                   the finger relative to the element.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">x2</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>ending x-coordinates of
+                   the finger relative to the element.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">y2</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>ending y-coordinates of
+                   the finger relative to the element.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">duration</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>optional,
+                         time needed for the flick gesture for complete.</p>
 
                     </div>
 
@@ -1129,8 +694,8 @@ Appends element id to each command.</p>
 </div>
 
                 
-                    <div id="method_findElements" class="method item">
-    <h3 class="name"><code>findElements</code></h3>
+                    <div id="method_longPress" class="method item">
+    <h3 class="name"><code>longPress</code></h3>
 
     
         <div class="args">
@@ -1138,19 +703,13 @@ Appends element id to each command.</p>
             
                 <li class="arg">
                     
-                        <code>query</code>
+                        <code>element</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code>method</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
+                        <code>time</code>
                     
                 </li>
             
@@ -1187,7 +746,7 @@ Appends element id to each command.</p>
             
         
         
-        <a href="../files/lib_marionette_element.js.html#l63"><code>lib&#x2F;marionette&#x2F;element.js:63</code></a>
+        <a href="../files/lib_marionette_actions.js.html#l211"><code>lib&#x2F;marionette&#x2F;actions.js:211</code></a>
         
         </p>
 
@@ -1198,7 +757,10 @@ Appends element id to each command.</p>
     </div>
 
     <div class="description">
-        <p>Finds a all children of this element that match a pattern.</p>
+        <p>Sends &#39;touchstart&#39;,
+then wait for &#39;time&#39; seconds, and send &#39;touchend&#39; eventually.
+longPress() cannot follow any active touch,
+i.e. the finger must leave the screen before longPress() gets called.</p>
 
     </div>
 
@@ -1210,14 +772,15 @@ Appends element id to each command.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">query</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <code class="param-name">element</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>search string.</p>
+                        <p><a href="../classes/Marionette.Element.html" class="crosslink">Marionette.Element</a>
+                        of the long press.</p>
 
                     </div>
 
@@ -1226,30 +789,14 @@ Appends element id to each command.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">method</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <code class="param-name">time</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>search method.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>element callback.</p>
+                        <p>the waiting time between touchstart and touchend.</p>
 
                     </div>
 
@@ -1280,8 +827,8 @@ Appends element id to each command.</p>
 </div>
 
                 
-                    <div id="method_getAttribute" class="method item">
-    <h3 class="name"><code>getAttribute</code></h3>
+                    <div id="method_move" class="method item">
+    <h3 class="name"><code>move</code></h3>
 
     
         <div class="args">
@@ -1289,13 +836,7 @@ Appends element id to each command.</p>
             
                 <li class="arg">
                     
-                        <code>attr</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
+                        <code>element</code>
                     
                 </li>
             
@@ -1332,7 +873,7 @@ Appends element id to each command.</p>
             
         
         
-        <a href="../files/lib_marionette_element.js.html#l112"><code>lib&#x2F;marionette&#x2F;element.js:112</code></a>
+        <a href="../files/lib_marionette_actions.js.html#l52"><code>lib&#x2F;marionette&#x2F;actions.js:52</code></a>
         
         </p>
 
@@ -1343,7 +884,9 @@ Appends element id to each command.</p>
     </div>
 
     <div class="description">
-        <p>Gets attribute value for element.</p>
+        <p>move() can only be called
+if press() has already be called on this element.
+move() send &#39;touchmove&#39; event which moves the finger to target element.</p>
 
     </div>
 
@@ -1355,30 +898,15 @@ Appends element id to each command.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">attr</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <code class="param-name">element</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>attribtue name.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>gets called with attribute&#39;s value.</p>
+                        <p><a href="../classes/Marionette.Element.html" class="crosslink">Marionette.Element</a>
+                        of the move gesture.</p>
 
                     </div>
 
@@ -1409,8 +937,8 @@ Appends element id to each command.</p>
 </div>
 
                 
-                    <div id="method_scriptWith" class="method item">
-    <h3 class="name"><code>scriptWith</code></h3>
+                    <div id="method_moveByOffset" class="method item">
+    <h3 class="name"><code>moveByOffset</code></h3>
 
     
         <div class="args">
@@ -1418,119 +946,13 @@ Appends element id to each command.</p>
             
                 <li class="arg">
                     
-                        <code>script</code>
+                        <code>x</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/lib_marionette_element.js.html#l77"><code>lib&#x2F;marionette&#x2F;element.js:77</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Shortcut method to execute
-a function with this element as first argument.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">script</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>remote script.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>callback when script completes.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_selected" class="method item">
-    <h3 class="name"><code>selected</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
+                        <code>y</code>
                     
                 </li>
             
@@ -1567,7 +989,7 @@ a function with this element as first argument.</p>
             
         
         
-        <a href="../files/lib_marionette_element.js.html#l201"><code>lib&#x2F;marionette&#x2F;element.js:201</code></a>
+        <a href="../files/lib_marionette_actions.js.html#l68"><code>lib&#x2F;marionette&#x2F;actions.js:68</code></a>
         
         </p>
 
@@ -1578,7 +1000,9 @@ a function with this element as first argument.</p>
     </div>
 
     <div class="description">
-        <p>Checks if element is selected.</p>
+        <p>moveByOffset() can only be called
+if press() has already be called on this element.
+moveByOffset() send &#39;touchmove&#39; event.</p>
 
     </div>
 
@@ -1590,14 +1014,32 @@ a function with this element as first argument.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
+                        <code class="param-name">x</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>boolean argument.</p>
+                        <p>x-coordinate relative to the top-left corner of
+                  the target element of the last touch.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">y</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>y-coordinate relative to the top-left corner of
+                  the target element of the last touch.</p>
 
                     </div>
 
@@ -1628,226 +1070,8 @@ a function with this element as first argument.</p>
 </div>
 
                 
-                    <div id="method_sendKeys" class="method item">
-    <h3 class="name"><code>sendKeys</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>string</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/lib_marionette_element.js.html#l129"><code>lib&#x2F;marionette&#x2F;element.js:129</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Sends typing event keys to element.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">string</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>message to type.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>boolean success.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
-                    
-                    <p>self.</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_tagName" class="method item">
-    <h3 class="name"><code>tagName</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/lib_marionette_element.js.html#l174"><code>lib&#x2F;marionette&#x2F;element.js:174</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Returns tag name of element.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function" class="crosslink external" target="_blank">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>node style [err, tagName].</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_text" class="method item">
-    <h3 class="name"><code>text</code></h3>
+                    <div id="method_perform" class="method item">
+    <h3 class="name"><code>perform</code></h3>
 
     
         <div class="args">
@@ -1892,7 +1116,7 @@ a function with this element as first argument.</p>
             
         
         
-        <a href="../files/lib_marionette_element.js.html#l160"><code>lib&#x2F;marionette&#x2F;element.js:160</code></a>
+        <a href="../files/lib_marionette_actions.js.html#l232"><code>lib&#x2F;marionette&#x2F;actions.js:232</code></a>
         
         </p>
 
@@ -1903,7 +1127,8 @@ a function with this element as first argument.</p>
     </div>
 
     <div class="description">
-        <p>Gets text of element</p>
+        <p>perform() will send the whole action chain built
+so far to the server side for execution.</p>
 
     </div>
 
@@ -1922,7 +1147,501 @@ a function with this element as first argument.</p>
                     
 
                     <div class="param-description">
-                        <p>text of element.</p>
+                        <p>callback when the perform completes.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
+                    
+                    <p>self.</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_press" class="method item">
+    <h3 class="name"><code>press</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>element</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>x</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>y</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_actions.js.html#l18"><code>lib&#x2F;marionette&#x2F;actions.js:18</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Send a &#39;touchstart&#39; event to this element. If no coordinates are given,
+it will be targeted at the center of the element.
+If given, it will be targeted at the (x,y) coordinates
+relative to the top-left corner of the element.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">element</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p><a href="../classes/Marionette.Element.html" class="crosslink">Marionette.Element</a>
+                        to press on.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">x</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>optional, x-coordinate to tap,
+                  relative to the top-left corner of the element.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">y</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>optional, y-coordinate to tap,
+                  relative to the top-left corner of the element.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
+                    
+                    <p>self.</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_release" class="method item">
+    <h3 class="name"><code>release</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_actions.js.html#l38"><code>lib&#x2F;marionette&#x2F;actions.js:38</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>release() can only be called
+if press() has already be called on this element.
+Send &#39;touchend&#39; event to whenever the finger is.</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
+                    
+                    <p>self.</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_tap" class="method item">
+    <h3 class="name"><code>tap</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>element</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>x</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>y</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_actions.js.html#l115"><code>lib&#x2F;marionette&#x2F;actions.js:115</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>tap() performs a quick tap on the target.
+action.tap() is essentially action.press().release().</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">element</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p><a href="../classes/Marionette.Element.html" class="crosslink">Marionette.Element</a>
+                        to press/release on.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">x</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>optional, x-coordinate relative to the top-left corner
+                  of the element of the last touch.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">y</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>optional, y-coordinate relative to the top-left corner
+                  of the element of the last touch.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
+                    
+                    <p>self.</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_wait" class="method item">
+    <h3 class="name"><code>wait</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>time</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_marionette_actions.js.html#l88"><code>lib&#x2F;marionette&#x2F;actions.js:88</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>wait() waits for specified time period.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">time</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>wait for &quot;time&quot; seconds.</p>
 
                     </div>
 
