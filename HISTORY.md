@@ -1,3 +1,8 @@
+# 0.12
+  - add debug to tcpsync
+  - added resetWithDriver to client so clients can be reused.
+  - much much better error handling under node.js
+
 # 0.11
   - Awesome new Marionette.Actions and Marionette.MultiActions apis [evanxd]
 
