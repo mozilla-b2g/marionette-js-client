@@ -1,6 +1,7 @@
-describe('scope', function() {
-  var host = integration.host();
-  var device, client, subject;
+suite('scope', function() {
+  var client = marionette.client(),
+      device,
+      subject;
 
   cross.require('actions', function(obj) {
     Actions = obj;
@@ -10,16 +11,12 @@ describe('scope', function() {
     return subject;
   });
 
-  beforeEach(function() {
-    client = host.client;
-  });
-
-  describe('actions', function() {
-    beforeEach(function() {
+  suite('actions', function() {
+    setup(function() {
       subject = new Actions(client);
     });
 
-    it('can move the page', function() {
+    test('can move the page', function() {
       var bodyElement;
 
       client.goUrl('http://yahoo.com');
@@ -39,14 +36,13 @@ describe('scope', function() {
 
       subject.
         press(bodyElement, 100, 100).
-        moveByOffset(0, -10).
+        moveByOffset(0, 10).
         wait(0.05).
         release().
         wait(0.05).
-        flick(bodyElement, 0, 500, 0, 600).
+        flick(bodyElement, 0, 0, 0, 200).
         perform();
 
-      expect(subject.actionChain).to.be.eql([]);
     });
   });
 });

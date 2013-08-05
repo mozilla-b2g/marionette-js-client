@@ -22,8 +22,9 @@
     "xpcwindow": "0.4.4",
     "yuidocjs": "~0.3",
     "test-agent": "~0.12",
-    "marionette-host-environment": "~0.3.0",
-    "node-static": "~0.6"
+    "node-static": "~0.6",
+    "marionette-js-runner": "~0.0.1",
+    "mozilla-download": "~0.2"
   },
 
   "license": "MIT",
