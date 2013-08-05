@@ -199,5 +199,6 @@ describe('marionette/element', function() {
   simpleCommand('selected', 'isElementSelected', 'value');
   simpleCommand('enabled', 'isElementEnabled', 'value');
   simpleCommand('displayed', 'isElementDisplayed', 'value');
+  simpleCommand('size', 'getElementSize', 'value');
 
 });
