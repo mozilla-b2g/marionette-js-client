@@ -1,18 +1,14 @@
-describe('scope', function() {
-  // create test resources
-  var host = integration.host();
-
-  var client,
+suite('scope', function() {
+  var client = marionette.client(),
       timeoutA,
       timeoutB;
 
-  beforeEach(function() {
-    client = host.client;
+  setup(function() {
     timeoutA = client.scope({ scriptTimeout: 1000 });
     timeoutB = client.scope({ scriptTimeout: 250 });
   });
 
-  it('should handle scope switching', function() {
+  test('should handle scope switching', function() {
     function sleep() {
       setTimeout(function() {
         marionetteScriptFinished();

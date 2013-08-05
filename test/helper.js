@@ -1,4 +1,8 @@
 (function() {
+  // TODO: There is a bunch of junk here and elsewhere from the time where we
+  // supported browser, xpcshell AND node runtimes. We are removing support for
+  // all but the node runtime which means we can factorize a lot of this out.
+  // This applies to other tests / files / implementation code.
 
   if (typeof(window) !== 'undefined') {
     window.navigator;
@@ -11,7 +15,6 @@
   if (isNode) {
     expect = require('expect.js');
     context = global;
-    global.integration = require('./integration');
   } else {
     context = window;
     context.require('../vendor/expect.js');
