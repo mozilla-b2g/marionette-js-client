@@ -1,15 +1,7 @@
-describe('drivers/tcp-sync', function() {
-  if (!cross.isNode)
-    return test('only works on node');
+suite('drivers/tcp-sync', function() {
+  var client = marionette.client();
 
-  this.timeout(20000);
-  var host = integration.host();
-  var client;
-  beforeEach(function() {
-    client = host.client;
-  });
-
-  it('can execute sync commands', function() {
+  test('can execute sync commands', function() {
     client.goUrl('http://yahoo.com');
     client.goUrl('http://google.com');
     client.goUrl('http://yahoo.com');

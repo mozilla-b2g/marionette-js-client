@@ -1,10 +1,5 @@
 suite('element methods', function() {
-  var host = integration.host();
-  var client;
-
-  setup(function() {
-    client = host.client;
-  });
+  var client = marionette.client();
 
   test('#displayed', function() {
     client.goUrl('http://mozilla.org');
