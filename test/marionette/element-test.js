@@ -176,6 +176,22 @@ describe('marionette/element', function() {
       callbackReceives('ok');
   });
 
+  describe('.tap', function() {
+    var x = 10;
+    var y = 15;
+
+    device.
+      issues('tap', x, y).
+      shouldSend({
+        type: 'singleTap',
+        x: x,
+        y: y,
+        element: id
+      }).
+      serverResponds('value').
+      callbackReceives('value');
+  });
+
   simpleCommand('tagName', 'getElementTagName', 'value');
   simpleCommand('click', 'clickElement', 'ok');
   simpleCommand('text', 'getElementText', 'value');
