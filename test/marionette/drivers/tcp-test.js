@@ -8,7 +8,7 @@ describe('marionette/drivers/tcp', function() {
       Driver = require('../../../lib/marionette/drivers/tcp'),
       FakeSocket = require('../../support/socket');
 
-  cross.require(
+  helper.require(
     'marionette/drivers/abstract',
     'Marionette.Drivers.Abstract', function(obj) {
       Abstract = obj;

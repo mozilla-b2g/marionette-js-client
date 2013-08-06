@@ -2,7 +2,7 @@ describe('marionette/error', function() {
 
   var MarionetteError;
 
-  cross.require('error', function(obj) {
+  helper.require('error', function(obj) {
     MarionetteError = obj;
   });
 

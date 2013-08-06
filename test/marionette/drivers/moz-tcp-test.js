@@ -12,15 +12,15 @@ describe('marionette/drivers/moz-tcp', function() {
       Driver,
       CommandStream;
 
-  cross.require('command-stream', function(obj) {
+  helper.require('command-stream', function(obj) {
     CommandStream = obj;
   });
 
-  cross.require('drivers/abstract', function(obj) {
+  helper.require('drivers/abstract', function(obj) {
     Abstract = obj;
   });
 
-  cross.require('drivers/moz-tcp', function(obj) {
+  helper.require('drivers/moz-tcp', function(obj) {
     Driver = obj;
   });
 

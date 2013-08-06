@@ -3,7 +3,7 @@ describe('marionette/drivers/abstract', function() {
       Backend,
       sent = [];
 
-  cross.require('drivers/abstract', function(obj) {
+  helper.require('drivers/abstract', function(obj) {
     Backend = obj;
   });
 

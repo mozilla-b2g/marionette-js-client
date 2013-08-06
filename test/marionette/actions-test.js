@@ -2,11 +2,11 @@ describe('marionette/actions', function() {
   var driver, subject, client, device,
       Actions, Client;
 
-  cross.require('actions', function(obj) {
+  helper.require('actions', function(obj) {
     Actions = obj;
   });
 
-  cross.require('client', function(obj) {
+  helper.require('client', function(obj) {
     Client = obj;
   });
 

@@ -1,38 +1,12 @@
 (function() {
-  // TODO: There is a bunch of junk here and elsewhere from the time where we
-  // supported browser, xpcshell AND node runtimes. We are removing support for
-  // all but the node runtime which means we can factorize a lot of this out.
-  // This applies to other tests / files / implementation code.
 
-  if (typeof(window) !== 'undefined') {
-    window.navigator;
-    window.Components;
-  }
-
-  var isNode = typeof(window) === 'undefined';
-  var isXpc = !isNode && (typeof(window.xpcModule) !== 'undefined');
-
-  if (isNode) {
-    expect = require('expect.js');
-    context = global;
-  } else {
-    context = window;
-    context.require('../vendor/expect.js');
-  }
+  global.expect = require('expect.js');
 
   //always load test-agent for now
 
-  cross = {
-    isNode: isNode,
-    isXpc: isXpc,
-    isBrowser: !isNode && !isXpc,
-
+  global.helper = {
     requireLib: function(path, cb) {
-      if (this.isNode) {
-        return require('../lib/' + path);
-      } else {
-        return require('/lib/' + path + '.js', cb);
-      }
+      return require('../lib/' + path);
     },
 
     nsFind: function(obj, string) {
@@ -56,66 +30,37 @@
         //new module pattern
         cb = component;
         component = path;
-        path += '.js';
 
         if (/^support/.test(path)) {
           path = '/test/' + path;
         } else {
           path = '/lib/marionette/' + path;
         }
-
-
-        if (isNode) {
-          cb(require('..' + path));
-        } else {
-          context.require(path, function() {
-            cb(Marionette.require(component));
-          });
-        }
       } else {
-        if (!path.match(/.js$/)) {
-          path += '.js';
-        }
-
         //old system
         path = '/lib/' + path;
-
-        if (isNode) {
-          cb(require('..' + path));
-        } else {
-          context.require(path, function() {
-            cb(this.nsFind(context, component));
-          }.bind(this));
-        }
       }
 
+      cb(require('..' + path));
     }
   };
 
-  //Universal utils for tests.
-  //will be loaded for all tests and available
-  //in static scope inside and outside of tests.
-  if (!isNode) {
-    require('/lib/marionette/marionette.js');
-    require('/node_modules/json-wire-protocol/json-wire-protocol.js');
-  }
+  helper.require('responder', function(obj) {});
 
-  cross.require('responder', function(obj) {});
-
-  cross.require('example-commands', function(obj) {
-    context.exampleCmds = obj;
+  helper.require('example-commands', function(obj) {
+    global.exampleCmds = obj;
   });
 
-  cross.require('support/device-interaction', function(obj) {
-    context.DeviceInteraction = obj;
+  helper.require('support/device-interaction', function(obj) {
+    global.DeviceInteraction = obj;
   });
 
-  cross.require('support/socket', function(obj) {
-    context.FakeSocket = obj;
+  helper.require('support/socket', function(obj) {
+    global.FakeSocket = obj;
   });
 
-  cross.require('support/mock-driver', function(obj) {
-    context.MockDriver = obj;
+  helper.require('support/mock-driver', function(obj) {
+    global.MockDriver = obj;
   });
 
 }.call(this));
