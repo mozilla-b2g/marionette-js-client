@@ -3,7 +3,7 @@
 JavaScript client for
 [Marionette](https://developer.mozilla.org/en-US/docs/Marionette).
 
-Designed to run on nodejs & xpcshell.
+Designed to run on [Node.js](http://nodejs.org).
 
 - [Api Docs](http://lightsofapollo.github.com/marionette_js_client/api-docs/)
 

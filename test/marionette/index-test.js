@@ -1,18 +1,8 @@
-if (cross.isBrowser) {
-  require('/marionette.js');
-}
-
-if (cross.isXpc) {
-  window.xpcModule.require('../../../marionette.js');
-}
-
 describe('marionette/index', function() {
   var Index;
 
   before(function() {
-    Index = typeof(window) === 'undefined' ?
-      cross.requireLib('marionette/index') :
-      Marionette;
+    Index = helper.requireLib('marionette/index');
   });
 
   it('should have paths', function() {

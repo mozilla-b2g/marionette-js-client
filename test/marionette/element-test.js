@@ -5,11 +5,11 @@ describe('marionette/element', function() {
   var driver, subject, client, id, device,
        Element, Client;
 
-  cross.require('element', function(obj) {
+  helper.require('element', function(obj) {
     Element = obj;
   });
 
-  cross.require('client', function(obj) {
+  helper.require('client', function(obj) {
     Client = obj;
   });
 

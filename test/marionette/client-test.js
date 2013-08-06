@@ -3,15 +3,15 @@ describe('marionette/client', function() {
   var subject, driver, cb, cbResponse,
       result, device, Element, Client, Exception;
 
-  cross.require('element', function(obj) {
+  helper.require('element', function(obj) {
     Element = obj;
   });
 
-  cross.require('error', function(obj) {
+  helper.require('error', function(obj) {
     Exception = obj;
   });
 
-  cross.require('client', function(obj) {
+  helper.require('client', function(obj) {
     Client = obj;
   });
 

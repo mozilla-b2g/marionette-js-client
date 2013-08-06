@@ -4,11 +4,11 @@ describe('marionette/command-stream', function() {
       Responder,
       CommandStream;
 
-  cross.require('responder', function(obj) {
+  helper.require('responder', function(obj) {
     Responder = obj;
   });
 
-  cross.require('command-stream', function(obj) {
+  helper.require('command-stream', function(obj) {
     CommandStream = obj;
   });
 
