@@ -2,15 +2,15 @@ describe('marionette/multi-actions', function() {
   var driver, subject, actions, client, device,
       MultiActions, Actions, Client;
 
-  cross.require('multi-actions', function(obj) {
+  helper.require('multi-actions', function(obj) {
     MultiActions = obj;
   });
 
-  cross.require('actions', function(obj) {
+  helper.require('actions', function(obj) {
     Actions = obj;
   });
 
-  cross.require('client', function(obj) {
+  helper.require('client', function(obj) {
     Client = obj;
   });
 

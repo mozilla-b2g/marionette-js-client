@@ -3,7 +3,7 @@ suite('scope', function() {
       device,
       subject;
 
-  cross.require('actions', function(obj) {
+  helper.require('actions', function(obj) {
     Actions = obj;
   });
 
