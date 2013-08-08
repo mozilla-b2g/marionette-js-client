@@ -1,4 +1,4 @@
-describe('marionette/actions', function() {
+suite('marionette/actions', function() {
   var driver, subject, client, device,
       Actions, Client;
 
@@ -14,130 +14,130 @@ describe('marionette/actions', function() {
     return subject;
   });
 
-  beforeEach(function() {
+  setup(function() {
     driver = new MockDriver();
     client = new Client(driver);
     subject = new Actions(client);
   });
 
-  describe('initialization', function() {
-    it('should set client', function() {
-      expect(subject.client).to.be(client);
+  suite('initialization', function() {
+    test('should set client', function() {
+      assert.strictEqual(subject.client, client);
     });
   });
 
-  describe('.press', function() {
+  suite('.press', function() {
     var element, x, y;
 
-    beforeEach(function() {
+    setup(function() {
       element = { id: '{fake-uuid-root}' };
       x = 0;
       y = 0;
       subject.press(element, x, y);
     });
 
-    it('should have a press action in the chain', function() {
+    test('should have a press action in the chain', function() {
       var pressAction = [['press', element.id, x, y]];
-      expect(subject.actionChain).to.eql(pressAction);
+      assert.deepEqual(subject.actionChain, pressAction);
     });
   });
 
-  describe('.release', function() {
-    beforeEach(function() {
+  suite('.release', function() {
+    setup(function() {
       subject.release();
     });
 
-    it('should have a release action in the chain', function() {
+    test('should have a release action in the chain', function() {
       var releaseAction = [['release']];
-      expect(subject.actionChain).to.eql(releaseAction);
+      assert.deepEqual(subject.actionChain, releaseAction);
     });
   });
 
-  describe('.move', function() {
+  suite('.move', function() {
     var element;
 
-    beforeEach(function() {
+    setup(function() {
       element = { id: '{fake-uuid-root}' };
       subject.move(element);
     });
 
-    it('should have a move action in the chain', function() {
+    test('should have a move action in the chain', function() {
       var moveAction = [['move', element.id]];
-      expect(subject.actionChain).to.eql(moveAction);
+      assert.deepEqual(subject.actionChain, moveAction);
     });
   });
 
-  describe('.moveByOffset', function() {
+  suite('.moveByOffset', function() {
     var x, y;
 
-    beforeEach(function() {
+    setup(function() {
       x = 1;
       y = 1;
       subject.moveByOffset(x, y);
     });
 
-    it('should have a move by offset action in the chain', function() {
+    test('should have a move by offset action in the chain', function() {
       var moveByOffsetAction = [['moveByOffset', x, y]];
-      expect(subject.actionChain).to.eql(moveByOffsetAction);
+      assert.deepEqual(subject.actionChain, moveByOffsetAction);
     });
   });
 
-  describe('.wait', function() {
+  suite('.wait', function() {
     var time;
 
-    beforeEach(function() {
+    setup(function() {
       time = 1;
       subject.wait(time);
     });
 
-    it('should have a wait action in the chain', function() {
+    test('should have a wait action in the chain', function() {
       var waitAction = [['wait', time]];
-      expect(subject.actionChain).to.eql(waitAction);
+      assert.deepEqual(subject.actionChain, waitAction);
     });
   });
 
-  describe('.cancel', function() {
-    beforeEach(function() {
+  suite('.cancel', function() {
+    setup(function() {
       subject.cancel();
     });
 
-    it('should have a cancel action in the chain', function() {
+    test('should have a cancel action in the chain', function() {
       var cancelAction = [['cancel']];
-      expect(subject.actionChain).to.eql(cancelAction);
+      assert.deepEqual(subject.actionChain, cancelAction);
     });
   });
 
-  describe('.tap', function() {
+  suite('.tap', function() {
     var element, x, y;
 
-    beforeEach(function() {
+    setup(function() {
       element = { id: '{fake-uuid-root}' };
       x = 0;
       y = 0;
       subject.tap(element, x, y);
     });
 
-    it('should have a tap action in the chain', function() {
+    test('should have a tap action in the chain', function() {
       var tapAction = [
         ['press', element.id, x, y],
         ['release']
       ];
 
-      expect(subject.actionChain).to.eql(tapAction);
+      assert.deepEqual(subject.actionChain, tapAction);
     });
   });
 
-  describe('.doubleTap', function() {
+  suite('.doubleTap', function() {
     var element, x, y;
 
-    beforeEach(function() {
+    setup(function() {
       element = { id: '{fake-uuid-root}' };
       x = 0;
       y = 0;
       subject.doubleTap(element, x, y);
     });
 
-    it('should have a double tap action in the chain', function() {
+    test('should have a double tap action in the chain', function() {
       var doubleTapAction = [
         ['press', element.id, x, y],
         ['release'],
@@ -145,14 +145,14 @@ describe('marionette/actions', function() {
         ['release']
       ];
 
-      expect(subject.actionChain).to.eql(doubleTapAction);
+      assert.deepEqual(subject.actionChain, doubleTapAction);
     });
   });
 
-  describe('.flick', function() {
+  suite('.flick', function() {
     var element, x1, y1, x2, y2;
 
-    beforeEach(function() {
+    setup(function() {
       element = { id: '{fake-uuid-root}' };
       x1 = 0;
       y1 = 0;
@@ -165,20 +165,20 @@ describe('marionette/actions', function() {
       var lastAction = ['release'];
       var lastActionIndex = subject.actionChain.length - 1;
 
-      expect(subject.actionChain[0]).to.eql(firstAction);
+      assert.deepEqual(subject.actionChain[0], firstAction);
       for (var i = 1; i < lastActionIndex; i += 2) {
-        expect(subject.actionChain[i][0]).to.eql('moveByOffset');
-        expect(subject.actionChain[i + 1][0]).to.eql('wait');
+        assert.strictEqual(subject.actionChain[i][0], 'moveByOffset');
+        assert.strictEqual(subject.actionChain[i + 1][0], 'wait');
       }
-      expect(subject.actionChain[lastActionIndex]).to.eql(lastAction);
+      assert.deepEqual(subject.actionChain[lastActionIndex], lastAction);
     }
 
-    it('should have a flick action in the chain', function() {
+    test('should have a flick action in the chain', function() {
       subject.flick(element, x1, y1, x2, y2);
       shouldHaveFlickAction();
     });
 
-    it('should have a flick action in the chain ' +
+    test('should have a flick action in the chain ' +
        'when the duration param is 300', function() {
       var duration = 300;
       subject.flick(element, x1, y1, x2, y2, duration);
@@ -187,27 +187,27 @@ describe('marionette/actions', function() {
   });
 
 
-  describe('.longPress', function() {
+  suite('.longPress', function() {
     var element, time;
 
-    beforeEach(function() {
+    setup(function() {
       element = { id: '{fake-uuid-root}' };
       time = 1;
       subject.longPress(element, time);
     });
 
-    it('should have a long press action in the chain', function() {
+    test('should have a long press action in the chain', function() {
       var longPressAction = [
         ['press', element.id],
         ['wait', time],
         ['release']
       ];
 
-      expect(subject.actionChain).to.eql(longPressAction);
+      assert.deepEqual(subject.actionChain, longPressAction);
     });
   });
 
-  describe('.perform', function() {
+  suite('.perform', function() {
     device.
       issues('perform').
       shouldSend({

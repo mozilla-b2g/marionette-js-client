@@ -1,25 +1,25 @@
-describe('marionette/index', function() {
+suite('marionette/index', function() {
   var Index;
 
-  before(function() {
+  suiteSetup(function() {
     Index = helper.requireLib('marionette/index');
   });
 
-  it('should have paths', function() {
-    expect(Index.Element).to.be.an(Object);
-    expect(Index.Client).to.be.an(Object);
-    expect(Index.Drivers).to.be.an(Object);
-    expect(Index.CommandStream).to.be.an(Object);
+  test('should have paths', function() {
+    assert.instanceOf(Index.Element, Object);
+    assert.instanceOf(Index.Client, Object);
+    assert.instanceOf(Index.Drivers, Object);
+    assert.instanceOf(Index.CommandStream, Object);
 
-    expect(Index.Drivers.Abstract).to.be.an(Object);
+    assert.instanceOf(Index.Drivers.Abstract, Object);
 
 
     if (typeof(window) === 'undefined') {
-      expect(Index.Drivers.Tcp).to.be.an(Object);
+      assert.instanceOf(Index.Drivers.Tcp, Object);
     } else {
       try {
         if (typeof(window.navigator.mozTCPSocket) !== 'undefined') {
-          expect(Index.Drivers.MozTcp).to.be.an(Object);
+          assert.instanceOf(Index.Drivers.MozTcp, Object);
         }
       } catch(e) {
       }

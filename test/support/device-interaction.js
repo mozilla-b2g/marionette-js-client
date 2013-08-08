@@ -6,7 +6,7 @@
     subject = subject;
     commands = exampleCmds;
 
-    beforeEach(function() {
+    setup(function() {
       cmdResult = null;
     });
 
@@ -30,7 +30,7 @@
             result,
             commandCallback = this.commandCallback;
 
-        beforeEach(function() {
+        setup(function() {
           if (!subject()) {
             throw new Error('DeviceInteraction must be provided a subject');
           }
@@ -42,8 +42,8 @@
           result = subject()[cmd].apply(subject(), args);
         });
 
-        it('should be chainable', function() {
-          expect(result).to.be(subject());
+        test('should be chainable', function() {
+          assert.strictEqual(result, subject());
         });
 
         return this;
@@ -54,14 +54,14 @@
         for (key in options) {
           if (options.hasOwnProperty(key)) {
             (function(option, value) {
-              it('should send ' + option, function() {
+              test('should send ' + option, function() {
                 var sent = driver().sent[0];
                 if (!(option in sent)) {
                   throw new Error(
                     option + ' was never sent as part of command to server'
                   );
                 }
-                expect(sent[option]).to.eql(value);
+                assert.deepEqual(sent[option], value);
               });
             }(key, options[key]));
           }
@@ -70,7 +70,7 @@
       },
 
       serverResponds: function serverResponds(type, options) {
-        beforeEach(function() {
+        setup(function() {
           if (!(type in exampleCmds)) {
             throw new Error('there is no \'' + type + '\' example command');
           }
@@ -82,13 +82,13 @@
 
       callbackReceives: function callbackReceives(key) {
         var commandCallback = this.commandCallback;
-        it('should receive the ' + key + ' from response', function() {
+        test('should receive the ' + key + ' from response', function() {
           if (cmdResult[key] === undefined) {
             throw new Error(
               key + ' should not be undefined for test mocks use a real value'
             );
           }
-          expect(commandCallback.value).to.be(cmdResult[key]);
+          assert.strictEqual(commandCallback.value, cmdResult[key]);
         });
         return this;
       }

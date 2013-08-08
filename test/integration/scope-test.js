@@ -24,6 +24,6 @@ suite('scope', function() {
       err = e;
     }
     // sleep throws error on shorter timeout
-    expect(err).to.be.ok();
+    assert.ok(err);
   });
 });

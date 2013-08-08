@@ -1,4 +1,4 @@
-describe('marionette/client', function() {
+suite('marionette/client', function() {
 
   var subject, driver, cb, cbResponse,
       result, device, Element, Client, Exception;
@@ -23,7 +23,7 @@ describe('marionette/client', function() {
     commandCallback.value = data;
   }
 
-  beforeEach(function() {
+  setup(function() {
     commandCallback.value = null;
     driver = new MockDriver();
     subject = new Client(driver);
@@ -32,29 +32,29 @@ describe('marionette/client', function() {
     };
   });
 
-  describe('initialization', function() {
-    it('should save .driver', function() {
-      expect(subject.driver).to.be(driver);
+  suite('initialization', function() {
+    test('should save .driver', function() {
+      assert.strictEqual(subject.driver, driver);
     });
 
-    describe('without driver', function() {
-      beforeEach(function() {
+    suite('without driver', function() {
+      setup(function() {
         subject = new Client(null, { lazy: true });
       });
 
-      it('should not explode', function() {
-        expect(subject.driver).not.to.be.ok();
+      test('should not explode', function() {
+        assert.notOk(subject.driver);
       });
     });
   });
 
-  describe('hooks', function() {
+  suite('hooks', function() {
 
-    it('should not fail running missing hooks', function(done) {
+    test('should not fail running missing hooks', function(done) {
       subject.runHook('fakemissingyey', done);
     });
 
-    it('should handle errors in hooks', function(done) {
+    test('should handle errors in hooks', function(done) {
       var myErr = new Error('err');
       // success
       subject.addHook('test', function(complete) {
@@ -72,13 +72,13 @@ describe('marionette/client', function() {
       });
 
       subject.runHook('test', function(err) {
-        expect(err).to.be(myErr);
+        assert.strictEqual(err, myErr);
         done();
       });
     });
 
 
-    describe('success', function() {
+    suite('success', function() {
       var called = [];
 
       function logSuccess(name) {
@@ -90,11 +90,11 @@ describe('marionette/client', function() {
         }
       }
 
-      beforeEach(function() {
+      setup(function() {
         called.length = 0;
       });
 
-      it('should handle adding a hook in a hook', function(done) {
+      test('should handle adding a hook in a hook', function(done) {
         var calledHook = false;
         subject.addHook('test', function(hookOne) {
           hookOne();
@@ -105,27 +105,27 @@ describe('marionette/client', function() {
         });
 
         subject.runHook('test', function() {
-          expect(calledHook).to.be.ok();
+          assert.ok(calledHook);
           done();
         });
       });
 
-      it('should run in context of client', function(done) {
+      test('should run in context of client', function(done) {
         subject.addHook('test', function(completeHook) {
-          expect(subject).to.be(this);
+          assert.strictEqual(subject, this);
           completeHook();
         });
 
         subject.runHook('test', done);
       });
 
-      it('should run all hooks', function(done) {
+      test('should run all hooks', function(done) {
         subject.addHook('test', logSuccess('one'))
                .addHook('test', logSuccess('two'))
                .addHook('test', logSuccess('three'));
 
         subject.runHook('test', function() {
-          expect(called).to.eql(['one', 'two', 'three']);
+          assert.deepEqual(called, ['one', 'two', 'three']);
           done();
         });
       });
@@ -133,8 +133,8 @@ describe('marionette/client', function() {
     });
   });
 
-  describe('.plugin', function() {
-    it('should allow chaining', function() {
+  suite('.plugin', function() {
+    test('should allow chaining', function() {
       var one = {},
           two = {};
 
@@ -149,35 +149,35 @@ describe('marionette/client', function() {
       subject.plugin('one', pluginOne).
               plugin('two', pluginTwo);
 
-      expect(subject.one).to.be(one);
-      expect(subject.two).to.be(two);
+      assert.strictEqual(subject.one, one);
+      assert.strictEqual(subject.two, two);
     });
 
-    it('should invoke plugin without name', function() {
+    test('should invoke plugin without name', function() {
       var calledPlugin;
       var options = {};
 
       function plugin(client, opts) {
-        expect(client).to.be(subject);
-        expect(opts).to.be(options);
+        assert.strictEqual(client, subject);
+        assert.strictEqual(opts, options);
         calledPlugin = true;
       }
 
       subject.plugin(null, plugin, options);
-      expect(calledPlugin).to.be.ok();
+      assert.ok(calledPlugin);
     });
 
-    it('should assign result to the given name', function() {
+    test('should assign result to the given name', function() {
       var myObj = {};
       function plugin() {
         return myObj;
       }
 
       subject.plugin('yey', plugin);
-      expect(subject.yey).to.be(myObj);
+      assert.strictEqual(subject.yey, myObj);
     });
 
-    it('should work with .setup', function() {
+    test('should work with .setup', function() {
       var myObj = {};
       function plugin() {}
       plugin.setup = function() {
@@ -185,16 +185,16 @@ describe('marionette/client', function() {
       };
 
       subject.plugin('woot', plugin);
-      expect(subject.woot).to.be(myObj);
+      assert.strictEqual(subject.woot, myObj);
     });
   });
 
-  describe('._handleCallback', function() {
+  suite('._handleCallback', function() {
     var calledWith;
 
     function usesCallback() {
 
-      it('should handle errors', function() {
+      test('should handle errors', function() {
         var calledWith, err;
 
         err = {
@@ -207,35 +207,33 @@ describe('marionette/client', function() {
           calledWith = arguments;
         }, err, null);
 
-        expect(calledWith[0]).to.be.a(
-          Exception
-        );
+        assert.instanceOf(calledWith[0], Exception);
 
-        expect(calledWith[0].message).to.contain('foo');
+        assert.include(calledWith[0].message, 'foo');
       });
 
-      it('should use callback when provided', function(done) {
+      test('should use callback when provided', function(done) {
         subject._handleCallback(function(err, val) {
-          expect(err).to.be.a(Exception);
-          expect(val).to.be(2);
+          assert.instanceOf(err, Exception);
+          assert.strictEqual(val, 2);
           done();
         }, {}, 2);
       });
     }
 
-    describe('with default', function() {
+    suite('with default', function() {
 
-      beforeEach(function() {
+      setup(function() {
         calledWith = null;
         subject.defaultCallback = function() {
           calledWith = arguments;
         };
       });
 
-      it('should use default when no callback is provided', function() {
+      test('should use default when no callback is provided', function() {
         subject._handleCallback(null, 1, 2);
-        expect(calledWith[0]).to.be.a(Exception);
-        expect(calledWith[1]).to.eql(2);
+        assert.instanceOf(calledWith[0], Exception);
+        assert.strictEqual(calledWith[1], 2);
       });
 
       usesCallback();
@@ -245,29 +243,29 @@ describe('marionette/client', function() {
     usesCallback();
   });
 
-  describe('.searchMethods', function() {
-    it('should have a list of methods', function() {
-      expect(subject.searchMethods).to.be.a(Array);
-      expect(subject.searchMethods.length).to.be.greaterThan(3);
+  suite('.searchMethods', function() {
+    test('should have a list of methods', function() {
+      assert.instanceOf(subject.searchMethods, Array);
+      assert.operator(subject.searchMethods.length, '>', 3);
     });
   });
 
-  describe('.send', function() {
+  suite('.send', function() {
 
-    describe('when session: is present', function() {
+    suite('when session: is present', function() {
       var result;
-      beforeEach(function() {
+      setup(function() {
         subject.session = 'session';
         subject.actor = 'actor';
         result = subject.send({ type: 'newSession' });
       });
 
-      it('should be chainable', function() {
-        expect(result).to.be(subject);
+      test('should be chainable', function() {
+        assert.strictEqual(result, subject);
       });
 
-      it('should add session to cmd', function() {
-        expect(driver.sent[0]).to.eql({
+      test('should add session to cmd', function() {
+        assert.deepEqual(driver.sent[0], {
           to: subject.actor,
           session: subject.session,
           type: 'newSession'
@@ -275,16 +273,16 @@ describe('marionette/client', function() {
       });
     });
 
-    describe('when to: is not given', function() {
+    suite('when to: is not given', function() {
 
-      describe('with an actor', function() {
-        beforeEach(function() {
+      suite('with an actor', function() {
+        setup(function() {
           subject.actor = 'foo';
           subject.send({ type: '_getActorId' }, cb);
         });
 
-        it('should add to:', function() {
-          expect(driver.sent[0]).to.eql({
+        test('should add to:', function() {
+          assert.deepEqual(driver.sent[0], {
             to: 'foo',
             type: '_getActorId'
           });
@@ -292,13 +290,13 @@ describe('marionette/client', function() {
 
       });
 
-      describe('without an actor', function() {
-        beforeEach(function() {
+      suite('without an actor', function() {
+        setup(function() {
           subject.send({ type: '_getActorId' }, cb);
         });
 
-        it('should add to:', function() {
-          expect(driver.sent[0]).to.eql({
+        test('should add to:', function() {
+          assert.deepEqual(driver.sent[0], {
             to: 'root',
             type: '_getActorId'
           });
@@ -309,8 +307,8 @@ describe('marionette/client', function() {
     });
   });
 
-  describe('.scope', function() {
-    describe('first subscope', function() {
+  suite('.scope', function() {
+    suite('first subscope', function() {
       var scope;
       var options = {
         scriptTimeout: 150,
@@ -318,7 +316,7 @@ describe('marionette/client', function() {
         context: 'chrome'
       };
 
-      beforeEach(function() {
+      setup(function() {
         scope = subject.scope(options);
         // trigger the new command.
         scope.goUrl();
@@ -326,32 +324,32 @@ describe('marionette/client', function() {
 
       Object.keys(options).forEach(function(key) {
         var value = options[key];
-        it('should update .' + key, function() {
-          expect(scope[key]).to.be(value);
+        test('should update .' + key, function() {
+          assert.strictEqual(scope[key], value);
           // has scoping changes
-          expect(scope._scope[key]).to.be(value);
+          assert.strictEqual(scope._scope[key], value);
         });
       });
 
-      it('should update the ._scope when state changes in scoped', function() {
+      test('should update the ._scope when state changes in scoped', function() {
         scope.setScriptTimeout(250);
-        expect(scope._scope.scriptTimeout).to.be(250);
+        assert.strictEqual(scope._scope.scriptTimeout, 250);
       });
 
-      it('should not update sibling scope', function() {
+      test('should not update sibling scope', function() {
         var sibling = subject.scope(options);
         sibling.setScriptTimeout(999);
 
-        expect(sibling._scope.scriptTimeout).to.be(999);
-        expect(scope._scope.scriptTimeout).not.to.be(999);
+        assert.strictEqual(sibling._scope.scriptTimeout, 999);
+        assert.notEqual(scope._scope.scriptTimeout, 999);
       });
     });
   });
 
-  describe('.startSession', function() {
+  suite('.startSession', function() {
     var result;
 
-    beforeEach(function(done) {
+    setup(function(done) {
       var firesHook = false;
 
       subject.addHook('startSession', function(complete) {
@@ -360,7 +358,7 @@ describe('marionette/client', function() {
       });
 
       result = subject.startSession(function() {
-        expect(firesHook).to.be.ok();
+        assert.ok(firesHook);
         done();
       });
 
@@ -368,20 +366,20 @@ describe('marionette/client', function() {
       driver.respond(exampleCmds.newSessionResponse());
     });
 
-    it('should be chainable', function() {
-      expect(result).to.be(subject);
+    test('should be chainable', function() {
+      assert.strictEqual(result, subject);
     });
 
-    it('should have actor', function() {
-      expect(subject.actor).to.be.ok();
+    test('should have actor', function() {
+      assert.ok(subject.actor);
     });
 
-    it('should have a session', function() {
-      expect(subject.session).to.be.ok();
+    test('should have a session', function() {
+      assert.ok(subject.session);
     });
   });
 
-  describe('._getActorId', function() {
+  suite('._getActorId', function() {
     var response;
 
     device.
@@ -390,29 +388,30 @@ describe('marionette/client', function() {
       serverResponds('getMarionetteIDResponse').
       callbackReceives('id');
 
-    it('should save actor id', function() {
-      expect(subject.actor).to.be(
+    test('should save actor id', function() {
+      assert.strictEqual(
+        subject.actor,
         exampleCmds.getMarionetteIDResponse().id
       );
     });
 
   });
 
-  describe('._sendCommand', function() {
+  suite('._sendCommand', function() {
     var cmd, response,
         calledTransform, result,
         calledWith;
 
-    describe('on success', function() {
+    suite('on success', function() {
 
-      beforeEach(function(done) {
+      setup(function(done) {
         cmd = exampleCmds.getUrl();
         response = exampleCmds.getUrlResponse();
 
         calledTransform = false;
         subject._transformResultValue = function(value) {
           calledTransform = true;
-          expect(value).to.be(response.value);
+          assert.strictEqual(value, response.value);
           return 'foo';
         };
 
@@ -424,20 +423,20 @@ describe('marionette/client', function() {
         driver.respond(response);
       });
 
-      it('should send given command and format the result', function() {
-        expect(result).to.be(subject);
+      test('should send given command and format the result', function() {
+        assert.strictEqual(result, subject);
       });
 
-      it('should send command through _transformResultValue', function() {
-        expect(calledTransform).to.be(true);
-        expect(calledWith[1]).to.be('foo');
+      test('should send command through _transformResultValue', function() {
+        assert.strictEqual(calledTransform, true);
+        assert.strictEqual(calledWith[1], 'foo');
       });
 
     });
 
-    describe('on error', function() {
+    suite('on error', function() {
 
-      beforeEach(function(done) {
+      setup(function(done) {
         calledWith = null;
         cmd = exampleCmds.getUrl();
         response = exampleCmds.error();
@@ -450,9 +449,9 @@ describe('marionette/client', function() {
         driver.respond(response);
       });
 
-      it('should pass error to callback', function() {
-        expect(calledWith[0]).to.be.ok();
-        expect(calledWith[1]).to.not.be.ok();
+      test('should pass error to callback', function() {
+        assert.ok(calledWith[0]);
+        assert.notOk(calledWith[1]);
       });
 
     });
@@ -460,11 +459,11 @@ describe('marionette/client', function() {
   });
 
 
-  describe('.deleteSession', function() {
+  suite('.deleteSession', function() {
     var result;
     var callsClose;
 
-    beforeEach(function(done) {
+    setup(function(done) {
       callsClose = false;
       var callsHook = false;
 
@@ -472,7 +471,7 @@ describe('marionette/client', function() {
       subject.session = 'sess';
 
       subject.driver.close = function() {
-        expect(callsHook).to.be(true);
+        assert.strictEqual(callsHook, true);
         callsClose = true;
       };
 
@@ -487,28 +486,28 @@ describe('marionette/client', function() {
       result = subject.deleteSession(done);
     });
 
-    it('should clear session', function() {
-      expect(subject.session).not.to.be.ok();
+    test('should clear session', function() {
+      assert.notOk(subject.session);
     });
 
-    it('should set actor to null', function() {
-      expect(subject.actor).not.to.be.ok();
+    test('should set actor to null', function() {
+      assert.notOk(subject.actor);
     });
 
-    it('should be chainable', function() {
-      expect(result).to.be(subject);
+    test('should be chainable', function() {
+      assert.strictEqual(result, subject);
     });
 
-    it('should close the connection', function() {
-      expect(callsClose).to.be(true);
+    test('should close the connection', function() {
+      assert.strictEqual(callsClose, true);
     });
   });
 
-  describe('.setSearchTimeout', function() {
-    it('should have default .searchTimeout', function() {
-      expect(subject.searchTimeout).to.be.ok();
+  suite('.setSearchTimeout', function() {
+    test('should have default .searchTimeout', function() {
+      assert.ok(subject.searchTimeout);
     });
-    describe('after setting', function() {
+    suite('after setting', function() {
       device.
         issues('setSearchTimeout', 50).
         shouldSend({
@@ -518,13 +517,13 @@ describe('marionette/client', function() {
         serverResponds('ok').
         callbackReceives('ok');
 
-      it('should set timeout', function() {
-        expect(subject.searchTimeout).to.be(50);
+      test('should set timeout', function() {
+        assert.strictEqual(subject.searchTimeout, 50);
       });
     });
   });
 
-  describe('.getWindow', function() {
+  suite('.getWindow', function() {
     device.
       issues('getWindow').
       shouldSend({
@@ -534,12 +533,12 @@ describe('marionette/client', function() {
       callbackReceives('value');
   });
 
-  describe('.setContext', function() {
-    it('should have a default context', function() {
-      expect(subject.context).to.be('content');
+  suite('.setContext', function() {
+    test('should have a default context', function() {
+      assert.strictEqual(subject.context, 'content');
     });
 
-    describe('after setting context', function() {
+    suite('after setting context', function() {
       device.
         issues('setContext', 'chrome').
         shouldSend({
@@ -549,13 +548,13 @@ describe('marionette/client', function() {
         serverResponds('ok').
         callbackReceives('ok');
 
-      it('should remember context', function() {
-        expect(subject.context).to.be('chrome');
+      test('should remember context', function() {
+        assert.strictEqual(subject.context, 'chrome');
       });
     });
   });
 
-  describe('.getWindows', function() {
+  suite('.getWindows', function() {
     device.
       issues('getWindows').
       shouldSend({
@@ -565,7 +564,7 @@ describe('marionette/client', function() {
       callbackReceives('value');
   });
 
-  describe('.switchToWindow', function() {
+  suite('.switchToWindow', function() {
     device.
       issues('switchToWindow', '1-b2g').
       shouldSend({
@@ -576,8 +575,8 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
-  describe('.switchToFrame', function() {
-    describe('when given nothing', function() {
+  suite('.switchToFrame', function() {
+    suite('when given nothing', function() {
       device.
         issues('switchToFrame').
         shouldSend({ type: 'switchToFrame' }).
@@ -585,10 +584,10 @@ describe('marionette/client', function() {
         callbackReceives('ok');
     });
 
-    describe('when given an element', function() {
+    suite('when given an element', function() {
       var el;
 
-      beforeEach(function() {
+      setup(function() {
         el = new Element('77', subject);
         subject.switchToFrame(el, commandCallback);
       });
@@ -602,10 +601,10 @@ describe('marionette/client', function() {
         callbackReceives('ok');
     });
 
-    describe('when given an object with ELEMENT', function() {
+    suite('when given an object with ELEMENT', function() {
       var el;
 
-      beforeEach(function() {
+      setup(function() {
         el = { ELEMENT: 'foo' };
         subject.switchToFrame(el, commandCallback);
       });
@@ -621,7 +620,7 @@ describe('marionette/client', function() {
 
   });
 
-  describe('.importScript', function() {
+  suite('.importScript', function() {
     device.
       issues('importScript', 'foo').
       shouldSend({
@@ -632,12 +631,12 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
-  describe('.setScriptTimeout', function() {
-    it('should have a default timeout', function() {
-      expect(subject.scriptTimeout).to.be.ok();
+  suite('.setScriptTimeout', function() {
+    test('should have a default timeout', function() {
+      assert.ok(subject.scriptTimeout);
     });
 
-    describe('after setting timeout', function() {
+    suite('after setting timeout', function() {
       device.
         issues('setScriptTimeout', 100).
         shouldSend({
@@ -647,13 +646,13 @@ describe('marionette/client', function() {
         serverResponds('ok').
         callbackReceives('ok');
 
-      it('should update .scriptTimeout', function() {
-        expect(subject.scriptTimeout).to.be(100);
+      test('should update .scriptTimeout', function() {
+        assert.strictEqual(subject.scriptTimeout, 100);
       });
     });
   });
 
-  describe('.goUrl', function() {
+  suite('.goUrl', function() {
     device.
       issues('goUrl', 'http://wow').
       shouldSend({
@@ -664,7 +663,7 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
-  describe('.getUrl', function() {
+  suite('.getUrl', function() {
     device.
       issues('getUrl').
       shouldSend({
@@ -674,7 +673,7 @@ describe('marionette/client', function() {
       callbackReceives('value');
   });
 
-  describe('.goForward', function() {
+  suite('.goForward', function() {
     device.
       issues('goForward').
       shouldSend({
@@ -684,7 +683,7 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
-  describe('.goBack', function() {
+  suite('.goBack', function() {
     device.
       issues('goBack').
       shouldSend({
@@ -694,51 +693,51 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
-  describe('script executing commands', function() {
+  suite('script executing commands', function() {
     var calledWith,
         args = [],
         script = 'return null;';
 
-    beforeEach(function() {
+    setup(function() {
       calledWith = null;
       subject._executeScript = function() {
         calledWith = arguments;
       };
     });
 
-    describe('.executeScript', function() {
-      beforeEach(function() {
+    suite('.executeScript', function() {
+      setup(function() {
         subject.executeScript(script, commandCallback);
       });
 
-      it('should call _executeScript', function() {
-        expect(calledWith).to.eql([
+      test('should call _executeScript', function() {
+        assert.deepEqual(calledWith, [
           { type: 'executeScript', value: script, args: null },
           commandCallback
         ]);
       });
     });
 
-    describe('.executeJsScript', function() {
-      beforeEach(function() {
+    suite('.executeJsScript', function() {
+      setup(function() {
         subject.executeJsScript(script, commandCallback);
       });
 
-      it('should call _executeScript', function() {
-        expect(calledWith).to.eql([
+      test('should call _executeScript', function() {
+        assert.deepEqual(calledWith, [
           { type: 'executeJSScript', value: script, timeout: true, args: null },
           commandCallback
         ]);
       });
     });
 
-    describe('.executeAsyncScript', function() {
-      beforeEach(function() {
+    suite('.executeAsyncScript', function() {
+      setup(function() {
         subject.executeAsyncScript(script, commandCallback);
       });
 
-      it('should call _executeScript', function() {
-        expect(calledWith).to.eql([
+      test('should call _executeScript', function() {
+        assert.deepEqual(calledWith, [
           { type: 'executeAsyncScript', value: script, args: null },
           commandCallback
         ]);
@@ -746,7 +745,7 @@ describe('marionette/client', function() {
     });
   });
 
-  describe('.refresh', function() {
+  suite('.refresh', function() {
     device.
       issues('refresh').
       serverResponds('ok').
@@ -754,7 +753,7 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
-  describe('.log', function() {
+  suite('.log', function() {
     device.
       issues('log', 'wow', 'info').
       shouldSend({ type: 'log', value: 'wow', level: 'info' }).
@@ -762,7 +761,7 @@ describe('marionette/client', function() {
       callbackReceives('ok');
   });
 
-  describe('.getLogs', function() {
+  suite('.getLogs', function() {
     device.
       issues('getLogs').
       shouldSend({ type: 'getLogs' }).
@@ -770,13 +769,13 @@ describe('marionette/client', function() {
       callbackReceives('value');
   });
 
-  describe('._findElement', function() {
+  suite('._findElement', function() {
 
     function receivesElement() {
       var value;
 
-      describe('callback argument', function() {
-        beforeEach(function() {
+      suite('callback argument', function() {
+        setup(function() {
           value = device.commandCallback.value;
           if (!(value instanceof Element) && !(value instanceof Array)) {
             throw new Error('result is not an array or an Element instance');
@@ -787,20 +786,20 @@ describe('marionette/client', function() {
           }
         });
 
-        it('should be an instance of Marionette.Element', function() {
+        test('should be an instance of Marionette.Element', function() {
           value.forEach(function(el) {
-            expect(el).to.be.a(Element);
-            expect(el.client).to.be(subject);
-            expect(el.id).to.contain('{');
+            assert.instanceOf(el, Element);
+            assert.strictEqual(el.client, subject);
+            assert.include(el.id, '{');
           });
         });
       });
     }
 
-    describe('with overriden Element', function() {
+    suite('with overriden Element', function() {
       var MyElement;
 
-      beforeEach(function() {
+      setup(function() {
         MyElement = function() {
           Element.apply(this, arguments);
         };
@@ -818,13 +817,13 @@ describe('marionette/client', function() {
         }).
         serverResponds('findElementResponse');
 
-      it('should return an instance of MyElement', function() {
+      test('should return an instance of MyElement', function() {
         var value = device.commandCallback.value;
-        expect(value).to.be.a(MyElement);
+        assert.instanceOf(value, MyElement);
       });
     });
 
-    describe('simple find with defaults', function() {
+    suite('simple find with defaults', function() {
       device.
         issues('_findElement', 'findElement', '#wow').
         shouldSend({
@@ -837,7 +836,7 @@ describe('marionette/client', function() {
       receivesElement();
     });
 
-    describe('find with all options', function() {
+    suite('find with all options', function() {
       device.
         issues('_findElement', 'findElements', 'wow', 'class name', 1).
         shouldSend({
@@ -851,37 +850,37 @@ describe('marionette/client', function() {
       receivesElement();
     });
 
-    describe('trying to find with invalid \'using\'', function() {
+    suite('trying to find with invalid \'using\'', function() {
 
-      it('should fail', function() {
-        expect(function() {
+      test('should fail', function() {
+        assert.throws(function() {
           subject._findElement(
             'findElement', 'wow', 'fake', function() {}
           );
-        }).to.throwError(/invalid option for using/);
+        }, /invalid option for using/);
       });
     });
 
   });
 
-  describe('element finders', function() {
+  suite('element finders', function() {
     var calledWith;
 
     function delegatesToFind(type) {
-      describe('.' + type, function() {
-        beforeEach(function() {
+      suite('.' + type, function() {
+        setup(function() {
           subject[type]('#query', commandCallback);
         });
 
-        it('should call _findElement', function() {
-          expect(calledWith).to.eql([
+        test('should call _findElement', function() {
+          assert.deepEqual(calledWith, [
             type, '#query', commandCallback
           ]);
         });
       });
     }
 
-    beforeEach(function() {
+    setup(function() {
       subject._findElement = function() {
         calledWith = arguments;
       };
@@ -891,12 +890,12 @@ describe('marionette/client', function() {
     delegatesToFind('findElements');
   });
 
-  describe('._executeScript', function() {
+  suite('._executeScript', function() {
       var cmd = 'return window.location',
           args = [{1: true}],
           type = 'executeScript';
 
-    describe('with args', function() {
+    suite('with args', function() {
       var request = {
         type: type,
         value: cmd,
@@ -910,7 +909,7 @@ describe('marionette/client', function() {
         callbackReceives('value');
     });
 
-    describe('without args', function() {
+    suite('without args', function() {
       var request = {
         type: type,
         value: cmd
@@ -927,7 +926,7 @@ describe('marionette/client', function() {
         callbackReceives('value');
     });
 
-    describe('with timeout', function() {
+    suite('with timeout', function() {
       var request = {
         type: 'executeJSScript',
         value: cmd,
@@ -945,10 +944,10 @@ describe('marionette/client', function() {
 
   });
 
-  describe('._newSession', function() {
+  suite('._newSession', function() {
     var response;
 
-    beforeEach(function(done) {
+    setup(function(done) {
       response = exampleCmds.newSessionResponse();
       subject._newSession(function() {
         cbResponse = arguments;
@@ -958,76 +957,76 @@ describe('marionette/client', function() {
       driver.respond(response);
     });
 
-    it('should send newSession', function() {
-      expect(driver.sent[0].type).to.eql('newSession');
+    test('should send newSession', function() {
+      assert.strictEqual(driver.sent[0].type, 'newSession');
     });
 
-    it('should save session id', function() {
-      expect(subject.session).to.be(response.value);
+    test('should save session id', function() {
+      assert.strictEqual(subject.session, response.value);
     });
 
-    it('should send callback response', function() {
-      expect(cbResponse[1]).to.eql(response);
+    test('should send callback response', function() {
+      assert.deepEqual(cbResponse[1], response);
     });
 
   });
 
-  describe('._convertFunction', function() {
+  suite('._convertFunction', function() {
     var result;
     var fn = function() { return true; };
 
-    beforeEach(function() {
+    setup(function() {
       result = subject._convertFunction(fn);
       result = result.replace(/\n|\s/g, '');
     });
 
-    it('should format function to call immediately', function() {
+    test('should format function to call immediately', function() {
       var expected;
       expected = 'return (function() { return true;}.apply(this, arguments));';
       expected = expected.replace(/\n|\s/g, '');
-      expect(result).to.be(expected);
+      assert.strictEqual(result, expected);
     });
 
-    it('should not format strings', function() {
-      expect(subject._convertFunction('foo')).to.be('foo');
+    test('should not format strings', function() {
+      assert.strictEqual(subject._convertFunction('foo'), 'foo');
     });
 
   });
 
-  describe('._transformResultValue', function() {
+  suite('._transformResultValue', function() {
     var result;
-    describe('when it is an element', function() {
-      beforeEach(function() {
+    suite('when it is an element', function() {
+      setup(function() {
         result = subject._transformResultValue({
           'ELEMENT': 'foo'
         });
       });
 
-      it('should return an instance of element', function() {
-        expect(result).to.be.a(Element);
-        expect(result.id).to.be('foo');
+      test('should return an instance of element', function() {
+        assert.instanceOf(result, Element);
+        assert.strictEqual(result.id, 'foo');
       });
 
     });
 
-    describe('when it is not an element', function() {
+    suite('when it is not an element', function() {
       var obj = {'foo': true};
 
-      beforeEach(function() {
+      setup(function() {
         result = subject._transformResultValue(obj);
       });
 
-      it('should return same object', function() {
-        expect(result).to.be(obj);
+      test('should return same object', function() {
+        assert.strictEqual(result, obj);
       });
     });
   });
 
 
-  describe('._prepareArguments', function() {
+  suite('._prepareArguments', function() {
     var args, result;
 
-    beforeEach(function() {
+    setup(function() {
       args = [
         new Element('{uuid}', subject),
         'wow',
@@ -1037,8 +1036,8 @@ describe('marionette/client', function() {
       result = subject._prepareArguments(args);
     });
 
-    it('should process Marionette.Element instances into uuids', function() {
-      expect(result).to.eql([
+    test('should process Marionette.Element instances into uuids', function() {
+      assert.deepEqual(result, [
         {'ELEMENT': '{uuid}'},
         'wow',
         true
