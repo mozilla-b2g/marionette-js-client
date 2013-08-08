@@ -1,8 +1,6 @@
 (function() {
 
-  global.expect = require('expect.js');
-
-  //always load test-agent for now
+  global.assert = require('chai').assert;
 
   global.helper = {
     requireLib: function(path, cb) {

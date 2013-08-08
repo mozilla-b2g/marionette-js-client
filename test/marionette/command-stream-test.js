@@ -1,4 +1,4 @@
-describe('marionette/command-stream', function() {
+suite('marionette/command-stream', function() {
 
   var subject, socket,
       Responder,
@@ -12,26 +12,26 @@ describe('marionette/command-stream', function() {
     CommandStream = obj;
   });
 
-  beforeEach(function() {
+  setup(function() {
     socket = new Responder();
     subject = new CommandStream(socket);
   });
 
-  describe('initialization', function() {
-    it('should save socket', function() {
-      expect(subject.socket).to.be(socket);
+  suite('initialization', function() {
+    test('should save socket', function() {
+      assert.strictEqual(subject.socket, socket);
     });
 
-    it('should be an event emitter', function() {
-      expect(subject.on).to.be.a(Function);
+    test('should be an event emitter', function() {
+      assert.instanceOf(subject.on, Function);
     });
   });
 
-  describe('socket event: data', function() {
+  suite('socket event: data', function() {
 
     var calledWith, data;
 
-    beforeEach(function() {
+    setup(function() {
       data = {};
 
       subject.on('command', function() {
@@ -41,33 +41,33 @@ describe('marionette/command-stream', function() {
       subject.socket.emit('data', new Buffer(subject.stringify(data)));
     });
 
-    it('should call add', function() {
-      expect(calledWith).to.eql([data]);
+    test('should call add', function() {
+      assert.deepEqual(calledWith, [data]);
     });
 
   });
 
-  describe('.stringify', function() {
+  suite('.stringify', function() {
     var command = {works: true},
         result;
 
     function shouldStringify() {
-      it('should return json string with length + : prefix (n:jsonstring)', function() {
+      test('should return json string with length + : prefix (n:jsonstring)', function() {
         var string = JSON.stringify(command);
-        expect(result).to.be(String(string.length) + ':' + string);
+        assert.strictEqual(result, String(string.length) + ':' + string);
       });
     }
 
-    describe('when given an object', function() {
-      beforeEach(function() {
+    suite('when given an object', function() {
+      setup(function() {
         result = subject.stringify(command);
       });
 
       shouldStringify();
     });
 
-    describe('when given a string', function() {
-      beforeEach(function() {
+    suite('when given a string', function() {
+      setup(function() {
         command = 'some random string';
         result = subject.stringify(command);
       });
@@ -76,39 +76,39 @@ describe('marionette/command-stream', function() {
     });
   });
 
-  describe('.send', function() {
+  suite('.send', function() {
 
     var calledWith = [], data = {uniq: true};
 
     function sendsToSocket(fnName) {
-      beforeEach(function() {
+      setup(function() {
         subject.socket[fnName] = function() {
           calledWith = Array.prototype.slice.call(arguments);
         };
         subject.send(data);
       });
 
-      it('should write to socket', function() {
-        expect(calledWith[0]).to.be(subject.stringify(data));
+      test('should write to socket', function() {
+        assert.strictEqual(calledWith[0], subject.stringify(data));
       });
     }
 
 
-    describe('when using socket.send', function() {
+    suite('when using socket.send', function() {
       sendsToSocket('send');
     });
 
-    describe('when using socket.write', function() {
+    suite('when using socket.write', function() {
       sendsToSocket('write');
 
-      it('should write in utf8', function() {
-        expect(calledWith[1]).to.be('utf8');
+      test('should write in utf8', function() {
+        assert.strictEqual(calledWith[1], 'utf8');
       });
     });
 
   });
 
-  describe('.add', function() {
+  suite('.add', function() {
 
     var commands = [],
         chunks = {},
@@ -128,18 +128,18 @@ describe('marionette/command-stream', function() {
       index = index || 0;
       name = name || 'success';
 
-      it('should emit ' + name + ' command at the #' + index + ' index', function() {
-        expect(commands[index]).to.eql(commandList[name]);
+      test('should emit ' + name + ' command at the #' + index + ' index', function() {
+        assert.deepEqual(commands[index], commandList[name]);
       });
     }
 
     function hasCommands(number) {
-      it('should have ' + String(number) + ' of commands', function() {
-        expect(commands.length).to.be(number);
+      test('should have ' + String(number) + ' of commands', function() {
+        assert.strictEqual(commands.length, number);
       });
     }
 
-    beforeEach(function() {
+    setup(function() {
       commands = [];
       Object.keys(commandList).forEach(function(key) {
         chunks[key] = subject.stringify(commandList[key]);
@@ -150,8 +150,8 @@ describe('marionette/command-stream', function() {
       });
     });
 
-    describe('when given the entire command', function() {
-      beforeEach(function() {
+    suite('when given the entire command', function() {
+      setup(function() {
         add(chunks.success);
       });
 
@@ -159,9 +159,9 @@ describe('marionette/command-stream', function() {
       hasCommands(1);
     });
 
-    describe('when given single command in multiple chunks', function() {
+    suite('when given single command in multiple chunks', function() {
 
-      beforeEach(function() {
+      setup(function() {
         add(chunks.success.slice(0, 1));
         add(chunks.success.slice(1, 2));
         add(chunks.success.slice(2));
@@ -172,8 +172,8 @@ describe('marionette/command-stream', function() {
 
     });
 
-    describe('when given multiple commands in two chunks', function() {
-      beforeEach(function() {
+    suite('when given multiple commands in two chunks', function() {
+      setup(function() {
         var chunk = chunks.success + chunks.fail,
             piece1,
             piece2,
@@ -182,7 +182,7 @@ describe('marionette/command-stream', function() {
         piece1 = chunk.slice(0, half);
         piece2 = chunk.slice(half);
         //sanity check
-        expect(piece1 + piece2).to.be(chunk);
+        assert.strictEqual(piece1 + piece2, chunk);
 
         add(piece1);
         add(piece2);
@@ -194,8 +194,8 @@ describe('marionette/command-stream', function() {
 
     });
 
-    describe('when given both commands in one chunk', function() {
-      beforeEach(function() {
+    suite('when given both commands in one chunk', function() {
+      setup(function() {
         add(chunks.fail + chunks.success);
       });
 

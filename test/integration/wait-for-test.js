@@ -12,7 +12,7 @@ suite('scope', function() {
         return (++tries === succeed);
       });
 
-      expect(tries).to.be(10);
+      assert.strictEqual(tries, 10);
     });
 
     test('should eventually timeout', function() {
@@ -27,8 +27,8 @@ suite('scope', function() {
         err = e;
       }
 
-      expect(err).to.be.ok();
-      expect((Date.now() - start) >= timeout).to.be.ok();
+      assert.ok(err);
+      assert.operator(Date.now() - start, '>=', timeout);
     });
   });
 
@@ -40,7 +40,7 @@ suite('scope', function() {
       }
 
       client.waitFor(sendError, function(givenErr) {
-        expect(givenErr).to.be(err);
+        assert.strictEqual(givenErr, err);
         done();
       });
     });

@@ -5,86 +5,86 @@ var FakeSocket = require('../support/socket'),
     ConnectionManger = require('../../lib/node/connection-manager');
 
 
-describe('connection-manager', function() {
+suite('connection-manager', function() {
   var RealSocket, subject, sockets = [];
 
-  before(function() {
+  suiteSetup(function() {
     RealSocket = ConnectionManger.Socket;
     ConnectionManger.Socket = FakeSocket;
     FakeSocket.sockets = sockets;
   });
 
-  after(function() {
+  suiteTeardown(function() {
     ConnectionManger.Socket = RealSocket;
   });
 
-  beforeEach(function() {
+  setup(function() {
     sockets.length = 0;
     subject = new ConnectionManger();
   });
 
-  describe('initialization', function() {
-    it('should initialize .connections', function() {
-      expect(subject.connections).to.eql({});
+  suite('initialization', function() {
+    test('should initialize .connections', function() {
+      assert.deepEqual(subject.connections, {});
     });
   });
 
-  describe('.remove', function() {
-    it('should remove connection from list', function() {
+  suite('.remove', function() {
+    test('should remove connection from list', function() {
       subject.open();
-      expect(subject.connections[0]).to.be.ok();
+      assert.ok(subject.connections[0]);
       subject.close(0);
-      expect(subject.connections[0]).not.to.be.ok();
+      assert.notOk(subject.connections[0]);
     });
   });
 
-  describe('.get', function() {
+  suite('.get', function() {
 
-    it('should return an open connection', function() {
+    test('should return an open connection', function() {
       var open = subject.open();
 
-      expect(subject.get(open.id)).to.be(open.connection);
+      assert.strictEqual(subject.get(open.id), open.connection);
     });
 
   });
 
-  describe('.open', function() {
+  suite('.open', function() {
     var result, con;
 
-    beforeEach(function() {
+    setup(function() {
       result = subject.open();
       con = subject.connections[0];
     });
 
-    it('should initialize socket and stream', function() {
-      expect(sockets[0]).to.be.ok();
-      expect(con.socket).to.be(sockets[0]);
-      expect(sockets[0].port).to.be(subject.defaultPort);
+    test('should initialize socket and stream', function() {
+      assert.ok(sockets[0]);
+      assert.strictEqual(con.socket, sockets[0]);
+      assert.strictEqual(sockets[0].port, subject.defaultPort);
 
-      expect(con).to.be.a(CommandStream);
+      assert.instanceOf(con, CommandStream);
     });
 
-    it('should increment currentId', function() {
-      expect(subject.currentId).to.be(1);
+    test('should increment currentId', function() {
+      assert.strictEqual(subject.currentId, 1);
     });
 
-    it('should return id and stream', function() {
-      expect(result).to.eql({
+    test('should return id and stream', function() {
+      assert.deepEqual(result, {
         id: 0,
         connection: subject.connections[0]
       });
     });
 
     function isRemovedOnEvent(event) {
-      describe('on socket ' + event, function() {
+      suite('on socket ' + event, function() {
 
-        beforeEach(function() {
-          expect(subject.connections[0]).to.be.ok();
+        setup(function() {
+          assert.ok(subject.connections[0]);
           con.socket.emit(event);
         });
 
-        it('should remove itself from connections', function() {
-          expect(subject.connections[0]).not.to.be.ok();
+        test('should remove itself from connections', function() {
+          assert.notOk(subject.connections[0]);
         });
 
       });

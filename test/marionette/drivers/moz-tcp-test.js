@@ -64,7 +64,7 @@ describe('marionette/drivers/moz-tcp', function() {
     });
 
     it('should send request to socket', function() {
-      expect(sent).to.eql([
+      assert(sent).to.eql([
         [{type: 'foo'}]
       ]);
     });
@@ -84,7 +84,7 @@ describe('marionette/drivers/moz-tcp', function() {
     });
 
     it('should call onDeviceResponse', function() {
-      expect(sent).to.eql([
+      assert(sent).to.eql([
         [{ id: 0, response: {type: 'foo'} }]
       ]);
     });
@@ -98,8 +98,8 @@ describe('marionette/drivers/moz-tcp', function() {
     });
 
     it('should create a socket for connection', function() {
-      expect(sockets[0].host).to.be('127.0.0.1');
-      expect(sockets[0].port).to.be(2828);
+      assert(sockets[0].host).to.be('127.0.0.1');
+      assert(sockets[0].port).to.be(2828);
     });
 
   });
@@ -111,7 +111,7 @@ describe('marionette/drivers/moz-tcp', function() {
     });
 
     it('should close socket', function() {
-      expect(subject.socket.destroyed).to.be(true);
+      assert(subject.socket.destroyed).to.be(true);
     });
 
   });

@@ -20,23 +20,23 @@ describe('marionette/drivers/abstract', function() {
   describe('initialization', function() {
 
     it('should setup ._sendQueue', function() {
-      expect(subject._sendQueue).to.eql([]);
+      assert.deepEqual(subject._sendQueue, []);
     });
 
     it('should not be ready', function() {
-      expect(subject.ready).to.be(false);
+      assert.strictEqual(subject.ready, false);
     });
 
     it('should setup ._responseQueue', function() {
-      expect(subject._responseQueue).to.be.a(Array);
+      assert.instanceOf(subject._responseQueue, Array);
     });
 
     it('should have timeout set to 10000', function() {
-      expect(subject.timeout).to.be(10000);
+      assert.strictEqual(subject.timeout, 10000);
     });
 
     it('should be _waiting', function() {
-      expect(subject._waiting).to.be(true);
+      assert.strictEqual(subject._waiting, true);
     });
   });
 
@@ -66,7 +66,7 @@ describe('marionette/drivers/abstract', function() {
       };
 
       subject.send(exampleCmds.newSession(), callback);
-      expect(subject._waiting).to.be(true);
+      assert.strictEqual(subject._waiting, true);
     });
 
     describe('when response is for different device', function() {
@@ -76,7 +76,7 @@ describe('marionette/drivers/abstract', function() {
       });
 
       it('should trigger response callbacks', function() {
-        expect(callbackResponse).to.be(null);
+        assert.strictEqual(callbackResponse, null);
       });
     });
 
@@ -93,15 +93,15 @@ describe('marionette/drivers/abstract', function() {
       });
 
       it('should trigger response callbacks', function() {
-        expect(callbackResponse[0]).to.eql(response.response);
+        assert.deepEqual(callbackResponse[0], response.response);
       });
 
       it('should clear response queue', function() {
-        expect(subject._responseQueue.length).to.be(0);
+        assert.strictEqual(subject._responseQueue.length, 0);
       });
 
       it('should not be waiting', function() {
-        expect(subject._waiting).to.be(false);
+        assert.strictEqual(subject._waiting, false);
       });
 
     });
@@ -122,15 +122,15 @@ describe('marionette/drivers/abstract', function() {
     });
 
     it('should call _close', function() {
-      expect(calledClose).to.be(true);
+      assert.strictEqual(calledClose, true);
     });
 
     it('should not be ready', function() {
-      expect(subject.ready).to.be(false);
+      assert.strictEqual(subject.ready, false);
     });
 
     it('should clean up _responseQueue', function() {
-      expect(subject._responseQueue.length).to.be(0);
+      assert.strictEqual(subject._responseQueue.length, 0);
     });
 
   });
@@ -152,7 +152,7 @@ describe('marionette/drivers/abstract', function() {
         });
       };
 
-      expect(subject._waiting).to.be(true);
+      assert.strictEqual(subject._waiting, true);
 
       subject.connect(function() {
         done();
@@ -160,23 +160,23 @@ describe('marionette/drivers/abstract', function() {
     });
 
     it('should set .traits', function() {
-      expect(subject.traits).to.eql([]);
+      assert.deepEqual(subject.traits, []);
     });
 
     it('should set .applicationType', function() {
-      expect(subject.applicationType).to.be(cmd.applicationType);
+      assert.strictEqual(subject.applicationType, cmd.applicationType);
     });
 
     it('should call _connect', function() {
-      expect(calledChild).to.be(true);
+      assert.strictEqual(calledChild, true);
     });
 
     it('should not be waiting', function() {
-      expect(subject._waiting).to.be(false);
+      assert.strictEqual(subject._waiting, false);
     });
 
     it('should be ready', function() {
-      expect(subject.ready).to.be(true);
+      assert.strictEqual(subject.ready, true);
     });
 
   });
@@ -198,7 +198,7 @@ describe('marionette/drivers/abstract', function() {
       });
 
       it('should not send command to server', function() {
-        expect(sent.length).to.be(0);
+        assert.strictEqual(sent.length, 0);
       });
     });
 
@@ -209,11 +209,11 @@ describe('marionette/drivers/abstract', function() {
       });
 
       it('should be waiting', function() {
-        expect(subject._waiting).to.be(true);
+        assert.strictEqual(subject._waiting, true);
       });
 
       it('should send command to server', function() {
-        expect(sent[0][0]).to.eql(cmd1);
+        assert.deepEqual(sent[0][0], cmd1);
       });
 
     });
@@ -229,7 +229,7 @@ describe('marionette/drivers/abstract', function() {
       });
 
       it('should not be waiting', function() {
-        expect(subject._waiting).to.be(false);
+        assert.strictEqual(subject._waiting, false);
       });
     });
 
@@ -245,9 +245,9 @@ describe('marionette/drivers/abstract', function() {
     describe('when device is not ready', function() {
 
       it('should throw an error', function() {
-        expect(function() {
+        assert.throws(function() {
           subject.send({ type: 'newSession' });
-        }).to.throwError(/not ready/);
+        }, /not ready/);
       });
     });
 
@@ -261,11 +261,11 @@ describe('marionette/drivers/abstract', function() {
       });
 
       it('should send command', function() {
-        expect(sent.length).to.be(1);
+        assert.strictEqual(sent.length, 1);
       });
 
       it('should be waiting', function() {
-        expect(subject._waiting).to.be(true);
+        assert.strictEqual(subject._waiting, true);
       });
     });
 
@@ -286,15 +286,15 @@ describe('marionette/drivers/abstract', function() {
       });
 
       it('should call next', function() {
-        expect(nextCalled).to.be(true);
+        assert.strictEqual(nextCalled, true);
       });
 
       it('should add send command to queue', function() {
-        expect(subject._sendQueue[0]).to.be(cmd);
+        assert.strictEqual(subject._sendQueue[0], cmd);
       });
 
       it('should add calback to response queue', function() {
-        expect(subject._responseQueue[0]).to.be(cb);
+        assert.strictEqual(subject._responseQueue[0], cb);
       });
     });
 

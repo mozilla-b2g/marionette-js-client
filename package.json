@@ -4,29 +4,25 @@
   "main": "lib/marionette/index",
   "description": "Marionette Javascript Client",
   "author": "James Lal",
-
-  "dependencies" : {
+  "dependencies": {
     "debug": "~0.6",
     "json-wire-protocol": "~0.2.1",
     "socket-retry-connect": "~0.0.1",
     "sockit-to-me": "~0.1"
   },
-
   "scripts": {
     "test": "make ci REPORTER=dot"
   },
-
   "devDependencies": {
     "mocha": "~1.10",
-    "expect.js": "0.1.2",
     "xpcwindow": "0.4.4",
     "yuidocjs": "~0.3",
     "test-agent": "~0.12",
     "node-static": "~0.6",
     "marionette-js-runner": "~0.0.1",
-    "mozilla-download": "~0.2"
+    "mozilla-download": "~0.2",
+    "chai": "~1.7.2"
   },
-
   "license": "MIT",
   "engine": {
     "node": ">=0.4"

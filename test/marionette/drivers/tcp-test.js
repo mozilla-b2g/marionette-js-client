@@ -65,8 +65,8 @@ describe('marionette/drivers/tcp', function() {
       host: 'foobar'
     });
 
-    expect(subject.port).to.be(8888);
-    expect(subject.host).to.be('foobar');
+    assert.strictEqual(subject.port, 8888);
+    assert.strictEqual(subject.host, 'foobar');
   });
 
   describe('._sendCommand', function() {
@@ -88,7 +88,7 @@ describe('marionette/drivers/tcp', function() {
     });
 
     it('should send request to socket', function() {
-      expect(sent).to.eql([
+      assert.deepEqual(sent, [
         [{type: 'foo'}]
       ]);
     });
@@ -108,7 +108,7 @@ describe('marionette/drivers/tcp', function() {
     });
 
     it('should call onDeviceResponse', function() {
-      expect(sent).to.eql([
+      assert.deepEqual(sent, [
         [{ id: 0, response: {type: 'foo'} }]
       ]);
     });
@@ -150,7 +150,7 @@ describe('marionette/drivers/tcp', function() {
     });
 
     it('should close socket', function() {
-      expect(subject.socket.destroyed).to.be(true);
+      assert.strictEqual(subject.socket.destroyed, true);
     });
 
   });
