@@ -1,4 +1,4 @@
-describe('marionette/multi-actions', function() {
+suite('marionette/multi-actions', function() {
   var driver, subject, actions, client, device,
       MultiActions, Actions, Client;
 
@@ -18,30 +18,30 @@ describe('marionette/multi-actions', function() {
     return subject;
   });
 
-  beforeEach(function() {
+  setup(function() {
     driver = new MockDriver();
     client = new Client(driver);
     actions = new Actions(client);
     subject = new MultiActions(client);
   });
 
-  describe('initialization', function() {
-    it('should set client', function() {
-      expect(subject.client).to.be(client);
+  suite('initialization', function() {
+    test('should set client', function() {
+      assert.strictEqual(subject.client, client);
     });
   });
 
-  describe('.add', function() {
-    beforeEach(function() {
+  suite('.add', function() {
+    setup(function() {
       subject.add(actions);
     });
 
-    it('should have a action chain', function() {
-      expect(subject.multiActions[0]).to.be.eql(actions.actionChain);
+    test('should have a action chain', function() {
+      assert.deepEqual(subject.multiActions[0], actions.actionChain);
     });
   });
 
-  describe('.perform', function() {
+  suite('.perform', function() {
     device.
       issues('perform').
       shouldSend({

@@ -8,7 +8,7 @@ suite('drivers/tcp-sync', function() {
     var location = client.executeScript(function() {
       return window.location.href;
     });
-    expect(location.indexOf('yahoo.com') !== -1).to.be.ok();
+    assert.ok(location.indexOf('yahoo.com') !== -1);
   });
 
 });

@@ -1,7 +1,7 @@
 //this is hack to ensure device interactions are
 //loaded
 
-describe('marionette/element', function() {
+suite('marionette/element', function() {
   var driver, subject, client, id, device,
        Element, Client;
 
@@ -16,7 +16,7 @@ describe('marionette/element', function() {
   id = '{fake-uuid-root}';
 
   function simpleCommand(method, type, responseKey) {
-    describe('.' + method, function() {
+    suite('.' + method, function() {
       device.
         issues(method).
         shouldSend({
@@ -32,23 +32,23 @@ describe('marionette/element', function() {
     return subject;
   });
 
-  beforeEach(function() {
+  setup(function() {
     driver = new MockDriver();
     client = new Client(driver);
     subject = new Element(id, client);
   });
 
-  describe('initialization', function() {
-    it('should set id', function() {
-      expect(subject.id).to.be(id);
+  suite('initialization', function() {
+    test('should set id', function() {
+      assert.strictEqual(subject.id, id);
     });
 
-    it('should set client', function() {
-      expect(subject.client).to.be(client);
+    test('should set client', function() {
+      assert.strictEqual(subject.client, client);
     });
   });
 
-  describe('._sendCommand', function() {
+  suite('._sendCommand', function() {
     device.
       issues('_sendCommand', { type: 'test' }, 'ok').
       shouldSend({ type: 'test', element: id }).
@@ -56,7 +56,7 @@ describe('marionette/element', function() {
       callbackReceives('ok');
   });
 
-  describe('.findElement', function() {
+  suite('.findElement', function() {
     device.
       issues('findElement', '#id').
       shouldSend({
@@ -66,15 +66,15 @@ describe('marionette/element', function() {
       }).
       serverResponds('findElementResponse');
 
-    it('should send callback a single element', function() {
+    test('should send callback a single element', function() {
       var value = device.commandCallback.value,
           resultId = exampleCmds.findElementResponse().value;
-      expect(value).to.be.a(Element);
-      expect(value.id).to.be(resultId);
+      assert.instanceOf(value, Element);
+      assert.strictEqual(value.id, resultId);
     });
   });
 
-  describe('.findElements', function() {
+  suite('.findElements', function() {
     device.
       issues('findElements', '#id').
       shouldSend({
@@ -84,20 +84,20 @@ describe('marionette/element', function() {
       }).
       serverResponds('findElementsResponse');
 
-    it('should send callback an element instance', function() {
+    test('should send callback an element instance', function() {
       var map = device.commandCallback.value.map(function(el) {
         return el.id;
       });
-      expect(map).to.eql(exampleCmds.findElementsResponse().value);
+      assert.deepEqual(map, exampleCmds.findElementsResponse().value);
     });
   });
 
-  describe('.scriptWith', function() {
+  suite('.scriptWith', function() {
     var calledWith,
         fn = function() {},
         cb = function() {};
 
-    beforeEach(function() {
+    setup(function() {
       subject.client.executeScript = function() {
         calledWith = arguments;
       }
@@ -105,21 +105,21 @@ describe('marionette/element', function() {
       subject.scriptWith(fn, cb);
     });
 
-    it('should call client.executeScript with element as argument', function() {
-      expect(calledWith[0]).to.be(fn);
-      expect(calledWith[1]).to.eql([
+    test('should call client.executeScript with element as argument', function() {
+      assert.strictEqual(calledWith[0], fn);
+      assert.deepEqual(calledWith[1], [
         subject
       ]);
 
-      expect(calledWith[2]).to.be(cb);
+      assert.strictEqual(calledWith[2], cb);
     });
 
   });
 
-  describe('.equals', function() {
+  suite('.equals', function() {
     var otherId = 'foo';
 
-    describe('when given an id', function() {
+    suite('when given an id', function() {
       device.
         issues('equals', otherId).
         shouldSend({
@@ -130,8 +130,8 @@ describe('marionette/element', function() {
         callbackReceives('value');
     });
 
-    describe('when given an element instance', function() {
-      beforeEach(function() {
+    suite('when given an element instance', function() {
+      setup(function() {
         var element = new Element(otherId, device);
         subject.equals(element, device.commandCallback);
       });
@@ -148,7 +148,7 @@ describe('marionette/element', function() {
 
   });
 
-  describe('.getAttribute', function() {
+  suite('.getAttribute', function() {
     var attr = 'name';
 
     device.
@@ -162,7 +162,7 @@ describe('marionette/element', function() {
       callbackReceives('value');
   });
 
-  describe('.sendKeys', function() {
+  suite('.sendKeys', function() {
     var msg = 'foo';
 
     device.
@@ -176,7 +176,7 @@ describe('marionette/element', function() {
       callbackReceives('ok');
   });
 
-  describe('.tap', function() {
+  suite('.tap', function() {
     var x = 10;
     var y = 15;
 
