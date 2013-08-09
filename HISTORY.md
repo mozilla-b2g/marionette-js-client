@@ -1,3 +1,7 @@
+# 0.13
+  - add element.tap
+  - add element.size
+
 # 0.12
   - add debug to tcpsync
   - added resetWithDriver to client so clients can be reused.
