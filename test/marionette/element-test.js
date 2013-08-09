@@ -100,12 +100,13 @@ suite('marionette/element', function() {
     setup(function() {
       subject.client.executeScript = function() {
         calledWith = arguments;
-      }
+      };
 
       subject.scriptWith(fn, cb);
     });
 
-    test('should call client.executeScript with element as argument', function() {
+    test('should call client.executeScript with' +
+      'element as argument', function() {
       assert.strictEqual(calledWith[0], fn);
       assert.deepEqual(calledWith[1], [
         subject
@@ -163,17 +164,31 @@ suite('marionette/element', function() {
   });
 
   suite('.sendKeys', function() {
-    var msg = 'foo';
+    suite('when given a array', function() {
+      var input = ['f', 'o', 'o'];
+      device.
+        issues('sendKeys', input).
+        shouldSend({
+          type: 'sendKeysToElement',
+          value: input,
+          element: id
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
 
-    device.
-      issues('sendKeys', msg).
-      shouldSend({
-        type: 'sendKeysToElement',
-        value: msg,
-        element: id
-      }).
-      serverResponds('ok').
-      callbackReceives('ok');
+    suite('when given a string', function() {
+      var msg = 'foo';
+      device.
+        issues('sendKeys', msg).
+        shouldSend({
+          type: 'sendKeysToElement',
+          value: [msg],
+          element: id
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
   });
 
   suite('.tap', function() {
