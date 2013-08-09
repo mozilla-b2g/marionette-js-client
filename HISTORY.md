@@ -1,3 +1,6 @@
+# 0.13.1
+  - fix sending a string to element.sendKeys
+
 # 0.13
   - add element.tap
   - add element.size
