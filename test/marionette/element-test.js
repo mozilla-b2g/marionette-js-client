@@ -118,35 +118,20 @@ suite('marionette/element', function() {
   });
 
   suite('.equals', function() {
-    var otherId = 'foo';
-
-    suite('when given an id', function() {
-      device.
-        issues('equals', otherId).
-        shouldSend({
-          type: 'elementsEqual',
-          elements: [id, otherId]
-        }).
-        serverResponds('value').
-        callbackReceives('value');
+    var equals;
+    var notEquals;
+    setup(function() {
+      equals = new Element(id, client);
+      notEquals = new Element('___I_AM_TITAN', client);
     });
 
-    suite('when given an element instance', function() {
-      setup(function() {
-        var element = new Element(otherId, device);
-        subject.equals(element, device.commandCallback);
-      });
-
-      device.
-        shouldSend({
-          type: 'elementsEqual',
-          elements: [id, otherId]
-        }).
-        serverResponds('elementEqualsResponse').
-        callbackReceives('value');
-
+    test('equals', function() {
+      assert.isTrue(subject.equals(equals));
     });
 
+    test('not equal', function() {
+      assert.isFalse(subject.equals(notEquals));
+    });
   });
 
   suite('.getAttribute', function() {
