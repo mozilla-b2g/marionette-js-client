@@ -1,3 +1,7 @@
+ #0.13.2
+  - fix findElement/findElements/scriptWith not returning values in sync driver.
+  - fix equals as it is no longer a marionette command.
+
 # 0.13.1
   - fix sending a string to element.sendKeys
 
