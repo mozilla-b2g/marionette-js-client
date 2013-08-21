@@ -1,4 +1,7 @@
- #0.13.2
+# 0.13.3 
+  - fix element.tap without giving x,y should now tap center.
+
+#0.13.2
   - fix findElement/findElements/scriptWith not returning values in sync driver.
   - fix equals as it is no longer a marionette command.
 

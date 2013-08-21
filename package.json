@@ -1,6 +1,6 @@
 {
   "name": "marionette-client",
-  "version": "0.13.2",
+  "version": "0.13.3",
   "main": "lib/marionette/index",
   "description": "Marionette Javascript Client",
   "author": "James Lal",
