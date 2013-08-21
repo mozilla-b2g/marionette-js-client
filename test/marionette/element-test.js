@@ -177,19 +177,32 @@ suite('marionette/element', function() {
   });
 
   suite('.tap', function() {
-    var x = 10;
-    var y = 15;
+    suite('when given the x and y offsets', function() {
+      var x = 10;
+      var y = 15;
 
-    device.
-      issues('tap', x, y).
-      shouldSend({
-        type: 'singleTap',
-        x: x,
-        y: y,
-        element: id
-      }).
-      serverResponds('value').
-      callbackReceives('value');
+      device.
+        issues('tap', x, y).
+        shouldSend({
+          type: 'singleTap',
+          x: x,
+          y: y,
+          element: id
+        }).
+        serverResponds('value').
+        callbackReceives('value');
+    });
+
+    suite('when no x and y offsets', function() {
+      device.
+        issues('tap').
+        shouldSend({
+          type: 'singleTap',
+          element: id
+        }).
+        serverResponds('value').
+        callbackReceives('value');
+    });
   });
 
   simpleCommand('tagName', 'getElementTagName', 'value');
