@@ -1,3 +1,6 @@
+# 0.13.4
+  - fix bug where errors would not give their status
+
 # 0.13.3 
   - fix element.tap without giving x,y should now tap center.
 
