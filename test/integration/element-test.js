@@ -41,4 +41,16 @@ suite('element methods', function() {
       'returns instances of Marionette.Element'
     );
   });
+
+  test('#findElement - missing', function() {
+    var err;
+    try {
+      client.findElement('#fooobaramazingmissing');
+    } catch(e) {
+      err = e;
+    }
+
+    if (!err) throw new Error('missing element did not trigger an error');
+    assert.equal(err.type, 'NoSuchElement');
+  });
 });
