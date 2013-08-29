@@ -27,6 +27,12 @@ suite('marionette/error', function() {
       }
     });
 
+    test('should return given when given is a MarionetteError', function() {
+      var input = new MarionetteError({});
+      var result = new MarionetteError(input);
+      assert.equal(input, result);
+    });
+
     test('should use 500 error when unknown stack is given', function() {
       var result = new MarionetteError({
         status: 7777,
