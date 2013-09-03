@@ -769,6 +769,31 @@ suite('marionette/client', function() {
       callbackReceives('value');
   });
 
+  suite('.screenshot', function() {
+
+    suite('without options', function() {
+      device.
+        issues('screenshot').
+        shouldSend({ type: 'screenShot' }).
+        serverResponds('screenshotResponse').
+        callbackReceives('value');
+    });
+
+    suite('with options', function() {
+      device.
+        issues('screenshot', {
+          type: 'untrusted',
+          element: { id: 33 }
+        }).
+        shouldSend({
+          type: 'screenShot',
+          element: 33
+        }).
+        serverResponds('screenshotResponse').
+        callbackReceives('value');
+    });
+  });
+
   suite('._findElement', function() {
 
     function receivesElement() {
