@@ -1,3 +1,6 @@
+# 0.14.0
+  - add client.screenshot
+
 # 0.13.4
   - fix bug where errors would not give their status
 
