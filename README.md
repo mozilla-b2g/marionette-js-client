@@ -5,7 +5,7 @@ JavaScript client for
 
 Designed to run on [Node.js](http://nodejs.org).
 
-- [Api Docs](http://lightsofapollo.github.com/marionette_js_client/api-docs/)
+- [Api Docs](http://mozilla-b2g.github.com/marionette_js_client/api-docs/)
 
 ## Hacking
 
