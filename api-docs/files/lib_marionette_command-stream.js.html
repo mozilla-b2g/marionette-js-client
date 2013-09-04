@@ -102,23 +102,9 @@
     <pre class="code prettyprint linenums">
 (function(module, ns) {
 
-  var debug = function() {};
+  var debug = require(&#x27;debug&#x27;)(&#x27;marionette:command-stream&#x27;);
   var Responder = ns.require(&#x27;responder&#x27;);
-
-  var isNode = typeof(window) === &#x27;undefined&#x27;;
-  var isXpc = !isNode &amp;&amp; (typeof(window.xpcModule) !== &#x27;undefined&#x27;);
-  var wire;
-
-  if (isNode) {
-    debug = require(&#x27;debug&#x27;)(&#x27;marionette:command-stream&#x27;);
-    wire = require(&#x27;json-wire-protocol&#x27;);
-  } else {
-    wire = window.jsonWireProtocol;
-  }
-
-  if (isXpc) {
-    debug = window.xpcModule.require(&#x27;debug&#x27;)(&#x27;marionette:command-stream&#x27;);
-  }
+  var wire = require(&#x27;json-wire-protocol&#x27;);
 
   /**
    * Command stream accepts a socket or any event

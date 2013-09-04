@@ -158,10 +158,13 @@
   }
 
   /**
-   * Initializes client.
-   * You must create and initialize
-   * a driver and pass it into the client before
-   * using the client itself.
+   * Initializes client.You must create and initialize
+   * a driver and pass it into the client before using the client itself.
+   *
+   * Marionette JS Client supports both async and sync modes... The
+   * documentation reflects the sync modes but you can also pass a callback into
+   * most calls for the sync version. If you attempt to use callbacks with a
+   * sync driver they will be called but run synchronously.
    *
    *     // all drivers conform to this api
    *
@@ -559,7 +562,7 @@
 
       // handle error conversion
       if (args[0]) {
-        args[0] = Exception.error(args[0]);
+        args[0] = new Exception(args[0]);
       }
 
       return callback.apply(this, args);
@@ -1043,6 +1046,47 @@
      */
     getLogs: function getLogs(callback) {
       var cmd = { type: &#x27;getLogs&#x27; };
+      return this._sendCommand(cmd, &#x27;value&#x27;, callback);
+    },
+
+    /**
+     * Creates a base64-encoded screenshot of the element, or the current frame
+     * if no element is specified.
+     *
+     *     client.screenshot({
+     *       element: elementToScreenshot
+     *     });
+     *
+     *    Options:
+     *      * (Element) element: The element to take a screenshot of. If
+     *        unspecified, will take a screenshot of the current frame
+     *
+     * @method screenshot
+     * @param {Object} [options] (see above)
+     * @chainable
+     * @param {Function} callback
+     */
+    screenshot: function screenshot(options, callback) {
+      var cmd = { type: &#x27;screenShot&#x27; };
+
+      if (typeof options === &#x27;function&#x27;) {
+        callback = options;
+        options = null;
+      }
+
+      if (options) {
+        cmd.element = options.element.id;
+        // TODO: Uncomment, document and test &#x60;highlights&#x60; option:
+        // Bug 912611 - Implement &#x60;highlights&#x60; option of &#x60;Client#screenshot&#x60;
+        /*
+        if (options.highlights) {
+          cmd.highlights = options.highlights.map(function(elem) {
+            return elem.id;
+          });
+        }
+        */
+      }
+
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 

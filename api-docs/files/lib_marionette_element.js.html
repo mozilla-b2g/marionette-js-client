@@ -104,7 +104,6 @@
 @namespace
 */
 (function(module, ns) {
-
   /**
    * Creates an element reference
    * based on an id and a client instance.
@@ -144,7 +143,13 @@
         command.element = this.id;
       }
 
-      this.client._sendCommand(command, responseKey, callback);
+      var isSync = this.client.isSync;
+      var result =
+        this.client._sendCommand(command, responseKey, callback);
+
+      if (isSync)
+        return result;
+
       return this;
     },
 
@@ -158,7 +163,11 @@
      * @return {Object} self.
      */
     findElement: function findElement(query, method, callback) {
-      this.client.findElement(query, method, this.id, callback);
+      var result = this.client.findElement(query, method, this.id, callback);
+
+      if (this.client.isSync) {
+        return result;
+      }
       return this;
     },
 
@@ -172,7 +181,10 @@
      * @return {Object} self.
      */
     findElements: function findElement(query, method, callback) {
-      this.client.findElements(query, method, this.id, callback);
+      var result = this.client.findElements(query, method, this.id, callback);
+      if (this.client.isSync) {
+        return result;
+      }
       return this;
     },
 
@@ -186,29 +198,22 @@
      * @param {Function} callback callback when script completes.
      */
     scriptWith: function scriptWith(script, callback) {
-      this.client.executeScript(script, [this], callback);
+      return this.client.executeScript(script, [this], callback);
     },
 
     /**
      * Checks to see if two elements are equal
      *
      * @method equals
-     * @param {String|Marionette.Element} element element to test.
-     * @param {Function} callback called with boolean.
-     * @return {Object} self.
+     * @param {Marionette.Element} element element to test.
+     * @return {Boolean} true when equal.
      */
-    equals: function equals(element, callback) {
-
-      if (element instanceof this.constructor) {
-        element = element.id;
+    equals: function equals(element) {
+      if (!(element instanceof Element)) {
+        throw new Error(&#x27;must pass an element&#x27;);
       }
 
-      var cmd = {
-        type: &#x27;elementsEqual&#x27;,
-        elements: [this.id, element]
-      };
-      this.client._sendCommand(cmd, &#x27;value&#x27;, callback);
-      return this;
+      return this.id === element.id;
     },
 
     /**
@@ -233,14 +238,17 @@
      *
      *
      * @method sendKeys
-     * @param {String} string message to type.
+     * @param {String|Array} input message to type.
      * @param {Function} callback boolean success.
      * @return {Object} self.
      */
-    sendKeys: function sendKeys(string, callback) {
+    sendKeys: function sendKeys(input, callback) {
+      if (!Array.isArray(input)) {
+        input = [input];
+      }
       var cmd = {
         type: &#x27;sendKeysToElement&#x27;,
-        value: string
+        value: input
       };
       return this._sendCommand(cmd, &#x27;ok&#x27;, callback);
     },
@@ -281,8 +289,31 @@
      */
     tagName: function tagName(callback) {
       var cmd = {
-        type: &#x27;getElementTagName&#x27;,
+        type: &#x27;getElementTagName&#x27;
       };
+      return this._sendCommand(cmd, &#x27;value&#x27;, callback);
+    },
+
+    /**
+     * Taps an element at given x and y coordinates.
+     * If no offsets are given, it will be tapped at the center of the element.
+     *
+     * @method tap
+     * @param {Number} [x] offset for the tap.
+     * @param {Number} [y] offset for the tap.
+     * @param {Function} [callback] [Error err]
+     */
+    tap: function(x, y, callback) {
+      var cmd = {
+        type: &#x27;singleTap&#x27;
+      };
+
+      if (typeof(x) === &#x27;number&#x27; &amp;&amp;
+          typeof(y) === &#x27;number&#x27;) {
+        cmd.x = x;
+        cmd.y = y;
+      }
+
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     },
 
@@ -340,6 +371,28 @@
     displayed: function displayed(callback) {
       var cmd = {
         type: &#x27;isElementDisplayed&#x27;
+      };
+      return this._sendCommand(cmd, &#x27;value&#x27;, callback);
+    },
+
+    /**
+     * Returns the size of a given element.
+     *
+     * The returned size will be in the following format:
+     *
+     *    // returned in callback or result of this call in the sync driver.
+     *    {
+     *      x: Number,
+     *      y: Number
+     *    }
+     *
+     * @method size
+     * @param {Function} callback [Error err, Object size].
+     * @return {Object} self.
+     */
+    size: function displayed(callback) {
+      var cmd = {
+        type: &#x27;getElementSize&#x27;
       };
       return this._sendCommand(cmd, &#x27;value&#x27;, callback);
     }
