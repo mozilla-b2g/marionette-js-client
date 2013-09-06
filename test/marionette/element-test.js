@@ -194,14 +194,7 @@ suite('marionette/element', function() {
     });
 
     suite('when no x and y offsets', function() {
-      device.
-        issues('tap').
-        shouldSend({
-          type: 'singleTap',
-          element: id
-        }).
-        serverResponds('value').
-        callbackReceives('value');
+      simpleCommand('tap', 'singleTap', 'value');
     });
   });
 
@@ -213,5 +206,6 @@ suite('marionette/element', function() {
   simpleCommand('enabled', 'isElementEnabled', 'value');
   simpleCommand('displayed', 'isElementDisplayed', 'value');
   simpleCommand('size', 'getElementSize', 'value');
+  simpleCommand('location', 'getElementPosition', 'value');
 
 });
