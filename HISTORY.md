@@ -1,3 +1,6 @@
+# 0.15.0
+  - add element.location();
+
 # 0.14.0
   - add client.screenshot
 
