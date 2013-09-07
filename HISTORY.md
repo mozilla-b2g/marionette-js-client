@@ -1,4 +1,6 @@
-# 0.15.0
+# 0.15.1
+  - bump up default searchTimeout from 250 -> 1000
+[[#]] 0.15.0
   - add element.location();
 
 # 0.14.0
