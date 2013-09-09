@@ -652,6 +652,16 @@ suite('marionette/client', function() {
     });
   });
 
+  suite('.title', function() {
+    device.
+      issues('title').
+      shouldSend({
+        type: 'getTitle'
+      }).
+      serverResponds('value').
+      callbackReceives('value');
+  });
+
   suite('.goUrl', function() {
     device.
       issues('goUrl', 'http://wow').
