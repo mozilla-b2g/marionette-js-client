@@ -331,7 +331,8 @@ suite('marionette/client', function() {
         });
       });
 
-      test('should update the ._scope when state changes in scoped', function() {
+      test('should update the ._scope' +
+           'when state changes in scoped', function() {
         scope.setScriptTimeout(250);
         assert.strictEqual(scope._scope.scriptTimeout, 250);
       });
@@ -766,6 +767,14 @@ suite('marionette/client', function() {
       issues('getLogs').
       shouldSend({ type: 'getLogs' }).
       serverResponds('getLogsResponse').
+      callbackReceives('value');
+  });
+
+  suite('.pageSouce', function() {
+    device.
+      issues('pageSource').
+      shouldSend({ type: 'getPageSource' }).
+      serverResponds('value').
       callbackReceives('value');
   });
 
