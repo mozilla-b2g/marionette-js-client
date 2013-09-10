@@ -523,6 +523,16 @@ suite('marionette/client', function() {
     });
   });
 
+  suite('.sessionCapabilities', function() {
+    device.
+      issues('sessionCapabilities').
+      shouldSend({
+        type: 'getSessionCapabilities'
+      }).
+      serverResponds('value').
+      callbackReceives('value');
+  });
+
   suite('.getWindow', function() {
     device.
       issues('getWindow').
