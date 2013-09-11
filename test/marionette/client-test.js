@@ -576,6 +576,16 @@ suite('marionette/client', function() {
       callbackReceives('ok');
   });
 
+  suite('.getWindowType', function() {
+    device.
+      issues('getWindowType').
+      shouldSend({
+        type: 'getWindowType'
+      }).
+      serverResponds('value').
+      callbackReceives('value');
+  });
+
   suite('.switchToFrame', function() {
     suite('when given nothing', function() {
       device.
