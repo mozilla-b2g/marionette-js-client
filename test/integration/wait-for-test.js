@@ -36,7 +36,7 @@ suite('scope', function() {
     test('should throw an error when given', function(done) {
       var err = new Error('xfoo');
       function sendError(done) {
-        done(err, 1);
+        throw err;
       }
 
       client.waitFor(sendError, function(givenErr) {
@@ -48,9 +48,12 @@ suite('scope', function() {
     test('should fire when async condition is met', function(done) {
       var tries = 0;
       var success = 3;
-      client.waitFor(function(done) {
-        setTimeout(done, 5, null, ++tries === success);
-      }, done);
+      client.waitFor(function() {
+        return ++tries === success;
+      }, function() {
+        assert.strictEqual(tries, 3);
+        done();
+      });
     });
   });
 });
