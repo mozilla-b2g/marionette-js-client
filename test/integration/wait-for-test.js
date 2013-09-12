@@ -30,17 +30,41 @@ suite('scope', function() {
       assert.ok(err);
       assert.operator(Date.now() - start, '>=', timeout);
     });
+
+    test('should do the mocha sync', function() {
+      var tries = 0, success = 3;
+      client.waitFor(function fn(waitForComplete) {
+        tries += 1;
+        if (tries === success) {
+          waitForComplete(null, true);
+        }
+
+        setTimeout(fn.bind(this, waitForComplete), 10);
+      });
+
+      assert.strictEqual(tries, success);
+    });
+
+    test('should do the mocha fail sync', function(done) {
+      var err = new Error('failure!');
+      try {
+        client.waitFor(function(waitForComplete) {
+          waitForComplete(err);
+        });
+      } catch (e) {
+        assert.strictEqual(e, err);
+        done();
+      }
+    });
   });
 
   suite('async wait for calls', function() {
     test('should throw an error when given', function(done) {
-      var err = new Error('xfoo');
-      function sendError(done) {
-        throw err;
-      }
-
-      client.waitFor(sendError, function(givenErr) {
-        assert.strictEqual(givenErr, err);
+      var err = new Error('failure!');
+      client.waitFor(function(waitForComplete) {
+        waitForComplete(err);
+      }, function(e) {
+        assert.strictEqual(e, err);
         done();
       });
     });
@@ -57,4 +81,3 @@ suite('scope', function() {
     });
   });
 });
-
