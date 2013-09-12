@@ -25,7 +25,7 @@ doc-publish:
 	git checkout gh-pages
 	rm -Rf api-docs
 	mv api-docs-temp api-docs
-	git add api-docs
+	git add -f api-docs
 	git commit -m "regenerate api docs"
 	git push origin gh-pages --force
 	git checkout master
