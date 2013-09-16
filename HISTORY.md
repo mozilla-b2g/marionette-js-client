@@ -1,3 +1,6 @@
+# 0.15.4
+  - bump up search timeout to 5s
+
 # 0.15.1
   - bump up default searchTimeout from 250 -> 1000
 [[#]] 0.15.0
