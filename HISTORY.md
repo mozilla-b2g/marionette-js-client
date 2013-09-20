@@ -1,3 +1,6 @@
+# 0.15.5
+  - fix async waitFor
+ 
 # 0.15.4
   - bump up search timeout to 5s
 
