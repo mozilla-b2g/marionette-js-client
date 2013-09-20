@@ -1,19 +1,15 @@
 suite('marionette/client', function() {
 
+
+  var Client = require('../lib/client'),
+      DeviceInteraction = require('./support/device-interaction'),
+      Element = require('../lib/element'),
+      Exception = require('../lib/error'),
+      MockDriver = require('./support/mock-driver');
+
+  var exampleCmds = require('../lib/example-commands');
   var subject, driver, cb, cbResponse,
-      result, device, Element, Client, Exception;
-
-  helper.require('element', function(obj) {
-    Element = obj;
-  });
-
-  helper.require('error', function(obj) {
-    Exception = obj;
-  });
-
-  helper.require('client', function(obj) {
-    Client = obj;
-  });
+      result, device;
 
   device = new DeviceInteraction(exampleCmds, function() {
     return subject;
