@@ -83,7 +83,7 @@ suite('scope', function() {
       }, function() {
         assert.strictEqual(tries, 3);
       });
-      assert.equal(tries, 3, 'is async');
+      assert.equal(tries, 3, 'is sync');
     });
   });
 });
