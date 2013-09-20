@@ -19,7 +19,7 @@
     "yuidocjs": "~0.3",
     "test-agent": "~0.12",
     "node-static": "~0.6",
-    "marionette-js-runner": "~0.0.1",
+    "marionette-js-runner": "~0.2.0",
     "mozilla-download": "~0.2",
     "chai": "~1.7.2"
   },

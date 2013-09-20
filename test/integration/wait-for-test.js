@@ -58,26 +58,32 @@ suite('scope', function() {
     });
   });
 
-  suite('async wait for calls', function() {
-    test('should throw an error when given', function(done) {
+  suite('callback style wait for calls', function() {
+    test('should throw an error when given', function() {
       var err = new Error('failure!');
-      client.waitFor(function(waitForComplete) {
-        waitForComplete(err);
-      }, function(e) {
-        assert.strictEqual(e, err);
-        done();
-      });
+      var isSync = false;
+      try {
+        client.waitFor(function(waitForComplete) {
+          waitForComplete(err);
+        }, function(e) {
+          assert.strictEqual(e, err);
+          isSync = true;
+        });
+      } catch(e) {
+        assert.equal(e, err);
+      }
+      assert.ok(isSync, 'callback style is sync');
     });
 
-    test('should fire when async condition is met', function(done) {
+    test('should fire when async condition is met', function() {
       var tries = 0;
       var success = 3;
       client.waitFor(function() {
         return ++tries === success;
       }, function() {
         assert.strictEqual(tries, 3);
-        done();
       });
+      assert.equal(tries, 3, 'is sync');
     });
   });
 });
