@@ -65,7 +65,8 @@ suite('marionette/element', function() {
         name: 'findElement',
         parameters: {
           value: '#id',
-          element: id
+          element: id,
+          using: 'css selector'
         }
       }).
       serverResponds('findElementResponse');
@@ -85,7 +86,8 @@ suite('marionette/element', function() {
         name: 'findElements',
         parameters: {
           value: '#id',
-          element: id
+          element: id,
+          using: 'css selector'
         }
       }).
       serverResponds('findElementsResponse');

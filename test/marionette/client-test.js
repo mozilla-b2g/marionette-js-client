@@ -1021,25 +1021,6 @@ suite('marionette/client', function() {
         serverResponds('getUrlResponse').
         callbackReceives('value');
     });
-
-    suite('with timeout', function() {
-      var request = {
-        name: 'executeJSScript',
-        parameters: {
-          script: cmd,
-          args: args,
-          timeout: false
-        }
-      };
-
-      device.
-        issues('_executeScript', request).
-        shouldSend(request).
-        serverResponds('getUrlResponse').
-        callbackReceives('value');
-
-    });
-
   });
 
   suite('._newSession', function() {
