@@ -257,7 +257,7 @@ suite('marionette/client', function() {
       setup(function() {
         subject.session = 'session';
         subject.actor = 'actor';
-        result = subject.send({ type: 'newSession' });
+        result = subject.send({ name: 'newSession' });
       });
 
       test('should be chainable', function() {
@@ -268,7 +268,7 @@ suite('marionette/client', function() {
         assert.deepEqual(driver.sent[0], {
           to: subject.actor,
           session: subject.session,
-          type: 'newSession'
+          name: 'newSession'
         });
       });
     });
@@ -278,13 +278,13 @@ suite('marionette/client', function() {
       suite('with an actor', function() {
         setup(function() {
           subject.actor = 'foo';
-          subject.send({ type: '_getActorId' }, cb);
+          subject.send({ name: '_getActorId' }, cb);
         });
 
         test('should add to:', function() {
           assert.deepEqual(driver.sent[0], {
             to: 'foo',
-            type: '_getActorId'
+            name: '_getActorId'
           });
         });
 
@@ -292,13 +292,13 @@ suite('marionette/client', function() {
 
       suite('without an actor', function() {
         setup(function() {
-          subject.send({ type: '_getActorId' }, cb);
+          subject.send({ name: '_getActorId' }, cb);
         });
 
         test('should add to:', function() {
           assert.deepEqual(driver.sent[0], {
             to: 'root',
-            type: '_getActorId'
+            name: '_getActorId'
           });
         });
 
@@ -385,7 +385,7 @@ suite('marionette/client', function() {
 
     device.
       issues('_getActorId').
-      shouldSend({ type: 'getMarionetteID' }).
+      shouldSend({ name: 'getMarionetteID' }).
       serverResponds('getMarionetteIDResponse').
       callbackReceives('id');
 
@@ -512,8 +512,10 @@ suite('marionette/client', function() {
       device.
         issues('setSearchTimeout', 50).
         shouldSend({
-          type: 'setSearchTimeout',
-          value: 50
+          name: 'setSearchTimeout',
+          parameters: {
+            ms: 50
+          }
         }).
         serverResponds('ok').
         callbackReceives('ok');
@@ -528,7 +530,7 @@ suite('marionette/client', function() {
     device.
       issues('sessionCapabilities').
       shouldSend({
-        type: 'getSessionCapabilities'
+        name: 'getSessionCapabilities'
       }).
       serverResponds('value').
       callbackReceives('value');
@@ -538,7 +540,7 @@ suite('marionette/client', function() {
     device.
       issues('getWindow').
       shouldSend({
-        type: 'getWindow'
+        name: 'getWindow'
       }).
       serverResponds('getWindowResponse').
       callbackReceives('value');
@@ -553,8 +555,10 @@ suite('marionette/client', function() {
       device.
         issues('setContext', 'chrome').
         shouldSend({
-          type: 'setContext',
-          value: 'chrome'
+          name: 'setContext',
+          parameters: {
+            value: 'chrome'
+          }
         }).
         serverResponds('ok').
         callbackReceives('ok');
@@ -569,7 +573,7 @@ suite('marionette/client', function() {
     device.
       issues('getWindows').
       shouldSend({
-        type: 'getWindows'
+        name: 'getWindows'
       }).
       serverResponds('getWindowsResponse').
       callbackReceives('value');
@@ -579,8 +583,10 @@ suite('marionette/client', function() {
     device.
       issues('switchToWindow', '1-b2g').
       shouldSend({
-        type: 'switchToWindow',
-        value: '1-b2g'
+        name: 'switchToWindow',
+        parameters: {
+          value: '1-b2g'
+        }
       }).
       serverResponds('ok').
       callbackReceives('ok');
@@ -590,7 +596,7 @@ suite('marionette/client', function() {
     device.
       issues('getWindowType').
       shouldSend({
-        type: 'getWindowType'
+        name: 'getWindowType'
       }).
       serverResponds('value').
       callbackReceives('value');
@@ -600,7 +606,7 @@ suite('marionette/client', function() {
     suite('when given nothing', function() {
       device.
         issues('switchToFrame').
-        shouldSend({ type: 'switchToFrame' }).
+        shouldSend({ name: 'switchToFrame' }).
         serverResponds('ok').
         callbackReceives('ok');
     });
@@ -615,8 +621,10 @@ suite('marionette/client', function() {
 
       device.
         shouldSend({
-          type: 'switchToFrame',
-          element: '77'
+          name: 'switchToFrame',
+          parameters: {
+            element: '77'
+          }
         }).
         serverResponds('ok').
         callbackReceives('ok');
@@ -632,8 +640,10 @@ suite('marionette/client', function() {
 
       device.
         shouldSend({
-          type: 'switchToFrame',
-          element: 'foo'
+          name: 'switchToFrame',
+          parameters: {
+            element: 'foo'
+          }
         }).
         serverResponds('ok').
         callbackReceives('ok');
@@ -645,8 +655,10 @@ suite('marionette/client', function() {
     device.
       issues('importScript', 'foo').
       shouldSend({
-        type: 'importScript',
-        script: 'foo'
+        name: 'importScript',
+        parameters: {
+          script: 'foo'
+        }
       }).
       serverResponds('ok').
       callbackReceives('ok');
@@ -661,8 +673,10 @@ suite('marionette/client', function() {
       device.
         issues('setScriptTimeout', 100).
         shouldSend({
-          type: 'setScriptTimeout',
-          value: 100
+          name: 'setScriptTimeout',
+          parameters: {
+            ms: 100
+          }
         }).
         serverResponds('ok').
         callbackReceives('ok');
@@ -677,7 +691,7 @@ suite('marionette/client', function() {
     device.
       issues('title').
       shouldSend({
-        type: 'getTitle'
+        name: 'getTitle'
       }).
       serverResponds('value').
       callbackReceives('value');
@@ -687,8 +701,10 @@ suite('marionette/client', function() {
     device.
       issues('goUrl', 'http://wow').
       shouldSend({
-        type: 'goUrl',
-        value: 'http://wow'
+        name: 'goUrl',
+        parameters: {
+          url: 'http://wow'
+        }
       }).
       serverResponds('ok').
       callbackReceives('ok');
@@ -698,7 +714,7 @@ suite('marionette/client', function() {
     device.
       issues('getUrl').
       shouldSend({
-        type: 'getUrl'
+        name: 'getUrl'
       }).
       serverResponds('getUrlResponse').
       callbackReceives('value');
@@ -708,7 +724,7 @@ suite('marionette/client', function() {
     device.
       issues('goForward').
       shouldSend({
-        type: 'goForward'
+        name: 'goForward'
       }).
       serverResponds('ok').
       callbackReceives('ok');
@@ -718,7 +734,7 @@ suite('marionette/client', function() {
     device.
       issues('goBack').
       shouldSend({
-        type: 'goBack'
+        name: 'goBack'
       }).
       serverResponds('ok').
       callbackReceives('ok');
@@ -743,7 +759,7 @@ suite('marionette/client', function() {
 
       test('should call _executeScript', function() {
         assert.deepEqual(calledWith, [
-          { type: 'executeScript', value: script, args: null },
+          { name: 'executeScript', parameters: { script: script, args: null }},
           commandCallback
         ]);
       });
@@ -756,7 +772,7 @@ suite('marionette/client', function() {
 
       test('should call _executeScript', function() {
         assert.deepEqual(calledWith, [
-          { type: 'executeJSScript', value: script, timeout: true, args: null },
+          { name: 'executeJSScript', parameters: {script: script, timeout: true, args: null }},
           commandCallback
         ]);
       });
@@ -769,7 +785,7 @@ suite('marionette/client', function() {
 
       test('should call _executeScript', function() {
         assert.deepEqual(calledWith, [
-          { type: 'executeAsyncScript', value: script, args: null },
+          { name: 'executeAsyncScript', parameters: {script: script, args: null }},
           commandCallback
         ]);
       });
@@ -780,14 +796,14 @@ suite('marionette/client', function() {
     device.
       issues('refresh').
       serverResponds('ok').
-      shouldSend({ type: 'refresh' }).
+      shouldSend({ name: 'refresh' }).
       callbackReceives('ok');
   });
 
   suite('.log', function() {
     device.
       issues('log', 'wow', 'info').
-      shouldSend({ type: 'log', value: 'wow', level: 'info' }).
+      shouldSend({ name: 'log', parameters: {value: 'wow', level: 'info' }}).
       serverResponds('ok').
       callbackReceives('ok');
   });
@@ -795,7 +811,7 @@ suite('marionette/client', function() {
   suite('.getLogs', function() {
     device.
       issues('getLogs').
-      shouldSend({ type: 'getLogs' }).
+      shouldSend({ name: 'getLogs' }).
       serverResponds('getLogsResponse').
       callbackReceives('value');
   });
@@ -803,7 +819,7 @@ suite('marionette/client', function() {
   suite('.pageSouce', function() {
     device.
       issues('pageSource').
-      shouldSend({ type: 'getPageSource' }).
+      shouldSend({ name: 'getPageSource' }).
       serverResponds('value').
       callbackReceives('value');
   });
@@ -813,7 +829,7 @@ suite('marionette/client', function() {
     suite('without options', function() {
       device.
         issues('screenshot').
-        shouldSend({ type: 'screenShot' }).
+        shouldSend({ name: 'screenShot' }).
         serverResponds('screenshotResponse').
         callbackReceives('value');
     });
@@ -821,12 +837,16 @@ suite('marionette/client', function() {
     suite('with options', function() {
       device.
         issues('screenshot', {
-          type: 'untrusted',
-          element: { id: 33 }
+          name: 'untrusted',
+          parameters: {
+            id: { id: 33 }
+          }
         }).
         shouldSend({
-          type: 'screenShot',
-          element: 33
+          name: 'screenShot',
+          parameters: {
+            id: 33
+          }
         }).
         serverResponds('screenshotResponse').
         callbackReceives('value');
@@ -875,9 +895,11 @@ suite('marionette/client', function() {
       device.
         issues('_findElement', 'findElement', '#wow').
         shouldSend({
-          type: 'findElement',
-          value: '#wow',
-          using: 'css selector'
+          name: 'findElement',
+          parameters: {
+            value: '#wow',
+            using: 'css selector'
+          }
         }).
         serverResponds('findElementResponse');
 
@@ -891,9 +913,11 @@ suite('marionette/client', function() {
       device.
         issues('_findElement', 'findElement', '#wow').
         shouldSend({
-          type: 'findElement',
-          value: '#wow',
-          using: 'css selector'
+          name: 'findElement',
+          parameters: {
+            value: '#wow',
+            using: 'css selector'
+          }
         }).
         serverResponds('findElementResponse');
 
@@ -904,10 +928,12 @@ suite('marionette/client', function() {
       device.
         issues('_findElement', 'findElements', 'wow', 'class name', 1).
         shouldSend({
-          type: 'findElements',
-          value: 'wow',
-          using: 'class name',
-          element: 1
+          name: 'findElements',
+          parameters: {
+            value: 'wow',
+            using: 'class name',
+            element: 1
+          }
         }).
         serverResponds('findElementResponse');
 
@@ -961,9 +987,11 @@ suite('marionette/client', function() {
 
     suite('with args', function() {
       var request = {
-        type: type,
-        value: cmd,
-        args: args
+        name: type,
+        parameters: {
+          script: cmd,
+          args: args
+        }
       };
 
       device.
@@ -975,16 +1003,20 @@ suite('marionette/client', function() {
 
     suite('without args', function() {
       var request = {
-        type: type,
-        value: cmd
+        name: type,
+        parameters: {
+          script: cmd
+        }
       };
 
       device.
         issues('_executeScript', request).
         shouldSend({
-          type: type,
-          value: cmd,
-          args: []
+          name: type,
+          parameters: {
+            script: cmd,
+            args: []
+          }
         }).
         serverResponds('getUrlResponse').
         callbackReceives('value');
@@ -992,10 +1024,12 @@ suite('marionette/client', function() {
 
     suite('with timeout', function() {
       var request = {
-        type: 'executeJSScript',
-        value: cmd,
-        args: args,
-        timeout: false
+        name: 'executeJSScript',
+        parameters: {
+          script: cmd,
+          args: args,
+          timeout: false
+        }
       };
 
       device.
@@ -1022,7 +1056,7 @@ suite('marionette/client', function() {
     });
 
     test('should send newSession', function() {
-      assert.strictEqual(driver.sent[0].type, 'newSession');
+      assert.strictEqual(driver.sent[0].name, 'newSession');
     });
 
     test('should save session id', function() {
