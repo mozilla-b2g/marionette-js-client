@@ -58,7 +58,8 @@ test-unit:
 	  ./test/marionette/multi-actions-test.js \
 	  ./test/marionette/drivers/abstract-test.js \
 	  ./test/marionette/drivers/tcp-test.js \
-	  ./test/marionette/drivers/tcp-sync-test.js -t 5s
+	  ./test/marionette/drivers/tcp-sync-test.js -t 5s --watch
+
 
 .PHONY: ci
 ci:
