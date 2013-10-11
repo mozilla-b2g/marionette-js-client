@@ -176,6 +176,20 @@ suite('marionette/element', function() {
     });
   });
 
+  suite('.cssProperty', function() {
+    var property = 'margin';
+
+    device.
+      issues('cssProperty', property).
+      shouldSend({
+        type: 'getElementValueOfCssProperty',
+        propertyName: property,
+        element: id
+      }).
+      serverResponds('value').
+      callbackReceives('value');
+  });
+
   suite('.tap', function() {
     suite('when given the x and y offsets', function() {
       var x = 10;
