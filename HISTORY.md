@@ -1,3 +1,6 @@
+# 0.16.0
+  - cssProperty support  
+
 # 0.15.5
   - fix async waitFor
  
@@ -6,6 +9,7 @@
 
 # 0.15.1
   - bump up default searchTimeout from 250 -> 1000
+
 [[#]] 0.15.0
   - add element.location();
 
