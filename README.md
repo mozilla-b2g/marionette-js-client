@@ -21,23 +21,8 @@ npm install .
 
 Tests are written in [Mocha](https://github.com/visionmedia/mocha) / [Chai](http://chaijs.com/)
 
-
-Node:
-
 ``` sh
-make test-node
-```
-
-Browser:
-
-``` sh
-make package
-make test-server
-# GOTO: http://localhost:8789/test-agent/index.html in your browser
-
-make test-browser
-# you can also use
-# "make test" to run both node and browser tests.
+make test
 ```
 
 ### Plugins
