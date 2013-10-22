@@ -211,9 +211,11 @@ suite('marionette/actions', function() {
     device.
       issues('perform').
       shouldSend({
-        type: 'actionChain',
-        chain: [],
-        nextId: null
+        name: 'actionChain',
+        parameters: {
+          chain: [],
+          nextId: null
+        }
       }).
       serverResponds('value').
       callbackReceives('value');

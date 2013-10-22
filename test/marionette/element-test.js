@@ -20,8 +20,10 @@ suite('marionette/element', function() {
       device.
         issues(method).
         shouldSend({
-          type: type,
-          element: id
+          name: type,
+          parameters: {
+            id: id
+          }
         }).
         serverResponds(responseKey).
         callbackReceives(responseKey);
@@ -50,8 +52,8 @@ suite('marionette/element', function() {
 
   suite('._sendCommand', function() {
     device.
-      issues('_sendCommand', { type: 'test' }, 'ok').
-      shouldSend({ type: 'test', element: id }).
+      issues('_sendCommand', { name: 'test' }, 'ok').
+      shouldSend({ name: 'test', parameters:{ id: id}}).
       serverResponds('ok').
       callbackReceives('ok');
   });
@@ -60,9 +62,12 @@ suite('marionette/element', function() {
     device.
       issues('findElement', '#id').
       shouldSend({
-        value: '#id',
-        type: 'findElement',
-        element: id
+        name: 'findElement',
+        parameters: {
+          value: '#id',
+          element: id,
+          using: 'css selector'
+        }
       }).
       serverResponds('findElementResponse');
 
@@ -78,9 +83,12 @@ suite('marionette/element', function() {
     device.
       issues('findElements', '#id').
       shouldSend({
-        value: '#id',
-        type: 'findElements',
-        element: id
+        name: 'findElements',
+        parameters: {
+          value: '#id',
+          element: id,
+          using: 'css selector'
+        }
       }).
       serverResponds('findElementsResponse');
 
@@ -140,9 +148,11 @@ suite('marionette/element', function() {
     device.
       issues('getAttribute', attr).
       shouldSend({
-        type: 'getElementAttribute',
-        name: attr,
-        element: id
+        name: 'getElementAttribute',
+        parameters: {
+          name: attr,
+          id: id
+        }
       }).
       serverResponds('value').
       callbackReceives('value');
@@ -154,9 +164,11 @@ suite('marionette/element', function() {
       device.
         issues('sendKeys', input).
         shouldSend({
-          type: 'sendKeysToElement',
-          value: input,
-          element: id
+          name: 'sendKeysToElement',
+          parameters: {
+            value: input,
+            id: id
+          }
         }).
         serverResponds('ok').
         callbackReceives('ok');
@@ -167,9 +179,11 @@ suite('marionette/element', function() {
       device.
         issues('sendKeys', msg).
         shouldSend({
-          type: 'sendKeysToElement',
-          value: [msg],
-          element: id
+          name: 'sendKeysToElement',
+          parameters: {
+            value: [msg],
+            id: id
+          }
         }).
         serverResponds('ok').
         callbackReceives('ok');
@@ -182,9 +196,11 @@ suite('marionette/element', function() {
     device.
       issues('cssProperty', property).
       shouldSend({
-        type: 'getElementValueOfCssProperty',
-        propertyName: property,
-        element: id
+        name: 'getElementValueOfCssProperty',
+        parameters: {
+          propertyName: property,
+          id: id
+        }
       }).
       serverResponds('value').
       callbackReceives('value');
@@ -198,10 +214,12 @@ suite('marionette/element', function() {
       device.
         issues('tap', x, y).
         shouldSend({
-          type: 'singleTap',
-          x: x,
-          y: y,
-          element: id
+          name: 'singleTap',
+          parameters: {
+            x: x,
+            y: y,
+            id: id
+          }
         }).
         serverResponds('value').
         callbackReceives('value');

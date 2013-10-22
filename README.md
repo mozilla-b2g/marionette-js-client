@@ -6,6 +6,11 @@ JavaScript client for
 Designed to run on [Node.js](http://nodejs.org).
 
 - [Api Docs](http://mozilla-b2g.github.com/marionette_js_client/api-docs/)
+- 
+
+## Note on gecko compatibility!
+
+1.0x is for gecko 26 and onward 0.x is for gecko 25 and lower.
 
 ## Hacking
 

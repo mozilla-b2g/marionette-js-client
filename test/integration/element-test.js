@@ -53,4 +53,10 @@ suite('element methods', function() {
     if (!err) throw new Error('missing element did not trigger an error');
     assert.equal(err.type, 'NoSuchElement');
   });
+
+  test('#cssProperty', function() {
+    var body = client.findElement('body');
+    var font = body.cssProperty('font-size');
+    assert.ok(font, 'returns a css property value');
+  });
 });
