@@ -196,9 +196,11 @@ suite('marionette/element', function() {
     device.
       issues('cssProperty', property).
       shouldSend({
-        type: 'getElementValueOfCssProperty',
-        propertyName: property,
-        element: id
+        name: 'getElementValueOfCssProperty',
+        parameters: {
+          propertyName: property,
+          id: id
+        }
       }).
       serverResponds('value').
       callbackReceives('value');
