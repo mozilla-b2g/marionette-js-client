@@ -1,7 +1,10 @@
 suite('scope', function() {
   var client = marionette.client(),
+      helper = require('./helper'),
       timeoutA,
       timeoutB;
+
+  helper.skipInitialError(client);
 
   setup(function() {
     timeoutA = client.scope({ scriptTimeout: 1000 });

@@ -1,5 +1,8 @@
 suite('scope', function() {
-  var client = marionette.client();
+  var client = marionette.client(),
+      helper = require('./helper');
+
+  helper.skipInitialError(client);
 
   suite('sync waitFor', function() {
     test('should not yield in sync code', function() {
