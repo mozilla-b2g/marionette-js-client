@@ -219,6 +219,21 @@ suite('marionette/client', function() {
           done();
         }, {}, 2);
       });
+
+      test('should call onScriptTimeout on script timeout', function(done) {
+        subject.onScriptTimeout = function(err) {
+          assert.strictEqual(err.type, 'ScriptTimeout');
+          done();
+        };
+
+        var err = {
+          status: 28,
+          message: 'foo',
+          stacktrace: 'bar'
+        };
+
+        subject._handleCallback(function() {}, err, null);
+      });
     }
 
     suite('with default', function() {
