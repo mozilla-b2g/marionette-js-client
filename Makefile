@@ -4,6 +4,7 @@ REPORTER=spec
 YUIDOCJS?=./node_modules/yuidocjs/lib/cli.js
 DOC_PARAMS?=--themedir ./docs/theme
 DOC_DIR=./lib/marionette
+DOC_REMOTE?=upstream
 
 
 .PHONY: link
@@ -21,14 +22,19 @@ doc-server:
 
 .PHONY: doc-publish
 doc-publish:
-	$(YUIDOCJS) $(DOC_PARAMS) -o ./api-docs-temp/ $(DOC_DIR) -c ./yuidoc.json
+	git fetch $(DOC_REMOTE)
+	git checkout --detach
+	git branch -D gh-pages || true
+	git branch gh-pages $(DOC_REMOTE)/gh-pages
+	git checkout -
 	git checkout gh-pages
+	$(YUIDOCJS) $(DOC_PARAMS) -o ./api-docs-temp/ $(DOC_DIR) -c ./yuidoc.json
 	rm -Rf api-docs
 	mv api-docs-temp api-docs
 	git add -f api-docs
 	git commit -m "regenerate api docs"
-	git push origin gh-pages --force
-	git checkout master
+	git push $(DOC_REMOTE) gh-pages
+	git checkout -
 	rm -Rf api-docs-temp/
 
 .PHONY: test
