@@ -1,3 +1,6 @@
+# 1.1.0
+  - make `scriptTimeout` and `searchTimeout` configurable, up their default
+
 # 0.16.0
   - cssProperty support  
 
