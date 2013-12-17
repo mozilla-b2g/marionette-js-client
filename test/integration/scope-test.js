@@ -29,4 +29,13 @@ suite('scope', function() {
     // sleep throws error on shorter timeout
     assert.ok(err);
   });
+
+  test('should have an isolated state', function() {
+    var scope = client.scope();
+    client.setScriptTimeout(1);
+    scope.setScriptTimeout(2);
+
+    assert.equal(client.scriptTimeout, 1);
+    assert.equal(scope.scriptTimeout, 2);
+  });
 });
