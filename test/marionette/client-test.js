@@ -853,9 +853,7 @@ suite('marionette/client', function() {
       device.
         issues('screenshot', {
           name: 'untrusted',
-          parameters: {
-            id: { id: 33 }
-          }
+          element: { id: 33 }
         }).
         shouldSend({
           name: 'screenShot',
