@@ -853,13 +853,15 @@ suite('marionette/client', function() {
       device.
         issues('screenshot', {
           name: 'untrusted',
-          element: { id: 33 }
+          element: { id: 33 },
+          highlights: [ { id: 23 }, { id: 99 } ],
         }).
         shouldSend({
           name: 'screenShot',
           parameters: {
-            id: 33
-          }
+            id: 33,
+            highlights: [ 23, 99 ]
+          },
         }).
         serverResponds('screenshotResponse').
         callbackReceives('value');
