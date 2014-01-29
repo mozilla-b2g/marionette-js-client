@@ -37,9 +37,27 @@ suite('scope', function() {
       subject.
         press(bodyElement, 100, 100).
         moveByOffset(0, 10).
-        wait(0.05).
+        perform();
+
+      // TODO: Bug 965385 - Use `Actions#wait` in integration tests
+      // Model this pause with an invocation of `Actions#wait` once "Bug 962645
+      // - Action chains only handle one press->release chain" is resolved.
+      client.executeAsyncScript(function() {
+        setTimeout(marionetteScriptFinished, 50);
+      });
+
+      subject.
         release().
-        wait(0.05).
+        perform();
+
+      // TODO: Bug 965385 - Use `Actions#wait` in integration tests
+      // Model this pause with an invocation of `Actions#wait` once "Bug 962645
+      // - Action chains only handle one press->release chain" is resolved.
+      client.executeAsyncScript(function() {
+        setTimeout(marionetteScriptFinished, 50);
+      });
+
+      subject.
         flick(bodyElement, 0, 0, 0, 200).
         perform();
 
