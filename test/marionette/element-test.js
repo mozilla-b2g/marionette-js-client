@@ -109,17 +109,39 @@ suite('marionette/element', function() {
       subject.client.executeScript = function() {
         calledWith = arguments;
       };
-
-      subject.scriptWith(fn, cb);
     });
 
-    test('should call client.executeScript with' +
+    test('should call client.executeScript with ' +
       'element as argument', function() {
+      subject.scriptWith(fn);
+
       assert.strictEqual(calledWith[0], fn);
       assert.deepEqual(calledWith[1], [
         subject
       ]);
+      assert.strictEqual(calledWith[2], undefined);
+    });
 
+
+    test('should call client.executeScript with element ' +
+      ' + callback', function(){
+      subject.scriptWith(fn, cb);
+
+      assert.strictEqual(calledWith[0], fn);
+      assert.deepEqual(calledWith[1], [
+        subject
+      ]);
+      assert.strictEqual(calledWith[2], cb);
+    });
+
+    test('should call client.executeScript with element ' +
+      ' + args + callback', function(){
+      subject.scriptWith(fn, ['foo', 'bar'], cb);
+
+      assert.strictEqual(calledWith[0], fn);
+      assert.deepEqual(calledWith[1], [
+        subject, 'foo', 'bar'
+      ]);
       assert.strictEqual(calledWith[2], cb);
     });
 

@@ -16,11 +16,11 @@ suite('element methods', function() {
 
   test('#scriptWith', function() {
     var element = client.findElement('html');
-    var evaled = element.scriptWith(function() {
-      return '111';
-    });
+    var evaled = element.scriptWith(function(el, arg) {
+      return el.tagName + ' ' + arg;
+    }, ['FTW!']);
 
-    assert.equal(evaled, '111');
+    assert.equal(evaled, 'HTML FTW!');
   });
 
   test('#findElement', function() {
