@@ -3,11 +3,16 @@
   function MockDriver() {
     this.sent = [];
     this.queue = [];
+    this.timeout = 0;
   }
 
   MockDriver.prototype = {
 
     connectionId: 0,
+
+    setScriptTimeout: function(timeout) {
+      this.timeout = timeout;
+    },
 
     reset: function() {
       this.sent.length = 0;
