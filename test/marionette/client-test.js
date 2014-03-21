@@ -699,6 +699,11 @@ suite('marionette/client', function() {
       test('should update .scriptTimeout', function() {
         assert.strictEqual(subject.scriptTimeout, 100);
       });
+
+      test('driver should have gotten it', function() {
+        // this only work with the MockDevice.
+        assert.strictEqual(subject.driver.timeout, 100);
+      });
     });
   });
 
