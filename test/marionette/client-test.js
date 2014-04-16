@@ -87,7 +87,7 @@ suite('marionette/client', function() {
             called.push(name);
             done();
           });
-        }
+        };
       }
 
       setup(function() {
@@ -626,6 +626,19 @@ suite('marionette/client', function() {
         callbackReceives('ok');
     });
 
+    suite('when given a callback', function() {
+      setup(function() {
+        subject.switchToFrame(commandCallback);
+      });
+
+      device.
+        shouldSend({
+          name: 'switchToFrame'
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
+
     suite('when given an element', function() {
       var el;
 
@@ -664,6 +677,51 @@ suite('marionette/client', function() {
         callbackReceives('ok');
     });
 
+    suite('when switch to a frame with options', function() {
+      var el;
+
+      setup(function() {
+        el = { ELEMENT: 'foo' };
+        options = { focus: true };
+        subject.switchToFrame(el, options, commandCallback);
+      });
+
+      device.
+        shouldSend({
+          name: 'switchToFrame',
+          parameters: {
+            element: 'foo',
+            focus: true
+          }
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
+
+    suite('when switch to a frame with multiple options', function() {
+      var el;
+
+      setup(function() {
+        el = { ELEMENT: 'foo' };
+        options = {
+          focus: true,
+          testOption: 'hi'
+        };
+        subject.switchToFrame(el, options, commandCallback);
+      });
+
+      device.
+        shouldSend({
+          name: 'switchToFrame',
+          parameters: {
+            element: 'foo',
+            focus: true,
+            testOption: 'hi'
+          }
+        }).
+        serverResponds('ok').
+        callbackReceives('ok');
+    });
   });
 
   suite('.importScript', function() {
