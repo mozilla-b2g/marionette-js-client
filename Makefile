@@ -6,6 +6,9 @@ DOC_PARAMS?=--themedir ./docs/theme
 DOC_DIR=./lib/marionette
 DOC_REMOTE?=upstream
 
+.PHONY: clean
+clean:
+	rm -rf b2g/ node_modules/
 
 .PHONY: link
 link:
@@ -41,10 +44,14 @@ doc-publish: node_modules
 test : test-unit test-integration
 
 b2g:
-	./node_modules/.bin/mozilla-download --product b2g --verbose $@
+	./node_modules/.bin/mozilla-download \
+		--verbose \
+		--product b2g \
+		--channel tinderbox \
+		--branch mozilla-central $@
 
 .PHONY: test-integration
-test-integration: link b2g node_modules
+test-integration: b2g node_modules
 	./node_modules/.bin/marionette-mocha --reporter $(REPORTER) \
 		--profile-base $(PWD)/profile.js \
 		--ui tdd \
