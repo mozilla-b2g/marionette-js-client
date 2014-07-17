@@ -13,15 +13,15 @@ link:
 	npm link marionette-client
 
 .PHONY: test-server
-test-server:
+test-server: node_modules
 	./node_modules/test-agent/bin/js-test-agent server --growl
 
 .PHONY: doc-server
-doc-server:
+doc-server: node_modules
 	$(YUIDOCJS) $(DOC_PARAMS) --server $(DOC_DIR)
 
 .PHONY: doc-publish
-doc-publish:
+doc-publish: node_modules
 	git fetch $(DOC_REMOTE)
 	git checkout --detach
 	git branch -D gh-pages || true
@@ -44,15 +44,15 @@ b2g:
 	./node_modules/.bin/mozilla-download --product b2g --verbose $@
 
 .PHONY: test-integration
-test-integration: link b2g
+test-integration: link b2g node_modules
 	./node_modules/.bin/marionette-mocha --reporter $(REPORTER) \
 		--profile-base $(PWD)/profile.js \
 		--ui tdd \
 		--timeout 30s \
 		$(shell find test/integration -name "*-test.js")
 
-.PHONY: test-node
-test-unit:
+.PHONY: test-unit
+test-unit: node_modules
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) \
 	  ./test/node/*-test.js \
 	  ./test/marionette/index-test.js \
@@ -72,3 +72,5 @@ ci:
 	Xvfb :99 &
 	DISPLAY=:99 make test
 
+node_modules: package.json
+	npm install
