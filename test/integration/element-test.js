@@ -59,4 +59,14 @@ suite('element methods', function() {
     var font = body.cssProperty('font-size');
     assert.ok(font, 'returns a css property value');
   });
+
+  test('#rect', function () {
+    var accordian = client.findElement('.accordian');
+    var accordianRect = accordian.rect();
+    assert.ok(rect.x, "is in the object");
+    assert.ok(rect.y, "is in the object");
+    assert.ok(rect.height, "is in the object");
+    assert.ok(rect.width, "is in the object");
+
+  })
 });
