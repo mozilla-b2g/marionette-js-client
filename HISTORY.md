@@ -1,3 +1,6 @@
+# 1.2.0
+  - Bug 1033402 - tcp sync driver will wait on connection to be avaible.
+
 # 1.1.0
   - make `scriptTimeout` and `searchTimeout` configurable, up their default
 
