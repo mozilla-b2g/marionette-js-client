@@ -261,5 +261,6 @@ suite('marionette/element', function() {
   simpleCommand('displayed', 'isElementDisplayed', 'value');
   simpleCommand('size', 'getElementSize', 'value');
   simpleCommand('location', 'getElementPosition', 'value');
+  simpleCommand('rect', 'getElementRect', 'value')
 
 });

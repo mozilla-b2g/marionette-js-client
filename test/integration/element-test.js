@@ -59,4 +59,21 @@ suite('element methods', function() {
     var font = body.cssProperty('font-size');
     assert.ok(font, 'returns a css property value');
   });
+
+  test('#rect', function () {
+    // Create our dummy rect for the tests...
+    client.executeScript(function() {
+      var html =
+        '<div id="magic-testing" style="width: 50px; height: 50px">woot</div>';
+      document.body.insertAdjacentHTML('beforeend', html);
+    });
+
+    var element = client.findElement('#magic-testing');
+    var rect = element.rect();
+    console.log(rect);
+    assert.ok('x' in rect, "is in the object");
+    assert.ok('y' in rect, "is in the object");
+    assert.equal(rect.width, 50);
+    assert.equal(rect.height, 50);
+  })
 });
