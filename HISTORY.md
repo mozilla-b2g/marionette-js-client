@@ -1,3 +1,7 @@
+# 1.3.0
+  - Bug 1040110 - Add in getElementRect since getElementLocation and
+    getElementSize is being deprecated
+
 # 1.2.0
   - Bug 1033402 - tcp sync driver will wait on connection to be avaible.
 
