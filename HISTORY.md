@@ -1,3 +1,6 @@
+# 1.4.0
+  - Bug 1102098 - Improve error handling to include .client.
+
 # 1.3.0
   - Bug 1040110 - Add in getElementRect since getElementLocation and
     getElementSize is being deprecated
