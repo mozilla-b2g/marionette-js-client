@@ -13,7 +13,7 @@ suite('marionette/error', function() {
   suite('#error', function() {
     test('should have support for each error', function() {
       for (var key in MarionetteError.CODES) {
-        err = new MarionetteError({
+        err = new MarionetteError({}, {
           message: 'msg',
           status: key,
           stacktrace: 'stack'
@@ -27,14 +27,20 @@ suite('marionette/error', function() {
       }
     });
 
-    test('should return given when given is a MarionetteError', function() {
-      var input = new MarionetteError({});
-      var result = new MarionetteError(input);
-      assert.equal(input, result);
+    test('should contain client', function() {
+      var client = {};
+      var result = new MarionetteError(client, {
+        status: 7777,
+        message: 'foo',
+        stack: 'bar'
+      });
+
+      assert.equal(result.client, client);
+      assert.strictEqual(result.name, MarionetteError.CODES[500]);
     });
 
     test('should use 500 error when unknown stack is given', function() {
-      var result = new MarionetteError({
+      var result = new MarionetteError({}, {
         status: 7777,
         message: 'foo',
         stack: 'bar'
