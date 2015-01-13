@@ -247,6 +247,22 @@ suite('marionette/element', function() {
         callbackReceives('value');
     });
 
+    suite('when given the x offset only', function() {
+      var x = 10;
+
+      device.
+          issues('tap', x).
+          shouldSend({
+            name: 'singleTap',
+            parameters: {
+              x: x,
+              id: id
+            }
+          }).
+          serverResponds('value').
+          callbackReceives('value');
+    });
+
     suite('when no x and y offsets', function() {
       simpleCommand('tap', 'singleTap', 'value');
     });
