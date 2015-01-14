@@ -1,3 +1,6 @@
+# 1.5.3
+  - Bug 1121223 - Use sockit-to-me built in socket timeout to avoid socket misuse.
+
 # 1.5.2
   - Bug 1091680 - Add some logging for debugging a socket timeout.
 
