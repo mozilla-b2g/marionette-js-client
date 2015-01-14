@@ -1,3 +1,6 @@
+# 1.5.2
+  - Bug 1091680 - Add some logging for debugging a socket timeout.
+
 # 1.4.0
   - Bug 1102098 - Improve error handling to include .client.
 
