@@ -40,6 +40,8 @@ suite('element methods', function() {
       elements[0] instanceof Marionette.Element,
       'returns instances of Marionette.Element'
     );
+
+    assert.ok(elements[0].displayed());
   });
 
   test('#findElement - missing', function() {
