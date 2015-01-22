@@ -8,7 +8,7 @@
     "debug": "~0.6",
     "json-wire-protocol": "~0.2.1",
     "socket-retry-connect": "~0.0.1",
-    "sockit-to-me": "0.2.3"
+    "sockit-to-me": "0.2.4"
   },
   "scripts": {
     "test": "make ci REPORTER=dot"

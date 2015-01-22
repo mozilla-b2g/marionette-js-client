@@ -25,22 +25,13 @@ suite('element methods', function() {
 
   test('#findElement', function() {
     var root = client.findElement('html');
-    assert.ok(
-      root.findElement('body') instanceof Marionette.Element,
-      'returns instanceof Marionette.Element'
-    );
+    assert.ok(root.findElement('body').displayed());
   });
 
   test('#findElements', function() {
     var root = client.findElement('html');
     var elements = root.findElements('body');
     assert.ok(Array.isArray(elements), 'is an array');
-
-    assert.ok(
-      elements[0] instanceof Marionette.Element,
-      'returns instances of Marionette.Element'
-    );
-
     assert.ok(elements[0].displayed());
   });
 
