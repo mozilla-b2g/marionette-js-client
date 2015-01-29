@@ -364,6 +364,7 @@ suite('marionette/client', function() {
 
   suite('.startSession', function() {
     var result;
+    var desiredCapabilities = { desiredCapability: true };
 
     setup(function(done) {
       var firesHook = false;
@@ -376,6 +377,10 @@ suite('marionette/client', function() {
       result = subject.startSession(function() {
         assert.ok(firesHook);
         done();
+      }, desiredCapabilities);
+
+      device.shouldSend({
+        parameters: { capabiltiies: desiredCapabilities }
       });
 
       driver.respond(exampleCmds.getMarionetteIDResponse());
@@ -1103,12 +1108,17 @@ suite('marionette/client', function() {
 
   suite('._newSession', function() {
     var response;
+    var desiredCapabilities = { desiredCapability: true };
 
     setup(function(done) {
       response = exampleCmds.newSessionResponse();
       subject._newSession(function() {
         cbResponse = arguments;
         done();
+      }, desiredCapabilities);
+
+      device.shouldSend({
+        parameters: { capabiltiies: desiredCapabilities }
       });
 
       driver.respond(response);
