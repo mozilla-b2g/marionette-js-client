@@ -6,18 +6,30 @@ DOC_PARAMS?=--themedir ./docs/theme
 DOC_DIR=./lib/marionette
 DOC_REMOTE?=upstream
 
-.PHONY: clean
-clean:
-	rm -rf b2g/ node_modules/
+default: node_modules b2g
+
+b2g: node_modules
+	./node_modules/.bin/mozilla-download \
+		--verbose \
+		--product b2g \
+		--channel tinderbox \
+		--branch mozilla-central $@
+
+node_modules: package.json
+	npm install
 
 .PHONY: link
 link:
 	npm link
 	npm link marionette-client
 
+.PHONY: clean
+clean:
+	rm -rf b2g/ node_modules/
+
 .PHONY: test-server
 test-server: node_modules
-	./node_modules/test-agent/bin/js-test-agent server --growl
+	./node_modules/.bin/js-test-agent server --growl
 
 .PHONY: doc-server
 doc-server: node_modules
@@ -41,25 +53,18 @@ doc-publish: node_modules
 	rm -Rf api-docs-temp/
 
 .PHONY: test
-test : test-unit test-integration
-
-b2g:
-	./node_modules/.bin/mozilla-download \
-		--verbose \
-		--product b2g \
-		--channel tinderbox \
-		--branch mozilla-central $@
+test: test-unit test-integration
 
 .PHONY: test-integration
-test-integration: b2g node_modules
+test-integration: default link
 	./node_modules/.bin/marionette-mocha --reporter $(REPORTER) \
-		--profile-base $(PWD)/profile.js \
+		--profile-base $(shell pwd)/profile.js \
 		--ui tdd \
 		--timeout 30s \
 		$(shell find test/integration -name "*-test.js")
 
 .PHONY: test-unit
-test-unit: node_modules
+test-unit: default
 	./node_modules/mocha/bin/mocha --reporter $(REPORTER) \
 	  ./test/node/*-test.js \
 	  ./test/marionette/index-test.js \
@@ -73,11 +78,7 @@ test-unit: node_modules
 	  ./test/marionette/drivers/tcp-test.js \
 	  ./test/marionette/drivers/tcp-sync-test.js
 
-
 .PHONY: ci
 ci:
 	Xvfb :99 &
 	DISPLAY=:99 make test
-
-node_modules: package.json
-	npm install
