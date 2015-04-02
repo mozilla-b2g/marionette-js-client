@@ -56,7 +56,7 @@ doc-publish: node_modules
 test: test-unit test-integration
 
 .PHONY: test-integration
-test-integration: default link
+test-integration: default 
 	./node_modules/.bin/marionette-mocha --reporter $(REPORTER) \
 		--profile-base $(shell pwd)/profile.js \
 		--ui tdd \
