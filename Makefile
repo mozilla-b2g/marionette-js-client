@@ -40,7 +40,7 @@ doc-publish: node_modules
 	git fetch $(DOC_REMOTE)
 	git checkout --detach
 	git branch -D gh-pages || true
-	git branch gh-pages $(DOC_REMOTE)/gh-pages
+	git branch gh-pages
 	git checkout -
 	git checkout gh-pages
 	$(YUIDOCJS) $(DOC_PARAMS) -o ./api-docs-temp/ $(DOC_DIR) -c ./yuidoc.json
@@ -48,7 +48,7 @@ doc-publish: node_modules
 	mv api-docs-temp api-docs
 	git add -f api-docs
 	git commit -m "regenerate api docs"
-	git push $(DOC_REMOTE) gh-pages
+	git push -f $(DOC_REMOTE) gh-pages
 	git checkout -
 	rm -Rf api-docs-temp/
 
