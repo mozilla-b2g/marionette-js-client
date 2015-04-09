@@ -194,7 +194,7 @@ suite('marionette/client', function() {
 
     function usesCallback() {
 
-      test('should handle errors', function() {
+      test('should handle number errors', function() {
         var calledWith, err;
 
         err = {
@@ -208,8 +208,26 @@ suite('marionette/client', function() {
         }, err, null);
 
         assert.instanceOf(calledWith[0], Exception);
-
         assert.include(calledWith[0].message, 'foo');
+        assert.include(calledWith[0].stack, 'bar');
+      });
+
+      test('should handle string errors', function() {
+        var calledWith, err;
+
+        err = {
+          status: 'no such element',
+          message: 'foo',
+          stacktrace: 'bar'
+        };
+
+        subject._handleCallback(function() {
+          calledWith = arguments;
+        }, err, null);
+
+        assert.instanceOf(calledWith[0], Exception);
+        assert.include(calledWith[0].message, 'foo');
+        assert.include(calledWith[0].stack, 'bar');
       });
 
       test('should use callback when provided', function(done) {
@@ -227,7 +245,7 @@ suite('marionette/client', function() {
         };
 
         var err = {
-          status: 28,
+          status: 'script timeout',
           message: 'foo',
           stacktrace: 'bar'
         };
@@ -455,12 +473,34 @@ suite('marionette/client', function() {
 
     });
 
-    suite('on error', function() {
+    suite('on number error', function() {
 
       setup(function(done) {
         calledWith = null;
         cmd = exampleCmds.getUrl();
-        response = exampleCmds.error();
+        response = exampleCmds.numberError();
+
+        subject._sendCommand(cmd, 'value', function(err, data) {
+          calledWith = arguments;
+          done();
+        });
+
+        driver.respond(response);
+      });
+
+      test('should pass error to callback', function() {
+        assert.ok(calledWith[0]);
+        assert.notOk(calledWith[1]);
+      });
+
+    });
+
+    suite('on string error', function() {
+
+      setup(function(done) {
+        calledWith = null;
+        cmd = exampleCmds.getUrl();
+        response = exampleCmds.stringError();
 
         subject._sendCommand(cmd, 'value', function(err, data) {
           calledWith = arguments;
@@ -478,7 +518,6 @@ suite('marionette/client', function() {
     });
 
   });
-
 
   suite('.deleteSession', function() {
     var result;
