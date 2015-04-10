@@ -8,12 +8,11 @@ DOC_REMOTE?=upstream
 
 default: node_modules b2g
 
-b2g: node_modules
+b2g:
 	./node_modules/.bin/mozilla-download \
-		--verbose \
-		--product b2g \
-		--channel tinderbox \
-		--branch mozilla-central $@
+		--product b2g-desktop \
+		--branch mozilla-central \
+		$(shell pwd)
 
 node_modules: package.json
 	npm install
@@ -26,6 +25,7 @@ link:
 .PHONY: clean
 clean:
 	rm -rf b2g/ node_modules/
+	npm unlink marionette-client
 
 .PHONY: test-server
 test-server: node_modules
@@ -57,15 +57,13 @@ test: test-unit test-integration
 
 .PHONY: test-integration
 test-integration: default link
-	./node_modules/.bin/marionette-mocha --reporter $(REPORTER) \
+	./node_modules/.bin/marionette-mocha \
 		--profile-base $(shell pwd)/profile.js \
-		--ui tdd \
-		--timeout 30s \
 		$(shell find test/integration -name "*-test.js")
 
 .PHONY: test-unit
 test-unit: default
-	./node_modules/mocha/bin/mocha --reporter $(REPORTER) \
+	./node_modules/mocha/bin/mocha \
 	  ./test/node/*-test.js \
 	  ./test/marionette/index-test.js \
 	  ./test/marionette/command-stream-test.js \
