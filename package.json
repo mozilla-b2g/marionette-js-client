@@ -1,6 +1,6 @@
 {
   "name": "marionette-client",
-  "version": "1.7.2",
+  "version": "1.7.4",
   "author": "The Gaia Team <dev-gaia@lists.mozilla.org>",
   "description": "Marionette Javascript Client",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "yuidocjs": "~0.3",
     "test-agent": "~0.12",
     "node-static": "~0.6",
-    "marionette-js-runner": "0.5.x",
+    "marionette-js-runner": "1.0.x",
     "mozilla-download": "1.0.x",
     "chai": "~1.7.2"
   },
