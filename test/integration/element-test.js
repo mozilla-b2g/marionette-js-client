@@ -1,12 +1,12 @@
 suite('element methods', function() {
+  var querystring = require('querystring');
   var Marionette = require('../../');
-  // TODO: use a static server
-  var URL = 'http://mozilla.org';
 
   var client = marionette.client();
 
   setup(function() {
-    client.goUrl(URL);
+    client.goUrl("data:text/html," + querystring.escape(
+        '<div id="el" style="width: 50px; height: 50px">cheese</div>'));
   });
 
   test('#displayed', function() {
@@ -24,22 +24,19 @@ suite('element methods', function() {
   });
 
   test('#findElement', function() {
-    var root = client.findElement('html');
-    assert.ok(root.findElement('body').displayed());
+    client.findElement('html');
   });
 
   test('#findElements', function() {
-    var root = client.findElement('html');
-    var elements = root.findElements('body');
-    assert.ok(Array.isArray(elements), 'is an array');
-    assert.ok(elements[0].displayed());
+    var elements = client.findElements('html');
+    assert.isArray(elements);
   });
 
   test('#findElement - missing', function() {
     var err;
     try {
       client.findElement('#fooobaramazingmissing');
-    } catch(e) {
+    } catch (e) {
       err = e;
     }
 
@@ -53,20 +50,30 @@ suite('element methods', function() {
     assert.ok(font, 'returns a css property value');
   });
 
-  test('#rect', function () {
-    // Create our dummy rect for the tests...
-    client.executeScript(function() {
-      var html =
-        '<div id="magic-testing" style="width: 50px; height: 50px">woot</div>';
-      document.body.insertAdjacentHTML('beforeend', html);
-    });
+  test('#size', function () {
+    var element = client.findElement('#el');
+    var size = element.size();
+    assert.property(size, 'width');
+    assert.property(size, 'height');
+    assert.equal(size.width, 50);
+    assert.equal(size.height, 50);
+  });
 
-    var element = client.findElement('#magic-testing');
+  test('#location', function () {
+    var element = client.findElement('#el');
+    var location = element.location();
+    assert.property(location, 'x');
+    assert.property(location, 'y');
+  });
+
+  test('#rect', function () {
+    var element = client.findElement('#el');
     var rect = element.rect();
-    console.log(rect);
-    assert.ok('x' in rect, "is in the object");
-    assert.ok('y' in rect, "is in the object");
+    assert.property(rect, 'x');
+    assert.property(rect, 'y');
+    assert.property(rect, 'width');
+    assert.property(rect, 'height');
     assert.equal(rect.width, 50);
     assert.equal(rect.height, 50);
-  })
+  });
 });

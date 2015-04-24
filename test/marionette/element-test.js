@@ -1,5 +1,4 @@
-//this is hack to ensure device interactions are
-//loaded
+// this is hack to ensure device interactions are loaded
 
 suite('marionette/element', function() {
   var driver, subject, client, id, device,
@@ -275,8 +274,8 @@ suite('marionette/element', function() {
   simpleCommand('selected', 'isElementSelected', 'value');
   simpleCommand('enabled', 'isElementEnabled', 'value');
   simpleCommand('displayed', 'isElementDisplayed', 'value');
-  simpleCommand('size', 'getElementSize', 'value');
-  simpleCommand('location', 'getElementPosition', 'value');
+  simpleCommand('size', 'getElementRect', 'value');
+  simpleCommand('location', 'getElementRect', 'value');
   simpleCommand('rect', 'getElementRect', 'value')
 
 });
