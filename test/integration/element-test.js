@@ -24,12 +24,14 @@ suite('element methods', function() {
   });
 
   test('#findElement', function() {
-    client.findElement('html');
+    var el = client.findElement('html');
+    assert.instanceOf(el, Marionette.Element);
   });
 
   test('#findElements', function() {
-    var elements = client.findElements('html');
-    assert.isArray(elements);
+    var els = client.findElements('html');
+    assert.isArray(els);
+    els.forEach(function(el) { assert.instanceOf(el, Marionette.Element); });
   });
 
   test('#findElement - missing', function() {
