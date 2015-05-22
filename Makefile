@@ -6,8 +6,6 @@ DOC_PARAMS?=--themedir ./docs/theme
 DOC_DIR=./lib/marionette
 DOC_REMOTE?=upstream
 
-default: node_modules b2g
-
 b2g:
 	./node_modules/.bin/mozilla-download \
 		--product b2g-desktop \
@@ -17,6 +15,11 @@ b2g:
 node_modules: package.json
 	npm install
 
+.PHONY: develop
+develop: node_modules
+	rm -rf node_modules/marionette-client
+	ln -s ../ node_modules/marionette-client
+
 .PHONY: link
 link:
 	npm link
@@ -25,7 +28,6 @@ link:
 .PHONY: clean
 clean:
 	rm -rf b2g/ node_modules/
-	npm unlink marionette-client
 
 .PHONY: test-server
 test-server: node_modules
@@ -56,13 +58,13 @@ doc-publish: node_modules
 test: test-unit test-integration
 
 .PHONY: test-integration
-test-integration: default link
+test-integration: develop b2g
 	./node_modules/.bin/marionette-mocha \
 		--profile-base $(shell pwd)/profile.js \
 		$(shell find test/integration -name "*-test.js")
 
 .PHONY: test-unit
-test-unit: default
+test-unit: develop b2g
 	./node_modules/mocha/bin/mocha \
 	  ./test/node/*-test.js \
 	  ./test/marionette/index-test.js \
