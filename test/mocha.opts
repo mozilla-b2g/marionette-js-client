@@ -1,4 +1,0 @@
---reporter spec
---require test/helper
---timeout 30s
---ui tdd
